@@ -54,7 +54,35 @@ Prioritized list of features that competitors have and 21CRM needs, plus feature
 
 ## Implementation Mapping
 
-PRJ-001 covers: G-01, G-03, G-04, G-05, G-06, G-07, G-08
-Remaining gaps to be scheduled in future projects.
+PRJ-001 covers ALL gaps (G-01 through G-19) plus 7 bug-fix tasks:
+
+| Gap | Task | Status |
+|-----|------|--------|
+| G-01 | TASK-001 | ready |
+| G-02 | TASK-008 | ready |
+| G-03 | TASK-003 | ready |
+| G-04 | TASK-004 | ready |
+| G-05 | TASK-005 | ready |
+| G-06 | TASK-006 | ready |
+| G-07 | TASK-002 | ready |
+| G-08 | TASK-007 | ready |
+| G-09 | TASK-009 | ready |
+| G-10 | TASK-010 | ready |
+| G-11 | TASK-011 | ready |
+| G-12 | TASK-012 | ready |
+| G-13 | TASK-013 | ready |
+| G-14 | TASK-014 | ready |
+| G-15 | TASK-015 | ready |
+| G-16 | TASK-016 | ready |
+| G-17 | TASK-017 | ready |
+| G-18 | TASK-018 | ready |
+| G-19 | TASK-019 | ready |
+| Bug | TASK-020 (rev-rec generate button) | ready |
+| Bug | TASK-021 (rep names) | ready |
+| Bug | TASK-022 (industry display names) | ready |
+| Bug | TASK-023 (ARR from line items) | ready |
+| Bug | TASK-024 (currency CAD) | ready |
+| Bug | TASK-025 (active subscriptions only) | ready |
+| Bug | TASK-026 (billing period display names) | ready |
 
 See [[learnings-synthesis]] for the strategic thinking behind this prioritization.
