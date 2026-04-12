@@ -2,7 +2,7 @@
 title: "Product catalog schema & API"
 id: TASK-049
 project: PRJ-003
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12

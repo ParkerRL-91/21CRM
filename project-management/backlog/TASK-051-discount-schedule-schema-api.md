@@ -2,7 +2,7 @@
 title: "Discount schedule schema & API (tiered/volume/term)"
 id: TASK-051
 project: PRJ-003
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12
