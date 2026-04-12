@@ -2,7 +2,7 @@
 title: "Design and implement contract management schema"
 id: TASK-027
 project: PRJ-002
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12
@@ -403,10 +403,25 @@ const AmendmentChangesSchema = z.object({
 - `drizzle.config.ts` — **MODIFY**: Include contract schema if not auto-discovered
 - `drizzle/` — **NEW**: Generated migration files
 
+## Files Changed
+
+- `src/lib/db/contract-schema.ts` — **NEW**: All 6 table definitions with Drizzle ORM
+- `src/lib/contracts/validation.ts` — **NEW**: Zod schemas, JSONB validators, status transitions
+- `src/lib/contracts/validation.test.ts` — **NEW**: 43 tests for all validators
+- `drizzle/0000_uneven_komodo.sql` — **NEW**: Generated migration (177 lines)
+- `drizzle.config.ts` — **NEW**: Drizzle Kit configuration
+- `tsconfig.json` — **NEW**: TypeScript configuration
+- `vitest.config.ts` — **NEW**: Vitest configuration
+- `package.json` — **NEW**: Dependencies (drizzle-orm, postgres, decimal.js, zod, date-fns)
+
 ## Status Log
 
 - 2026-04-12: Created — schema designed based on Salesforce CPQ data model analysis
+- 2026-04-12: Implemented — 6 tables, 18 indexes, 15 CHECK constraints, 43 passing tests
 
 ## Takeaways
 
-_To be filled during implementation._
+- Drizzle ORM's `check()` API works well for enum-like CHECK constraints on VARCHAR columns
+- JSONB defaults must use `sql` tagged template for array defaults: `.default(sql\`'[]'::jsonb\`)` — but Drizzle handles `default([])` automatically
+- The `numeric()` type in Drizzle maps cleanly to PostgreSQL NUMERIC(precision, scale) — good for financial columns
+- Validation schemas (Zod) should be created alongside the Drizzle schema, not deferred — they define the contract for all API consumers

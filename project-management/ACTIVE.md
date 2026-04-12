@@ -35,7 +35,7 @@ _None_
 
 | Task | Phase | Status | Priority | Description |
 |------|-------|--------|----------|-------------|
-| TASK-027 | 1-Foundation | ready | P0 | Contract management schema |
+| TASK-027 | 1-Foundation | done | P0 | Contract management schema |
 | TASK-028 | 1-Foundation | ready | P0 | Contract CRUD API routes |
 | TASK-029 | 1-Foundation | ready | P0 | Contract subscription management |
 | TASK-030 | 2-UI | ready | P0 | Account contracts related list (US-8.1) |
