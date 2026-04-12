@@ -2,7 +2,7 @@
 title: "Invoice record generation on contract creation"
 id: TASK-076
 project: PRJ-003
-status: ready
+status: done
 priority: P2
 created: 2026-04-12
 updated: 2026-04-12

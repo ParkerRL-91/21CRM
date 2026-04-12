@@ -2,7 +2,7 @@
 title: "Quote CRUD API with line item management"
 id: TASK-056
 project: PRJ-003
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12
