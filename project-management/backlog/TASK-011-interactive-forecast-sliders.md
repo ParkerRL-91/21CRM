@@ -2,7 +2,7 @@
 title: "Interactive Forecast Sliders (What-If Vision Tool)"
 id: TASK-011
 project: PRJ-001
-status: ready
+status: done
 priority: P2
 created: 2026-03-22
 updated: 2026-03-22

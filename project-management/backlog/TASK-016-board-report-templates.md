@@ -2,7 +2,7 @@
 title: "Board-Ready Report Templates"
 id: TASK-016
 project: PRJ-001
-status: ready
+status: done
 priority: P3
 created: 2026-03-22
 updated: 2026-03-22

@@ -2,7 +2,7 @@
 title: "Pipeline Movement View (Weekly Adds/Losses/Changes)"
 id: TASK-005
 project: PRJ-001
-status: ready
+status: done
 priority: P1
 created: 2026-03-22
 updated: 2026-03-22

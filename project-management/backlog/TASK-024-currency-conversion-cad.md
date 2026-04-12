@@ -2,7 +2,7 @@
 title: "Currency Conversion: Normalize All Values to CAD Using Deal Exchange Rate"
 id: TASK-024
 project: PRJ-001
-status: ready
+status: done
 priority: P1
 created: 2026-03-22
 updated: 2026-03-22
