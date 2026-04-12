@@ -141,3 +141,34 @@ _None_
 - **PRJ-002**: 22 tasks (P0:9, P1:8, P2:4, P3:1) — Epic 8
 - **PRJ-003**: 36 tasks (P0:16, P1:16, P2:4) — Epics 1-7, 9-10
 - **Grand Total**: 84 tasks
+
+## PRJ-004: CPQ Twenty Integration Completion (8.0 → 9.5/10)
+**Status:** Ready — requires running Twenty dev environment
+
+### Phase 1 — Backend Wiring (P0, unblocks everything)
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-085 | ready | P0 | Workspace auth on CPQ controller |
+| TASK-086 | ready | P0 | GraphQL resolvers for CPQ business logic |
+| TASK-087 | ready | P0 | Wire createFromQuote to workspace datasource |
+| TASK-088 | ready | P0 | Wire runRenewalCheck to workspace datasource |
+| TASK-089 | ready | P1 | BullMQ scheduled renewal job |
+| TASK-090 | ready | P2 | Schema evolution / version upgrade |
+
+### Phase 2 — Frontend Integration (P0, depends on Phase 1)
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-091 | ready | P0 | Migrate hooks from fetch to Apollo Client |
+| TASK-092 | ready | P0 | Register CPQ pages in navigation |
+| TASK-093 | ready | P0 | Quote builder page with line item editing |
+| TASK-094 | ready | P1 | Renewal dashboard with risk scores |
+| TASK-095 | ready | P1 | Contract detail panel with amendment viewer |
+
+### Phase 3 — Testing & Polish (P1)
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-096 | ready | P1 | Integration tests against running Twenty |
+| TASK-097 | ready | P1 | Edge case tests for pricing |
+| TASK-098 | ready | P1 | Cache optimization in setup service |
+| TASK-099 | ready | P1 | Input validation DTOs |
+| TASK-100 | ready | P1 | Jordan QA: full quote-to-contract flow |
