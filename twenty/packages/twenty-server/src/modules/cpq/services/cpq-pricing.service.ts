@@ -1,41 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import Decimal from 'decimal.js';
-
 Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
-
-/**
- * CPQ Pricing Service — 10-step price waterfall engine.
- *
- * Steps:
- * 1. Base Price (from price book entry)
- * 2. Contracted Price (account-specific override)
- * 3. Proration (subscription term ratio)
- * 4. Tiered/Volume Discount (from discount schedule)
- * 5. Term Discount (multi-year commitment)
- * 6. Manual Discount (rep-entered %, amount, or override)
- * 7. Floor Price Enforcement
- * 8. Currency Conversion (placeholder)
- * 9. Rounding (2 decimal places)
- * 10. Total Calculation (net unit × quantity)
- *
- * All arithmetic uses Decimal.js. No floating-point.
- */
+// CPQ Pricing Service — 10-step price waterfall engine.
+// Steps:
+// 1. Base Price (from price book entry)
+// 2. Contracted Price (account-specific override)
+// 3. Proration (subscription term ratio)
+// 4. Tiered/Volume Discount (from discount schedule)
+// 5. Term Discount (multi-year commitment)
+// 6. Manual Discount (rep-entered %, amount, or override)
+// 7. Floor Price Enforcement
+// 8. Currency Conversion (placeholder)
+// 9. Rounding (2 decimal places)
+// 10. Total Calculation (net unit × quantity)
+// All arithmetic uses Decimal.js. No floating-point.
+///
 @Injectable()
 export class CpqPricingService {
   calculatePriceWaterfall(input: PricingInput): PricingResult {
     let price = new Decimal(input.listPrice);
     const audit: PricingAuditStep[] = [];
-
     // Step 1: Base price
     audit.push(this.step('base_price', price, price));
-
     // Step 2: Contracted price
     if (input.contractedPrice) {
       const before = price;
       price = new Decimal(input.contractedPrice);
       audit.push(this.step('contracted_price', before, price));
     }
-
     // Step 3: Proration
     if (input.quoteTermMonths && input.productBaseTermMonths &&
         input.quoteTermMonths !== input.productBaseTermMonths) {
@@ -47,7 +39,6 @@ export class CpqPricingService {
         productBaseTermMonths: String(input.productBaseTermMonths),
       }));
     }
-
     // Step 4: Tiered/Volume discount
     if (input.discountSchedule) {
       const before = price;
@@ -60,7 +51,6 @@ export class CpqPricingService {
         scheduleType: input.discountSchedule.type,
       }));
     }
-
     // Step 5: Term discount
     if (input.discountSchedule?.type === 'term' && input.quoteTermMonths) {
       const before = price;
@@ -72,7 +62,6 @@ export class CpqPricingService {
         discountPercent: discountPercent.toString(),
       }));
     }
-
     // Step 6: Manual discount
     if (input.manualPriceOverride !== undefined) {
       const before = price;
@@ -93,23 +82,18 @@ export class CpqPricingService {
         value: String(input.manualDiscountAmount),
       }));
     }
-
     // Step 7: Floor price
     if (input.floorPrice && price.lt(new Decimal(input.floorPrice))) {
       const before = price;
       price = new Decimal(input.floorPrice);
       audit.push(this.step('floor_price', before, price));
     }
-
     // Step 8: Currency (placeholder)
     // Step 9: Rounding
     price = price.toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
-
     // Step 10: Ensure non-negative
     if (price.lt(0)) price = new Decimal(0);
-
     const netTotal = price.times(input.quantity).toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
-
     return {
       netUnitPrice: price.toString(),
       netTotal: netTotal.toString(),
@@ -117,13 +101,11 @@ export class CpqPricingService {
       auditSteps: audit,
     };
   }
-
   calculateTieredEffectivePrice(quantity: number, tiers: DiscountTier[]): Decimal {
     if (quantity <= 0) return new Decimal(0);
     const sorted = [...tiers].sort((a, b) => a.lowerBound - b.lowerBound);
     let remaining = quantity;
     let total = new Decimal(0);
-
     for (const tier of sorted) {
       if (remaining <= 0) break;
       const tierCapacity = tier.upperBound !== null ? tier.upperBound - tier.lowerBound + 1 : remaining;
@@ -131,36 +113,29 @@ export class CpqPricingService {
       total = total.plus(new Decimal(tierQty).times(tier.value));
       remaining -= tierQty;
     }
-
     return total.dividedBy(quantity); // effective unit price
   }
-
   calculateVolumePrice(quantity: number, tiers: DiscountTier[], basePrice: Decimal): Decimal {
     if (quantity <= 0) return new Decimal(0);
     const sorted = [...tiers].sort((a, b) => b.lowerBound - a.lowerBound);
     const applicable = sorted.find((t) => quantity >= t.lowerBound);
     return applicable ? new Decimal(applicable.value) : basePrice;
   }
-
   getTermDiscount(termMonths: number, tiers: DiscountTier[]): Decimal {
     const sorted = [...tiers].sort((a, b) => b.lowerBound - a.lowerBound);
     const applicable = sorted.find((t) => termMonths >= t.lowerBound);
     return applicable ? new Decimal(applicable.value) : new Decimal(0);
   }
-
   calculateRenewalPrice(input: RenewalPricingInput): RenewalPricingResult {
     const maxUplift = new Decimal(50);
-
     switch (input.method) {
       case 'same_price':
         return { newUnitPrice: input.currentPrice, method: 'same_price' };
-
       case 'current_list':
         return {
           newUnitPrice: input.currentListPrice ?? input.currentPrice,
           method: input.currentListPrice ? 'current_list' : 'current_list_fallback',
         };
-
       case 'uplift_percentage': {
         let uplift = new Decimal(input.upliftPercentage ?? 0);
         if (uplift.gt(maxUplift)) uplift = maxUplift;
@@ -171,7 +146,6 @@ export class CpqPricingService {
       }
     }
   }
-
   private step(
     name: string,
     before: Decimal,
@@ -187,7 +161,6 @@ export class CpqPricingService {
     };
   }
 }
-
 // Types
 export interface PricingInput {
   listPrice: string;
@@ -201,13 +174,11 @@ export interface PricingInput {
   manualPriceOverride?: number;
   floorPrice?: string;
 }
-
 export interface DiscountTier {
   lowerBound: number;
   upperBound: number | null;
   value: number;
 }
-
 export interface PricingAuditStep {
   ruleName: string;
   inputPrice: string;
@@ -215,21 +186,18 @@ export interface PricingAuditStep {
   parameters?: Record<string, string>;
   timestamp: string;
 }
-
 export interface PricingResult {
   netUnitPrice: string;
   netTotal: string;
   listPrice: string;
   auditSteps: PricingAuditStep[];
 }
-
 export interface RenewalPricingInput {
   currentPrice: string;
   method: 'same_price' | 'current_list' | 'uplift_percentage';
   currentListPrice?: string;
   upliftPercentage?: number;
 }
-
 export interface RenewalPricingResult {
   newUnitPrice: string;
   method: string;

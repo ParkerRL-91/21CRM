@@ -1,18 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-/**
- * CPQ Risk Service — at-risk renewal identification engine.
- *
- * Evaluates pending renewals against 6 weighted signals:
- * 1. Stage stagnation (25%) — deal hasn't progressed in 14+ days
- * 2. Close date slippage (20%) — past contract end date
- * 3. Time pressure (20%) — <30 days to expiry, not in final stage
- * 4. Value decrease (15%) — renewal value < current contract
- * 5. No activity (10%) — no deal changes in 21+ days
- * 6. Previous churn (10%) — account had prior cancelled renewal
- *
- * Risk levels: low (0-25), medium (26-50), high (51-75), critical (76+)
- */
+//
+// CPQ Risk Service — at-risk renewal identification engine.
+//
+// Evaluates pending renewals against 6 weighted signals:
+// 1. Stage stagnation (25%) — deal hasn't progressed in 14+ days
+// 2. Close date slippage (20%) — past contract end date
+// 3. Time pressure (20%) — <30 days to expiry, not in final stage
+// 4. Value decrease (15%) — renewal value < current contract
+// 5. No activity (10%) — no deal changes in 21+ days
+// 6. Previous churn (10%) — account had prior cancelled renewal
+//
+// Risk levels: low (0-25), medium (26-50), high (51-75), critical (76+)
+///
 @Injectable()
 export class CpqRiskService {
   private readonly logger = new Logger(CpqRiskService.name);

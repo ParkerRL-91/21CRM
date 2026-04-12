@@ -3,19 +3,19 @@ import Decimal from 'decimal.js';
 
 Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
 
-/**
- * CPQ Contract Service — handles contract lifecycle operations.
- *
- * - Create contract from accepted quote
- * - Amendment flow (co-termination, delta pricing)
- * - Invoice generation
- * - Status transitions with validation
- */
+//
+// CPQ Contract Service — handles contract lifecycle operations.
+//
+// - Create contract from accepted quote
+// - Amendment flow (co-termination, delta pricing)
+// - Invoice generation
+// - Status transitions with validation
+///
 @Injectable()
 export class CpqContractService {
   private readonly logger = new Logger(CpqContractService.name);
 
-  /** Valid contract status transitions */
+  // Valid contract status transitions
   private readonly TRANSITIONS: Record<string, string[]> = {
     draft: ['active'],
     active: ['amended', 'pending_renewal', 'expired', 'cancelled'],
@@ -23,7 +23,7 @@ export class CpqContractService {
     pending_renewal: ['renewed', 'expired', 'cancelled'],
   };
 
-  /** Valid subscription status transitions */
+  // Valid subscription status transitions
   private readonly SUB_TRANSITIONS: Record<string, string[]> = {
     pending: ['active'],
     active: ['pending_amendment', 'pending_cancellation', 'suspended', 'expired'],
@@ -40,10 +40,10 @@ export class CpqContractService {
     return this.SUB_TRANSITIONS[from]?.includes(to) ?? false;
   }
 
-  /**
-   * Create a contract from an accepted quote.
-   * Maps quote line items to contract subscriptions.
-   */
+  //
+  // Create a contract from an accepted quote.
+  // Maps quote line items to contract subscriptions.
+
   async createFromQuote(quoteId: string): Promise<string> {
     this.logger.log(`Creating contract from quote ${quoteId}`);
 
@@ -60,9 +60,9 @@ export class CpqContractService {
     return 'new-contract-id';
   }
 
-  /**
-   * Prorate a value based on actual contract days.
-   */
+  //
+  // Prorate a value based on actual contract days.
+
   calculateProratedValue(
     annualValue: string,
     contractStartDate: Date,
@@ -80,9 +80,9 @@ export class CpqContractService {
       .toString();
   }
 
-  /**
-   * Calculate amendment delta with proration.
-   */
+  //
+  // Calculate amendment delta with proration.
+
   calculateAmendmentDelta(
     oldPrice: string,
     oldQty: number,

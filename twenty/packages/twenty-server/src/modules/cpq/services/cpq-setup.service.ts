@@ -284,22 +284,20 @@ const CPQ_RELATIONS = [
     target: 'contract', targetField: 'amendments', targetLabel: 'Amendments', targetIcon: 'IconPencil' },
 ];
 
-/**
- * CpqSetupService — bootstraps all CPQ custom objects, fields, and relations
- * in a Twenty workspace via the metadata API.
- *
- * This creates native Twenty objects that get automatic:
- * - Database tables in the workspace schema
- * - GraphQL CRUD operations
- * - Record index pages (table/kanban views)
- * - Record detail pages
- * - Sidebar navigation entries
- * - Command palette entries
- * - Search indexing
- * - Field configuration in Settings > Data Model
- *
- * Idempotent — skips objects that already exist.
- */
+//
+// CpqSetupService — bootstraps all CPQ custom objects, fields, and relations
+// in a Twenty workspace via the metadata API.
+// This creates native Twenty objects that get automatic:
+// - Database tables in the workspace schema
+// - GraphQL CRUD operations
+// - Record index pages (table/kanban views)
+// - Record detail pages
+// - Sidebar navigation entries
+// - Command palette entries
+// - Search indexing
+// - Field configuration in Settings > Data Model
+// Idempotent — skips objects that already exist.
+
 @Injectable()
 export class CpqSetupService {
   private readonly logger = new Logger(CpqSetupService.name);
