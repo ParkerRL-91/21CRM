@@ -8,6 +8,7 @@
 | TASK-022 | PRJ-001 | ready | P1 | Industry dropdown display names |
 | TASK-023 | PRJ-001 | ready | P1 | Subscriptions ARR from line items |
 | TASK-024 | PRJ-001 | ready | P1 | Currency conversion to CAD |
+| TASK-027 | PRJ-001 | done | P2 | Add skill-creator-harness skill |
 
 ## Blockers
 _None_
