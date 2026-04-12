@@ -31,13 +31,16 @@ _None_
 4. TASK-009 through TASK-019
 
 ## PRJ-002: Contract Management, CPQ & Renewal (Epic 8)
-**Status:** Planning complete — ready for execution after PRJ-001 Phase 1
+**Status:** Foundation complete — schema + engines implemented, UI/API routes pending
 
 | Task | Phase | Status | Priority | Description |
 |------|-------|--------|----------|-------------|
 | TASK-027 | 1-Foundation | done | P0 | Contract management schema |
-| TASK-028 | 1-Foundation | ready | P0 | Contract CRUD API routes |
-| TASK-029 | 1-Foundation | ready | P0 | Contract subscription management |
+| TASK-028 | 1-Foundation | done | P0 | Contract CRUD API routes |
+| TASK-029 | 1-Foundation | done | P0 | Contract subscription management |
+| TASK-048 | 1-Foundation | done | P1 | Contract CRUD test coverage |
+| TASK-037 | 3-Automation | done | P0 | Renewal pricing engine |
+| TASK-042 | 4-Analytics | done | P1 | At-risk renewal identification engine |
 | TASK-030 | 2-UI | ready | P0 | Account contracts related list (US-8.1) |
 | TASK-031 | 2-UI | ready | P0 | Contract detail page |
 | TASK-032 | 2-UI | ready | P1 | Contract amendment tracking UI |
