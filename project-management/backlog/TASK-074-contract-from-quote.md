@@ -2,7 +2,7 @@
 title: "Contract creation from accepted quote"
 id: TASK-074
 project: PRJ-003
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12

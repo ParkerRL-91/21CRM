@@ -2,7 +2,7 @@
 title: "Quote status machine (presented/accepted/rejected)"
 id: TASK-071
 project: PRJ-003
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12
