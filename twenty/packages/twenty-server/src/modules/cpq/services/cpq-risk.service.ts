@@ -12,7 +12,7 @@ import { Injectable, Logger } from '@nestjs/common';
 // 6. Previous churn (10%) — account had prior cancelled renewal
 //
 // Risk levels: low (0-25), medium (26-50), high (51-75), critical (76+)
-///
+//
 @Injectable()
 export class CpqRiskService {
   private readonly logger = new Logger(CpqRiskService.name);

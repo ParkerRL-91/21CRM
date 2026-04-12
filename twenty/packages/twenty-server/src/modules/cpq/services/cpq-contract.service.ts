@@ -10,7 +10,7 @@ Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
 // - Amendment flow (co-termination, delta pricing)
 // - Invoice generation
 // - Status transitions with validation
-///
+//
 @Injectable()
 export class CpqContractService {
   private readonly logger = new Logger(CpqContractService.name);

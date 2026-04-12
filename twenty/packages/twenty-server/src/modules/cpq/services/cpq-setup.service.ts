@@ -531,4 +531,3 @@ export type SetupStatus = {
   missingObjects: string[];
   version: string;
 };
-}

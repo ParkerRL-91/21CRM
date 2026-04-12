@@ -12,7 +12,8 @@ export const useCpqSetup = (workspaceId: string) => {
     try {
       const response = await fetch(`/cpq/status/${workspaceId}`);
       const data = await response.json();
-      setIsSetUp(data.cpqEnabled);
+      // Backend getSetupStatus() returns { isSetUp, objectCount, ... }
+      setIsSetUp(data.isSetUp);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to check CPQ status');
     } finally {

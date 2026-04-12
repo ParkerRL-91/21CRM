@@ -25,15 +25,15 @@ const StyledTitle = styled.h1`
 
 const StyledSubtitle = styled.p`
   font-size: 14px;
-  color: var(--twentyfont-color-secondary);
+  color: ${({ theme }) => theme.font.color.secondary};
   margin-bottom: 32px;
 `;
 
 const StyledButton = styled.button`
-  background: var(--twentyfont-color-primary);
-  color: white;
+  background: ${({ theme }) => theme.color.blue};
+  color: ${({ theme }) => theme.font.color.inverted};
   border: none;
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.border.radius.md};
   padding: 12px 24px;
   font-size: 14px;
   font-weight: 500;
@@ -50,34 +50,73 @@ const StyledButton = styled.button`
 `;
 
 const StyledStatusCard = styled.div`
-  border: 1px solid var(--twentyborder-color);
-  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.border.color.medium};
+  border-radius: ${({ theme }) => theme.border.radius.md};
   padding: 24px;
   width: 100%;
   margin-bottom: 24px;
 `;
 
+const StyledCardTitle = styled.h3`
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+`;
+
+const StyledObjectList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+`;
+
+const StyledObjectItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid ${({ theme }) => theme.border.color.light};
+`;
+
+const StyledObjectIcon = styled.span`
+  font-size: 20px;
+`;
+
+const StyledObjectLabel = styled.strong`
+  font-size: 14px;
+`;
+
+const StyledObjectDesc = styled.div`
+  font-size: 12px;
+  color: ${({ theme }) => theme.font.color.tertiary};
+`;
+
 const StyledCheckmark = styled.span`
-  color: green;
+  color: ${({ theme }) => theme.color.green};
   margin-right: 8px;
 `;
 
 const StyledError = styled.div`
-  color: var(--twentycolor-red);
+  color: ${({ theme }) => theme.color.red};
   font-size: 14px;
   margin-top: 12px;
   padding: 12px;
-  border: 1px solid var(--twentycolor-red);
-  border-radius: 4px;
-  background: var(--twentycolor-red-10);
+  border: 1px solid ${({ theme }) => theme.color.red};
+  border-radius: ${({ theme }) => theme.border.radius.sm};
 `;
 
-// CPQ Setup Page — shown when CPQ hasn't been initialized for a workspace.
+const CPQ_OBJECTS_LIST = [
+  { icon: '📄', label: 'Quotes', description: 'Build and send proposals with line items' },
+  { icon: '📋', label: 'Quote Line Items', description: 'Products with pricing waterfall' },
+  { icon: '📝', label: 'Contracts', description: 'Track active agreements and renewals' },
+  { icon: '🔄', label: 'Subscriptions', description: 'Per-product entitlements with billing' },
+  { icon: '📊', label: 'Amendments', description: 'Immutable change history on contracts' },
+  { icon: '💰', label: 'Price Configurations', description: 'Tiered, volume, and term-based pricing' },
+];
+
+// CPQ setup page — shown when CPQ hasn't been initialized for a workspace.
 // Guides the admin through enabling CPQ, which creates all custom objects
-// (Quote, Contract, Subscription, etc.) via Twenty's metadata API.
-//
-// After setup, these objects appear natively in Twenty's sidebar, record
-// pages, search, and GraphQL API — no additional configuration needed.
+// via Twenty's metadata API. After setup, objects appear natively in the
+// sidebar, record pages, search, and GraphQL API.
 export const CpqSetupPage = ({ workspaceId }: CpqSetupPageProps) => {
   const { isSetUp, isLoading, error, checkStatus, runSetup } =
     useCpqSetup(workspaceId);
@@ -117,36 +156,18 @@ export const CpqSetupPage = ({ workspaceId }: CpqSetupPageProps) => {
       </StyledSubtitle>
 
       <StyledStatusCard>
-        <h3 style={{ marginBottom: 12 }}>What gets created:</h3>
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-          {[
-            { icon: '📄', label: 'Quotes', desc: 'Build and send proposals with line items' },
-            { icon: '📋', label: 'Quote Line Items', desc: 'Products with pricing waterfall' },
-            { icon: '📝', label: 'Contracts', desc: 'Track active agreements and renewals' },
-            { icon: '🔄', label: 'Subscriptions', desc: 'Per-product entitlements with billing' },
-            { icon: '📊', label: 'Amendments', desc: 'Immutable change history on contracts' },
-            { icon: '💰', label: 'Price Configurations', desc: 'Tiered, volume, and term-based pricing' },
-          ].map((item) => (
-            <li
-              key={item.label}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: '8px 0',
-                borderBottom: '1px solid var(--twentyborder-color)',
-              }}
-            >
-              <span style={{ fontSize: 20 }}>{item.icon}</span>
+        <StyledCardTitle>What gets created:</StyledCardTitle>
+        <StyledObjectList>
+          {CPQ_OBJECTS_LIST.map((item) => (
+            <StyledObjectItem key={item.label}>
+              <StyledObjectIcon>{item.icon}</StyledObjectIcon>
               <div>
-                <strong>{item.label}</strong>
-                <div style={{ fontSize: 12, color: 'var(--twentyfont-color-tertiary)' }}>
-                  {item.desc}
-                </div>
+                <StyledObjectLabel>{item.label}</StyledObjectLabel>
+                <StyledObjectDesc>{item.description}</StyledObjectDesc>
               </div>
-            </li>
+            </StyledObjectItem>
           ))}
-        </ul>
+        </StyledObjectList>
       </StyledStatusCard>
 
       <StyledButton onClick={runSetup} disabled={isLoading}>

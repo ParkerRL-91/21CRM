@@ -14,7 +14,7 @@ Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
 // 9. Rounding (2 decimal places)
 // 10. Total Calculation (net unit × quantity)
 // All arithmetic uses Decimal.js. No floating-point.
-///
+//
 @Injectable()
 export class CpqPricingService {
   calculatePriceWaterfall(input: PricingInput): PricingResult {
