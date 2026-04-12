@@ -3,18 +3,21 @@ import { Module } from '@nestjs/common';
 import { ObjectMetadataModule } from 'src/engine/metadata-modules/object-metadata/object-metadata.module';
 import { FieldMetadataModule } from 'src/engine/metadata-modules/field-metadata/field-metadata.module';
 
+import { CpqController } from 'src/modules/cpq/cpq.controller';
 import { CpqSetupService } from 'src/modules/cpq/services/cpq-setup.service';
 import { CpqPricingService } from 'src/modules/cpq/services/cpq-pricing.service';
 import { CpqRenewalService } from 'src/modules/cpq/services/cpq-renewal.service';
 import { CpqContractService } from 'src/modules/cpq/services/cpq-contract.service';
 import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
 
-// CPQ module — creates native Twenty custom objects for quote-to-cash.
-// Objects are bootstrapped via CpqSetupService using Twenty's metadata API,
-// which auto-generates tables, GraphQL, record pages, navigation, and search.
-// Business logic (pricing, renewals, risk) lives in dedicated services.
+// CPQ module — extends Twenty CRM with quote-to-cash functionality.
+// Uses Twenty's metadata API to create native custom objects (Quote,
+// Contract, Subscription, etc.) that get automatic CRUD, GraphQL,
+// record pages, navigation, and search.
+// Custom business logic (pricing, renewals, risk) exposed via controller.
 @Module({
   imports: [ObjectMetadataModule, FieldMetadataModule],
+  controllers: [CpqController],
   providers: [
     CpqSetupService,
     CpqPricingService,
