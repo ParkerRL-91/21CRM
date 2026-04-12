@@ -7,7 +7,6 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "rootDir": "src",
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -16,8 +15,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "jsx": "preserve",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "noEmit": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

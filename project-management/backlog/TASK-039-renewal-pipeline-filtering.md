@@ -2,7 +2,7 @@
 title: "Renewal opportunity type and pipeline filtering (US-8.3)"
 id: TASK-039
 project: PRJ-002
-status: ready
+status: done
 priority: P1
 created: 2026-04-12
 updated: 2026-04-12

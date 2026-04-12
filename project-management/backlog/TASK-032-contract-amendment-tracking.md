@@ -2,7 +2,7 @@
 title: "Contract amendment tracking UI"
 id: TASK-032
 project: PRJ-002
-status: ready
+status: done
 priority: P1
 created: 2026-04-12
 updated: 2026-04-12

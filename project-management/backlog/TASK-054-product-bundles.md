@@ -2,7 +2,7 @@
 title: "Product bundle support"
 id: TASK-054
 project: PRJ-003
-status: ready
+status: done
 priority: P2
 created: 2026-04-12
 updated: 2026-04-12

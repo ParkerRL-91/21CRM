@@ -2,7 +2,7 @@
 title: "Renewal-to-rev-rec integration"
 id: TASK-044
 project: PRJ-002
-status: ready
+status: done
 priority: P2
 created: 2026-04-12
 updated: 2026-04-12

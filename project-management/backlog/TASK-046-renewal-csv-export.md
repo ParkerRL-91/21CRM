@@ -2,7 +2,7 @@
 title: "Renewal analytics CSV export"
 id: TASK-046
 project: PRJ-002
-status: ready
+status: done
 priority: P2
 created: 2026-04-12
 updated: 2026-04-12

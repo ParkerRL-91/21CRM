@@ -2,7 +2,7 @@
 title: "Global subscription dashboard (ARR metrics, expiring subs)"
 id: TASK-080
 project: PRJ-003
-status: ready
+status: done
 priority: P1
 created: 2026-04-12
 updated: 2026-04-12

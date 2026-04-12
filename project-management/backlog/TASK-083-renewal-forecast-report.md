@@ -2,7 +2,7 @@
 title: "Renewal forecast report"
 id: TASK-083
 project: PRJ-003
-status: ready
+status: done
 priority: P1
 created: 2026-04-12
 updated: 2026-04-12

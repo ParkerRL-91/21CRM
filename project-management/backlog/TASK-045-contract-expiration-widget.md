@@ -2,7 +2,7 @@
 title: "Contract expiration dashboard widget"
 id: TASK-045
 project: PRJ-002
-status: ready
+status: done
 priority: P2
 created: 2026-04-12
 updated: 2026-04-12

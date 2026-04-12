@@ -2,7 +2,7 @@
 title: "CS notification on renewal creation"
 id: TASK-038
 project: PRJ-002
-status: ready
+status: done
 priority: P1
 created: 2026-04-12
 updated: 2026-04-12

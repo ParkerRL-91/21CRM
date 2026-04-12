@@ -2,7 +2,7 @@
 title: "Contract detail page with full context"
 id: TASK-031
 project: PRJ-002
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12

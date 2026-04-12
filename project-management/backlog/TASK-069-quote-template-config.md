@@ -2,7 +2,7 @@
 title: "Quote template configuration & management"
 id: TASK-069
 project: PRJ-003
-status: ready
+status: done
 priority: P1
 created: 2026-04-12
 updated: 2026-04-12

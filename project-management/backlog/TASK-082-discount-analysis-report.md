@@ -2,7 +2,7 @@
 title: "Discount analysis report"
 id: TASK-082
 project: PRJ-003
-status: ready
+status: done
 priority: P1
 created: 2026-04-12
 updated: 2026-04-12

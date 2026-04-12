@@ -2,7 +2,7 @@
 title: "Smart approvals (skip unchanged steps on resubmit)"
 id: TASK-067
 project: PRJ-003
-status: ready
+status: done
 priority: P2
 created: 2026-04-12
 updated: 2026-04-12
