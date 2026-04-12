@@ -58,7 +58,83 @@ _None_
 | TASK-047 | 2-UI | ready | P1 | Global contracts list page |
 | TASK-048 | 1-Foundation | ready | P1 | Contract CRUD test coverage |
 
+## PRJ-003: Full CPQ — Quote-to-Cash Platform (Epics 1-7, 9-10)
+**Status:** Planning complete — ready for execution
+
+### Epic 1: Product & Price Book Management
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-049 | ready | P0 | Product catalog schema & API |
+| TASK-050 | ready | P0 | Price book schema & API |
+| TASK-051 | ready | P0 | Discount schedule schema & API |
+| TASK-052 | ready | P1 | Product catalog management UI |
+| TASK-053 | ready | P1 | Price book management UI |
+| TASK-054 | ready | P2 | Product bundle support |
+
+### Epic 2: Quote Creation & Configuration
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-055 | ready | P0 | Quote & line item schema |
+| TASK-056 | ready | P0 | Quote CRUD API |
+| TASK-057 | ready | P0 | Quote builder UI |
+| TASK-058 | ready | P1 | Quote cloning & versioning |
+| TASK-059 | ready | P1 | Quote expiration job |
+
+### Epic 3: Pricing Engine
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-060 | ready | P0 | Price waterfall engine (10-step) |
+| TASK-061 | ready | P0 | Tiered & volume discount calculation |
+| TASK-062 | ready | P0 | Term-based discount & proration |
+| TASK-063 | ready | P1 | Pricing audit trail |
+
+### Epic 4: Quote Approval Workflows
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-064 | ready | P0 | Approval rules schema & engine |
+| TASK-065 | ready | P0 | Approval submission & routing API |
+| TASK-066 | ready | P1 | Approval UI |
+| TASK-067 | ready | P2 | Smart approvals |
+
+### Epic 5: PDF Quote Generation
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-068 | ready | P0 | PDF generation engine |
+| TASK-069 | ready | P1 | Quote template configuration |
+| TASK-070 | ready | P1 | PDF storage & version history |
+
+### Epic 6: Quote Delivery & Acceptance
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-071 | ready | P0 | Quote status machine |
+| TASK-072 | ready | P1 | Quote delivery UI |
+| TASK-073 | ready | P1 | Rejection tracking |
+
+### Epic 7: Quote-to-Contract Conversion
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-074 | ready | P0 | Contract creation from accepted quote |
+| TASK-075 | ready | P0 | Amendment quote flow |
+| TASK-076 | ready | P2 | Invoice record generation |
+
+### Epic 9: Subscription Tracking
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-077 | ready | P0 | Subscription lifecycle state machine |
+| TASK-078 | ready | P0 | Account subscriptions view |
+| TASK-079 | ready | P1 | Subscription state change audit log |
+| TASK-080 | ready | P1 | Global subscription dashboard |
+
+### Epic 10: CPQ Reporting & Analytics
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-081 | ready | P1 | Quote activity dashboard |
+| TASK-082 | ready | P1 | Discount analysis report |
+| TASK-083 | ready | P1 | Renewal forecast report |
+| TASK-084 | ready | P1 | ARR waterfall report |
+
 ## Full Task Count
 - **PRJ-001**: 26 tasks (P0:3, P1:11, P2:5, P3:5, Bugs:2)
-- **PRJ-002**: 22 tasks (P0:9, P1:8, P2:4, P3:1)
-- **Grand Total**: 48 tasks
+- **PRJ-002**: 22 tasks (P0:9, P1:8, P2:4, P3:1) — Epic 8
+- **PRJ-003**: 36 tasks (P0:16, P1:16, P2:4) — Epics 1-7, 9-10
+- **Grand Total**: 84 tasks
