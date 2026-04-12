@@ -2,7 +2,7 @@
 title: "Add test coverage for contract CRUD (TASK-028)"
 id: TASK-048
 project: PRJ-002
-status: ready
+status: done
 priority: P1
 created: 2026-04-12
 updated: 2026-04-12

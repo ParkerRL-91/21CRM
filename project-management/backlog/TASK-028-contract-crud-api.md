@@ -2,7 +2,7 @@
 title: "Build contract CRUD API routes"
 id: TASK-028
 project: PRJ-002
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12
