@@ -39,6 +39,7 @@ A `/skill-creator-harness` slash command that:
 
 ## Files to Change
 - `.claude/skills/skill-creator-harness/SKILL.md` — main skill definition (new)
+- `.claude/skills/skill-creator-harness/crm-admin-persona.md` — Jordan persona for QA (new)
 - `.claude/skills/skill-creator-harness/templates/reference-skill.md` — template (new)
 - `.claude/skills/skill-creator-harness/templates/task-skill.md` — template (new)
 - `.claude/skills/skill-creator-harness/templates/dynamic-context-skill.md` — template (new)
@@ -51,6 +52,7 @@ A `/skill-creator-harness` slash command that:
 - 2026-04-12: Created
 - 2026-04-12: Started — building skill-creator-harness
 - 2026-04-12: Completed — all files created, validated structure
+- 2026-04-12: Added CRM admin persona (Jordan) and Phase 5: QA — every harness-built feature gets tested on the live site
 
 ## Takeaways
 - Claude Code skills are discovered automatically from `.claude/skills/<name>/SKILL.md` — no registration needed
@@ -59,3 +61,5 @@ A `/skill-creator-harness` slash command that:
 - Anthropic recommends front-loading the first 50 chars of `description` since that's what drives auto-invocation decisions
 - `context: fork` with `agent: Explore` is the fast path for read-only research; `general-purpose` is slower but more capable
 - Validation checklist should be a separate file, not inline in SKILL.md, to keep the main file under 500 lines
+- CRM admin persona (Jordan) is the QA gate — tests in business terms, not code terms. Catches number mismatches, missing labels, broken flows that devs miss
+- Phase 5 QA uses curl/WebFetch to verify pages, not just type-checking — catches runtime issues that `tsc --noEmit` and vitest can't

@@ -3,7 +3,7 @@ name: skill-creator-harness
 description: Scaffold new Claude Code skills following Anthropic best practices. Use when creating a new slash command, defining a skill, or building a harness-based workflow.
 argument-hint: "[skill-name] [archetype: reference|task|dynamic|forked]"
 disable-model-invocation: true
-allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash(mkdir *)", "Bash(ls *)"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash(mkdir *)", "Bash(ls *)", "Bash(npm run *)", "Bash(npx *)", "Bash(curl *)", "WebFetch"]
 effort: high
 ---
 
@@ -12,6 +12,10 @@ effort: high
 You are a skill architect. Your job is to help the user design, generate, and
 validate a new Claude Code skill that follows Anthropic's published best
 practices and harness-based AI development methodology.
+
+Every skill you build goes through a final QA phase where **Jordan**, our CRM
+admin persona, tests the feature on the live website. Read the full persona
+from `${CLAUDE_SKILL_DIR}/crm-admin-persona.md` at the start of Phase 5.
 
 ---
 
@@ -50,12 +54,13 @@ practices and harness-based AI development methodology.
 A "harness" is a skill that wraps another skill's lifecycle with governance:
 scaffolding, validation, and feedback loops. This skill is itself a harness.
 
-**The harness pattern has four phases:**
+**The harness pattern has five phases:**
 
 1. **Elicit** — Gather requirements through structured questions
 2. **Generate** — Produce the artifact from templates + user input
 3. **Validate** — Check the artifact against a quality gate
 4. **Integrate** — Place the artifact correctly and verify discovery
+5. **QA** — Jordan (CRM admin persona) tests the feature on the live website
 
 ---
 
@@ -146,6 +151,101 @@ Fix any FAILs before proceeding.
 1. Confirm the skill file is written to the correct path.
 2. Tell the user how to test: `Type /<skill-name> in Claude Code to verify it appears in autocomplete.`
 3. If the project uses version control, remind the user to commit the new skill.
+
+### Phase 5: QA — Jordan Tests on the Live Website
+
+**This phase is mandatory.** Every skill that builds or modifies a feature must
+be QA'd by Jordan, the CRM admin persona, on the actual running application.
+Skills that only produce reference knowledge or developer tooling (no UI/feature
+changes) may skip this phase — note the skip and reason.
+
+Read the full persona: `${CLAUDE_SKILL_DIR}/crm-admin-persona.md`
+
+#### Step 1: Ensure the Dev Server Is Running
+
+Check if the dev server is already running on port 3000:
+
+```
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3000
+```
+
+If it returns anything other than 200, start the server:
+
+```
+npm run dev
+```
+
+Wait for the server to be ready before proceeding.
+
+#### Step 2: Identify What Jordan Would Test
+
+Based on the feature that was just built or modified, determine:
+
+1. **Primary page**: Which dashboard page does this feature live on?
+2. **Golden path**: What is the main action Jordan would take?
+3. **Data dependencies**: Does this feature need synced HubSpot data, existing
+   forecast scenarios, rev-rec schedules, or other preconditions?
+4. **Adjacent pages**: Which other pages might be affected (regressions)?
+
+Map the feature to Jordan's test scenarios from the persona file. If the feature
+touches a new area not covered by existing scenarios, write new test steps in
+Jordan's voice.
+
+#### Step 3: Execute the QA Checklist
+
+Test as Jordan — think in business terms, not code terms. For each check, use
+the browser or `curl`/`WebFetch` to verify.
+
+```
+## QA Report — Jordan's Testing
+
+**Feature**: [what was built]
+**Page tested**: [URL path]
+**Date**: [today]
+
+### Functional Tests
+| # | Test | Expected | Actual | Status |
+|---|------|----------|--------|--------|
+| 1 | Page loads without errors | 200 response, content renders | ... | PASS/FAIL |
+| 2 | Shows real data (not empty/placeholder) | Data from CRM appears | ... | PASS/FAIL |
+| 3 | Golden path action works | [specific expected outcome] | ... | PASS/FAIL |
+| 4 | Numbers are correct | [cross-reference with source] | ... | PASS/FAIL |
+
+### Edge Case Tests
+| # | Test | Expected | Actual | Status |
+|---|------|----------|--------|--------|
+| 5 | Null/missing fields handled | Graceful fallback, no crash | ... | PASS/FAIL |
+| 6 | Empty dataset | Meaningful empty state shown | ... | PASS/FAIL |
+| 7 | Large dataset | Page loads in reasonable time | ... | PASS/FAIL |
+
+### Regression Tests
+| # | Test | Page | Status |
+|---|------|------|--------|
+| 8 | [Adjacent page 1] still works | /dashboard/... | PASS/FAIL |
+| 9 | [Adjacent page 2] still works | /dashboard/... | PASS/FAIL |
+
+### UX Review
+| # | Check | Status |
+|---|-------|--------|
+| 10 | Error states have clear messages | PASS/FAIL |
+| 11 | Loading states are present | PASS/FAIL |
+| 12 | Labels and tooltips make sense to a non-developer | PASS/FAIL |
+```
+
+#### Step 4: Report and Resolve
+
+Present the QA report to the user. If any tests FAIL:
+
+1. **Diagnose**: Identify whether the failure is in the new code, existing code,
+   or test data.
+2. **Fix or File**: If the fix is within the current task scope, fix it and
+   re-test. If it's a separate issue, create a new task in
+   `project-management/backlog/`.
+3. **Re-run**: After fixes, re-run the failed tests to confirm they pass.
+
+The feature is not done until Jordan's QA report shows all PASS. If tests cannot
+pass due to missing test data or environment issues, document the blockers
+clearly.
 
 ---
 
