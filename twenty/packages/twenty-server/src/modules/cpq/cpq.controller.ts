@@ -1,18 +1,18 @@
-import { Controller, Post, Get, Body, Param, Logger } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Body, Param, Logger } from '@nestjs/common';
 
 import { CpqSetupService } from 'src/modules/cpq/services/cpq-setup.service';
 import { CpqPricingService } from 'src/modules/cpq/services/cpq-pricing.service';
 import { CpqContractService } from 'src/modules/cpq/services/cpq-contract.service';
+import { CpqRenewalService } from 'src/modules/cpq/services/cpq-renewal.service';
 import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
 
 import type { PricingInput } from 'src/modules/cpq/services/cpq-pricing.service';
 import type { RiskAssessmentInput } from 'src/modules/cpq/services/cpq-risk.service';
 
 // REST controller exposing CPQ business logic as API endpoints.
-// Standard CRUD (create/read/update/delete quotes, contracts, etc.)
-// is handled automatically by Twenty's GraphQL layer via custom objects.
-// This controller exposes CPQ-specific operations that go beyond CRUD:
-// setup, pricing calculation, risk assessment, contract conversion.
+// Standard CRUD is handled automatically by Twenty's GraphQL via custom objects.
+// This controller exposes CPQ-specific operations beyond CRUD:
+// setup/teardown, pricing, risk, transitions, renewal, proration.
 @Controller('cpq')
 export class CpqController {
   private readonly logger = new Logger(CpqController.name);
@@ -21,6 +21,7 @@ export class CpqController {
     private readonly setupService: CpqSetupService,
     private readonly pricingService: CpqPricingService,
     private readonly contractService: CpqContractService,
+    private readonly renewalService: CpqRenewalService,
     private readonly riskService: CpqRiskService,
   ) {}
 
@@ -31,11 +32,23 @@ export class CpqController {
     return this.setupService.setupCpq(body.workspaceId);
   }
 
-  // GET /cpq/status/:workspaceId — check if CPQ is set up
+  // DELETE /cpq/teardown — remove all CPQ custom objects from workspace
+  @Delete('teardown')
+  async teardown(@Body() body: { workspaceId: string }) {
+    this.logger.log(`CPQ teardown requested for workspace ${body.workspaceId}`);
+    return this.setupService.teardownCpq(body.workspaceId);
+  }
+
+  // GET /cpq/status/:workspaceId — detailed setup status
   @Get('status/:workspaceId')
   async status(@Param('workspaceId') workspaceId: string) {
-    const isSetUp = await this.setupService.isCpqSetUp(workspaceId);
-    return { workspaceId, cpqEnabled: isSetUp };
+    return this.setupService.getSetupStatus(workspaceId);
+  }
+
+  // POST /cpq/run-renewal-check — trigger the daily renewal scan
+  @Post('run-renewal-check')
+  async runRenewalCheck(@Body() body: { workspaceId: string }) {
+    return this.renewalService.runRenewalCheck(body.workspaceId);
   }
 
   // POST /cpq/calculate-price — run the 10-step price waterfall

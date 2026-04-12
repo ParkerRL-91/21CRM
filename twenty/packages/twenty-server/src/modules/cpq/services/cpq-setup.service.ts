@@ -449,12 +449,86 @@ export class CpqSetupService {
       return null;
     }
   }
+
+  // Remove all CPQ custom objects from a workspace.
+  // Used for clean uninstall or reset during development.
+  async teardownCpq(workspaceId: string): Promise<TeardownResult> {
+    this.logger.log(`Tearing down CPQ objects for workspace ${workspaceId}`);
+
+    const result: TeardownResult = {
+      objectsRemoved: [],
+      errors: [],
+    };
+
+    // Remove in reverse dependency order (children before parents)
+    const removalOrder = [
+      'contractAmendment',
+      'contractSubscription',
+      'quoteLineItem',
+      'priceConfiguration',
+      'contract',
+      'quote',
+    ];
+
+    for (const objectName of removalOrder) {
+      try {
+        const existing = await this.findObjectByName(workspaceId, objectName);
+        if (!existing) continue;
+
+        await this.objectMetadataService.deleteOneObject(
+          { objectMetadataId: existing.id },
+          workspaceId,
+        );
+        result.objectsRemoved.push(objectName);
+        this.logger.log(`Removed object: ${objectName}`);
+      } catch (error) {
+        const message = `Failed to remove ${objectName}: ${error}`;
+        this.logger.error(message);
+        result.errors.push(message);
+      }
+    }
+
+    return result;
+  }
+
+  // Get current CPQ setup version and object count for a workspace.
+  async getSetupStatus(workspaceId: string): Promise<SetupStatus> {
+    const objects = await this.objectMetadataService.findManyWithinWorkspace(workspaceId);
+    const cpqObjectNames = Object.values(CPQ_OBJECTS).map((o) => o.nameSingular);
+    const foundObjects = objects
+      .filter((o: { nameSingular: string }) => cpqObjectNames.includes(o.nameSingular))
+      .map((o: { nameSingular: string }) => o.nameSingular);
+
+    return {
+      isSetUp: foundObjects.length === cpqObjectNames.length,
+      objectCount: foundObjects.length,
+      expectedCount: cpqObjectNames.length,
+      foundObjects,
+      missingObjects: cpqObjectNames.filter((name) => !foundObjects.includes(name)),
+      version: '1.0.0',
+    };
+  }
 }
 
-export interface SetupResult {
+export type SetupResult = {
   objectsCreated: string[];
   fieldsCreated: number;
   relationsCreated: number;
   skipped: string[];
   errors: string[];
+};
+
+export type TeardownResult = {
+  objectsRemoved: string[];
+  errors: string[];
+};
+
+export type SetupStatus = {
+  isSetUp: boolean;
+  objectCount: number;
+  expectedCount: number;
+  foundObjects: string[];
+  missingObjects: string[];
+  version: string;
+};
 }
