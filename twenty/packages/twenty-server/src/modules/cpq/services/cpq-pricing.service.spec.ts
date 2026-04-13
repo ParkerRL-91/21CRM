@@ -308,3 +308,41 @@ describe('CpqPricingService', () => {
       expect(result.netTotal).toBe('0');
     });
   });
+
+  describe('block pricing', () => {
+    it('should apply block pricing (fixed total for quantity range)', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '100',
+        quantity: 10,
+        discountSchedule: {
+          type: 'block',
+          tiers: [
+            { lowerBound: 1, upperBound: 10, value: 500 },   // $500 total for 1-10
+            { lowerBound: 11, upperBound: 50, value: 2000 },  // $2000 total for 11-50
+            { lowerBound: 51, upperBound: null, value: 5000 }, // $5000 total for 51+
+          ],
+        },
+      });
+      // 10 units in the 1-10 block: $500 total / 10 = $50/unit
+      expect(result.netUnitPrice).toBe('50');
+      expect(result.netTotal).toBe('500');
+    });
+
+    it('should apply higher block tier for larger quantities', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '100',
+        quantity: 30,
+        discountSchedule: {
+          type: 'block',
+          tiers: [
+            { lowerBound: 1, upperBound: 10, value: 500 },
+            { lowerBound: 11, upperBound: 50, value: 2000 },
+            { lowerBound: 51, upperBound: null, value: 5000 },
+          ],
+        },
+      });
+      // 30 units in the 11-50 block: $2000 total / 30 ≈ $66.67/unit
+      expect(result.netUnitPrice).toBe('66.67');
+      expect(result.netTotal).toBe('2000.1');
+    });
+  });

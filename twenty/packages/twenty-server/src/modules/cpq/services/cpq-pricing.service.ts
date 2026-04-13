@@ -39,13 +39,16 @@ export class CpqPricingService {
         productBaseTermMonths: String(input.productBaseTermMonths),
       }));
     }
-    // Step 4: Tiered/Volume discount
+    // Step 4: Tiered/Volume/Block discount
     if (input.discountSchedule) {
       const before = price;
       if (input.discountSchedule.type === 'tiered') {
         price = this.calculateTieredEffectivePrice(input.quantity, input.discountSchedule.tiers);
       } else if (input.discountSchedule.type === 'volume') {
         price = this.calculateVolumePrice(input.quantity, input.discountSchedule.tiers, price);
+      } else if (input.discountSchedule.type === 'block') {
+        // Block pricing: fixed total price for a quantity range (not per-unit)
+        price = this.calculateBlockPrice(input.quantity, input.discountSchedule.tiers, price);
       }
       audit.push(this.step('discount_schedule', before, price, {
         scheduleType: input.discountSchedule.type,
@@ -126,6 +129,16 @@ export class CpqPricingService {
     const applicable = sorted.find((t) => termMonths >= t.lowerBound);
     return applicable ? new Decimal(applicable.value) : new Decimal(0);
   }
+  // Block pricing: fixed total price for a quantity range (not per-unit).
+  // Returns the effective per-unit price (block total / quantity).
+  calculateBlockPrice(quantity: number, tiers: DiscountTier[], basePrice: Decimal): Decimal {
+    if (quantity <= 0) return new Decimal(0);
+    const sorted = [...tiers].sort((a, b) => b.lowerBound - a.lowerBound);
+    const applicable = sorted.find((t) => quantity >= t.lowerBound);
+    if (!applicable) return basePrice;
+    // tier.value is the fixed total for this block range
+    return new Decimal(applicable.value).dividedBy(quantity);
+  }
   calculateRenewalPrice(input: RenewalPricingInput): RenewalPricingResult {
     const maxUplift = new Decimal(50);
     switch (input.method) {
@@ -168,7 +181,7 @@ export interface PricingInput {
   productBaseTermMonths?: number;
   quoteTermMonths?: number;
   contractedPrice?: string;
-  discountSchedule?: { type: 'tiered' | 'volume' | 'term'; tiers: DiscountTier[] };
+  discountSchedule?: { type: 'tiered' | 'volume' | 'term' | 'block'; tiers: DiscountTier[] };
   manualDiscountPercent?: number;
   manualDiscountAmount?: number;
   manualPriceOverride?: number;
