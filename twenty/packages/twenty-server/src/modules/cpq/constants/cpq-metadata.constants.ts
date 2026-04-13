@@ -311,6 +311,7 @@ export const CPQ_FIELDS: Record<string, Array<{
 
   // Quote line group fields
   quoteLineGroup: [
+    { name: 'description', label: 'Description', type: FieldMetadataType.TEXT },
     { name: 'sortOrder', label: 'Sort Order', type: FieldMetadataType.NUMBER },
     { name: 'subtotal', label: 'Subtotal', type: FieldMetadataType.CURRENCY },
   ],

@@ -171,7 +171,7 @@ const STATUS_COLORS: Record<string, string> = {
   contracted: '#22c55e',
 };
 
-let nextId = 1;
+
 
 export const CpqQuoteBuilder = ({
   quoteNumber,
@@ -186,7 +186,7 @@ export const CpqQuoteBuilder = ({
 
   const addLineItem = useCallback(() => {
     const newItem: QuoteLineItemDraft = {
-      id: `draft-${nextId++}`,
+      id: crypto.randomUUID(),
       productName: '',
       productSku: '',
       quantity: 1,

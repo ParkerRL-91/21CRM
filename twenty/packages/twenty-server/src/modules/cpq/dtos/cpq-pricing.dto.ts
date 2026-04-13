@@ -8,7 +8,7 @@ export class CalculatePriceInputDto {
   quoteTermMonths?: number;
   contractedPrice?: string;
   discountSchedule?: {
-    type: 'tiered' | 'volume' | 'term';
+    type: 'tiered' | 'volume' | 'term' | 'block';
     tiers: Array<{ lowerBound: number; upperBound: number | null; value: number }>;
   };
   manualDiscountPercent?: number;
