@@ -1,4 +1,4 @@
-import { CpqPricingService } from '../cpq-pricing.service';
+import { CpqPricingService } from './cpq-pricing.service';
 
 describe('CpqPricingService', () => {
   let service: CpqPricingService;
@@ -198,3 +198,113 @@ describe('CpqPricingService', () => {
     });
   });
 });
+
+  // Edge case tests (TASK-097)
+  describe('edge cases', () => {
+    it('should handle zero quantity', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '100',
+        quantity: 0,
+      });
+      expect(result.netTotal).toBe('0');
+    });
+
+    it('should handle very large quantities', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '0.01',
+        quantity: 10000000,
+      });
+      expect(result.netTotal).toBe('100000');
+    });
+
+    it('should handle very small prices', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '0.001',
+        quantity: 1,
+      });
+      // Rounds to 2 decimal places
+      expect(result.netUnitPrice).toBe('0');
+    });
+
+    it('should handle empty discount schedule tiers', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '100',
+        quantity: 10,
+        discountSchedule: { type: 'tiered', tiers: [] },
+      });
+      // With no tiers, tiered calculation returns 0 (no tiers to match)
+      expect(result.netUnitPrice).toBe('0');
+    });
+
+    it('should handle single-tier volume pricing', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '100',
+        quantity: 5,
+        discountSchedule: {
+          type: 'volume',
+          tiers: [{ lowerBound: 1, upperBound: null, value: 80 }],
+        },
+      });
+      expect(result.netUnitPrice).toBe('80');
+      expect(result.netTotal).toBe('400');
+    });
+
+    it('should handle 100% manual discount', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '100',
+        quantity: 1,
+        manualDiscountPercent: 100,
+      });
+      expect(result.netUnitPrice).toBe('0');
+    });
+
+    it('should handle manual discount exceeding 100%', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '100',
+        quantity: 1,
+        manualDiscountPercent: 150,
+      });
+      // Should clamp to 0 (non-negative enforcement)
+      expect(result.netUnitPrice).toBe('0');
+    });
+
+    it('should handle zero list price', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '0',
+        quantity: 10,
+      });
+      expect(result.netUnitPrice).toBe('0');
+      expect(result.netTotal).toBe('0');
+    });
+
+    it('should handle proration with equal terms (no change)', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '12000',
+        quantity: 1,
+        productBaseTermMonths: 12,
+        quoteTermMonths: 12,
+      });
+      // Same term — no proration applied
+      expect(result.netUnitPrice).toBe('12000');
+    });
+
+    it('should handle floor price higher than list price', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '50',
+        quantity: 1,
+        floorPrice: '100',
+      });
+      // Floor is higher — price set to floor
+      expect(result.netUnitPrice).toBe('100');
+    });
+
+    it('should handle manual override to zero', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '100',
+        quantity: 5,
+        manualPriceOverride: 0,
+      });
+      expect(result.netUnitPrice).toBe('0');
+      expect(result.netTotal).toBe('0');
+    });
+  });

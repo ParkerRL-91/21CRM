@@ -10,6 +10,7 @@ import { CpqApprovalService } from 'src/modules/cpq/services/cpq-approval.servic
 import { CpqRenewalService } from 'src/modules/cpq/services/cpq-renewal.service';
 import { CpqContractService } from 'src/modules/cpq/services/cpq-contract.service';
 import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
+import { CpqPdfService } from 'src/modules/cpq/services/cpq-pdf.service';
 
 // CPQ module — extends Twenty CRM with quote-to-cash functionality.
 // Creates 16 native custom objects via metadata API (Product, PriceBook,
@@ -25,6 +26,7 @@ import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
     CpqRenewalService,
     CpqContractService,
     CpqRiskService,
+    CpqPdfService,
   ],
   exports: [
     CpqSetupService,
@@ -33,6 +35,7 @@ import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
     CpqRenewalService,
     CpqContractService,
     CpqRiskService,
+    CpqPdfService,
   ],
 })
 export class CpqModule {}
