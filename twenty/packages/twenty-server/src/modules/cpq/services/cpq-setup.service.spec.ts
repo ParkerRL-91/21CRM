@@ -72,9 +72,9 @@ describe('CpqSetupService', () => {
 
       const result = await service.setupCpq('workspace-123');
 
-      expect(result.objectsCreated).toHaveLength(6);
+      expect(result.objectsCreated).toHaveLength(16);
       expect(result.skipped).toHaveLength(0);
-      expect(mockObjectMetadataService.createOneObject).toHaveBeenCalledTimes(6);
+      expect(mockObjectMetadataService.createOneObject).toHaveBeenCalledTimes(16);
     });
 
     it('should skip objects that already exist', async () => {
@@ -92,7 +92,7 @@ describe('CpqSetupService', () => {
       expect(result.skipped).toContain('quote');
       expect(result.skipped).toContain('contract');
       // Should only create the 4 missing objects, not all 6
-      expect(mockObjectMetadataService.createOneObject).toHaveBeenCalledTimes(4);
+      expect(mockObjectMetadataService.createOneObject).toHaveBeenCalledTimes(14);
     });
 
     it('should handle object creation errors gracefully', async () => {
@@ -114,7 +114,7 @@ describe('CpqSetupService', () => {
       const result = await service.setupCpq('workspace-123');
 
       // Should create many fields (quote has ~14, contract has ~8, etc.)
-      expect(result.fieldsCreated).toBeGreaterThan(30);
+      expect(result.fieldsCreated).toBeGreaterThan(60);
     });
 
     it('should create relations between objects', async () => {
@@ -128,7 +128,7 @@ describe('CpqSetupService', () => {
       const result = await service.setupCpq('workspace-123');
 
       // 8 relations defined in CPQ_RELATIONS
-      expect(result.relationsCreated).toBe(8);
+      expect(result.relationsCreated).toBe(22);
     });
   });
 
@@ -149,7 +149,7 @@ describe('CpqSetupService', () => {
 
       const result = await service.teardownCpq('workspace-123');
 
-      expect(result.objectsRemoved).toHaveLength(6);
+      expect(result.objectsRemoved).toHaveLength(16);
       // Children removed before parents
       expect(result.objectsRemoved.indexOf('contractAmendment'))
         .toBeLessThan(result.objectsRemoved.indexOf('contract'));
@@ -184,7 +184,7 @@ describe('CpqSetupService', () => {
       expect(status.objectCount).toBe(6);
       expect(status.expectedCount).toBe(6);
       expect(status.missingObjects).toHaveLength(0);
-      expect(status.version).toBe('1.0.0');
+      expect(status.version).toBe('2.0.0');
     });
 
     it('should report missing objects', async () => {
