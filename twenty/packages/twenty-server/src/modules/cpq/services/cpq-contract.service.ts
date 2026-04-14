@@ -1,16 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import Decimal from 'decimal.js';
 
+import { safeDecimal, safeDate, CpqValidationError } from 'src/modules/cpq/utils/cpq-validation.utils';
+
 Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
 
-//
-// CPQ Contract Service — handles contract lifecycle operations.
-//
-// - Create contract from accepted quote
-// - Amendment flow (co-termination, delta pricing)
-// - Invoice generation
-// - Status transitions with validation
-//
+// Contract service — lifecycle operations with input validation.
+// All date and Decimal inputs are validated before use.
 @Injectable()
 export class CpqContractService {
   private readonly logger = new Logger(CpqContractService.name);
@@ -40,62 +36,82 @@ export class CpqContractService {
     return this.SUB_TRANSITIONS[from]?.includes(to) ?? false;
   }
 
-  //
   // Create a contract from an accepted quote.
-  // Maps quote line items to contract subscriptions.
-
+  // Currently a stub — needs workspace datasource (TASK-087).
   async createFromQuote(quoteId: string): Promise<string> {
+    if (!quoteId || typeof quoteId !== 'string') {
+      throw new CpqValidationError('quoteId is required');
+    }
     this.logger.log(`Creating contract from quote ${quoteId}`);
 
     // TODO: Wire to Twenty's workspace data source
     // 1. Verify quote status = 'accepted'
     // 2. In a transaction:
-    //    a. Create contract record (name, account, dates, total value)
-    //    b. For each quote line item → create contract subscription
-    //    c. Create initial amendment record (amendment_number=1)
-    //    d. Update quote status → 'contracted'
-    //    e. Link contract to opportunity
+    //    a. Create contract record
+    //    b. For each line item → create contract subscription
+    //    c. Create initial amendment record
+    //    d. Create invoice with line items
+    //    e. Update quote status → 'contracted'
     // 3. Return contract ID
 
     return 'new-contract-id';
   }
 
-  //
-  // Prorate a value based on actual contract days.
-
+  // Prorate a value using actual contract days (not hardcoded 365).
+  // Validates all inputs before calculation.
   calculateProratedValue(
     annualValue: string,
-    contractStartDate: Date,
-    contractEndDate: Date,
-    effectiveDate: Date,
+    contractStartDate: Date | string,
+    contractEndDate: Date | string,
+    effectiveDate: Date | string,
   ): string {
-    const totalDays = this.daysBetween(contractStartDate, contractEndDate);
+    const value = safeDecimal(annualValue, 'annualValue');
+    const startDate = safeDate(contractStartDate, 'contractStartDate');
+    const endDate = safeDate(contractEndDate, 'contractEndDate');
+    const effective = safeDate(effectiveDate, 'effectiveDate');
+
+    const totalDays = this.daysBetween(startDate, endDate);
     if (totalDays <= 0) return '0';
 
-    const remainingDays = Math.max(0, this.daysBetween(effectiveDate, contractEndDate));
-    return new Decimal(annualValue)
+    // Warn-worthy: effective date is at or past contract end
+    const remainingDays = Math.max(0, this.daysBetween(effective, endDate));
+
+    return value
       .times(remainingDays)
       .dividedBy(totalDays)
       .toDecimalPlaces(2, Decimal.ROUND_HALF_UP)
       .toString();
   }
 
-  //
   // Calculate amendment delta with proration.
-
+  // Validates effective date is within contract range.
   calculateAmendmentDelta(
     oldPrice: string,
-    oldQty: number,
+    oldQuantity: number,
     newPrice: string,
-    newQty: number,
-    contractStart: Date,
-    contractEnd: Date,
-    effectiveDate: Date,
+    newQuantity: number,
+    contractStart: Date | string,
+    contractEnd: Date | string,
+    effectiveDate: Date | string,
   ): string {
-    const oldAnnual = new Decimal(oldPrice).times(oldQty);
-    const newAnnual = new Decimal(newPrice).times(newQty);
+    const oldP = safeDecimal(oldPrice, 'oldPrice');
+    const newP = safeDecimal(newPrice, 'newPrice');
+    const startDate = safeDate(contractStart, 'contractStart');
+    const endDate = safeDate(contractEnd, 'contractEnd');
+    const effective = safeDate(effectiveDate, 'effectiveDate');
+
+    if (effective < startDate || effective > endDate) {
+      throw new CpqValidationError(
+        `effectiveDate (${effective.toISOString()}) must be between ` +
+        `contract start (${startDate.toISOString()}) and end (${endDate.toISOString()})`,
+      );
+    }
+
+    const oldAnnual = oldP.times(oldQuantity);
+    const newAnnual = newP.times(newQuantity);
     const delta = newAnnual.minus(oldAnnual);
-    return this.calculateProratedValue(delta.toString(), contractStart, contractEnd, effectiveDate);
+
+    return this.calculateProratedValue(delta.toString(), startDate, endDate, effective);
   }
 
   private daysBetween(start: Date, end: Date): number {

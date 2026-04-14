@@ -116,7 +116,9 @@ export class CpqApprovalService {
     });
   }
 
-  // Check if conditions-relevant values have changed between versions
+  // Check if conditions-relevant values have changed between versions.
+  // Treats undefined fields (unrecognized field names) as always-changed
+  // to prevent accidental step skipping from misconfigured rules.
   private haveConditionsChanged(
     conditions: ApprovalCondition[],
     currentValues: QuoteApprovalValues,
@@ -125,6 +127,8 @@ export class CpqApprovalService {
     return conditions.some((condition) => {
       const currentValue = this.getValueForField(currentValues, condition.field);
       const previousValue = this.getValueForField(previousValues, condition.field);
+      // If either value is undefined (field not recognized), treat as changed
+      if (currentValue === undefined || previousValue === undefined) return true;
       return currentValue !== previousValue;
     });
   }

@@ -1,4 +1,6 @@
-import { Controller, Post, Get, Delete, Body, Param, Logger } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Body, Param, Logger, UseFilters } from '@nestjs/common';
+
+import { CpqValidationExceptionFilter } from 'src/modules/cpq/filters/cpq-validation-exception.filter';
 
 import { CpqSetupService } from 'src/modules/cpq/services/cpq-setup.service';
 import { CpqPricingService } from 'src/modules/cpq/services/cpq-pricing.service';
@@ -17,7 +19,11 @@ import type { RenewalConfig } from 'src/modules/cpq/services/cpq-renewal.service
 // Twenty's auto-generated GraphQL from custom objects. This controller
 // exposes operations that require custom logic: setup, pricing, approvals,
 // risk, conversion, PDF, renewal, status transitions.
+// NOTE: @UseGuards(WorkspaceAuthGuard) should be added when Twenty's auth
+// system is available (TASK-085). Currently endpoints accept workspaceId
+// from the body — in production this MUST come from the auth token.
 @Controller('cpq')
+@UseFilters(CpqValidationExceptionFilter)
 export class CpqController {
   private readonly logger = new Logger(CpqController.name);
 

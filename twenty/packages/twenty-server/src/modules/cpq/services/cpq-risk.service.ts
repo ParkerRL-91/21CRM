@@ -46,17 +46,23 @@ export class CpqRiskService {
   }
 
   private stageStagnation(days: number, threshold = 14): RiskSignal {
-    const score = days > threshold
-      ? Math.min(100, Math.round(((days - threshold) / threshold) * 100))
+    // Guard: clamp negative days to 0
+    const safeDays = Math.max(0, days);
+    const score = safeDays > threshold
+      ? Math.min(100, Math.round(((safeDays - threshold) / threshold) * 100))
       : 0;
     return { name: 'stage_stagnation', weight: 0.25, score,
-      description: score > 0 ? `Deal stagnant for ${days} days` : 'Progressing normally' };
+      description: score > 0 ? `Deal stagnant for ${safeDays} days` : 'Progressing normally' };
   }
 
   private closeDateSlippage(closeDate: Date, endDate: Date): RiskSignal {
+    // Fix: compare as timestamps, not string comparison
+    const closeTime = closeDate instanceof Date ? closeDate.getTime() : new Date(closeDate).getTime();
+    const endTime = endDate instanceof Date ? endDate.getTime() : new Date(endDate).getTime();
+    const slipped = closeTime > endTime;
     return { name: 'close_date_slippage', weight: 0.20,
-      score: closeDate > endDate ? 100 : 0,
-      description: closeDate > endDate ? 'Close date past contract end' : 'On schedule' };
+      score: slipped ? 100 : 0,
+      description: slipped ? 'Close date past contract end' : 'On schedule' };
   }
 
   private timePressure(daysUntil: number, inFinal: boolean): RiskSignal {
@@ -83,11 +89,12 @@ export class CpqRiskService {
   }
 
   private noActivity(days: number, threshold = 21): RiskSignal {
-    const score = days > threshold
-      ? Math.min(100, Math.round(((days - threshold) / threshold) * 100))
+    const safeDays = Math.max(0, days);
+    const score = safeDays > threshold
+      ? Math.min(100, Math.round(((safeDays - threshold) / threshold) * 100))
       : 0;
     return { name: 'no_activity', weight: 0.10, score,
-      description: score > 0 ? `No activity in ${days} days` : 'Recent activity detected' };
+      description: score > 0 ? `No activity in ${safeDays} days` : 'Recent activity detected' };
   }
 
   private previousChurn(has: boolean): RiskSignal {

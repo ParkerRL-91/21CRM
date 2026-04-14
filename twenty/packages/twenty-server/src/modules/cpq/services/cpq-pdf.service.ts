@@ -84,7 +84,7 @@ export class CpqPdfService {
     quoteNumber: string,
     version: number,
   ): string {
-    const sanitized = companyName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
+    const sanitized = (companyName ?? 'Company').replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
     const date = new Date().toISOString().split('T')[0];
     return `${sanitized}_Quote_${quoteNumber}_v${version}_${date}.pdf`;
   }
