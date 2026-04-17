@@ -1,11 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import Decimal from 'decimal.js';
 
+import { Decimal } from 'src/modules/cpq/utils/cpq-decimal.utils';
 import { ObjectMetadataService } from 'src/engine/metadata-modules/object-metadata/object-metadata.service';
 
 import { CpqPricingService } from './cpq-pricing.service';
-
-Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
 
 // Renewal service — orchestrates automated renewal generation.
 // Called by the daily cron job to find expiring contracts,
@@ -25,6 +23,7 @@ export class CpqRenewalService {
   async runRenewalCheck(
     workspaceId: string,
     config: RenewalConfig = DEFAULT_CONFIG,
+    input?: RenewalCheckInput,
   ): Promise<RenewalJobResult> {
     this.logger.log(`Running renewal check for workspace ${workspaceId}`);
 
@@ -72,10 +71,49 @@ export class CpqRenewalService {
         `Pricing method: ${config.defaultPricingMethod}.`,
       );
 
-      // The actual query execution requires Twenty's workspace datasource
-      // which provides a workspace-scoped query runner. The renewal job
-      // would be registered as a BullMQ job via Twenty's queue system.
-      // See: twenty-server/src/engine/core-modules/queue-worker/
+      // Process contracts provided by caller (fetched via GraphQL).
+      // The controller or BullMQ job queries:
+      //   contracts WHERE status='active' AND endDate <= NOW() + leadDays
+      //   AND renewalStatus != 'quoted'
+      // Then passes them here for processing.
+      if (!input?.contracts || input.contracts.length === 0) {
+        this.logger.log('No expiring contracts found');
+        return result;
+      }
+
+      result.contractsScanned = input.contracts.length;
+
+      for (const contract of input.contracts) {
+        try {
+          if (contract.status !== 'active') continue;
+          if (!contract.subscriptions || contract.subscriptions.length === 0) {
+            result.errors.push(`Contract ${contract.id}: no subscriptions`);
+            continue;
+          }
+
+          const renewalQuote = this.generateRenewalQuote(
+            contract.subscriptions,
+            new Date(contract.endDate),
+            contract.termMonths || 12,
+            config,
+          );
+
+          if (renewalQuote.success) {
+            result.renewalsCreated++;
+            result.renewalResults = result.renewalResults || [];
+            result.renewalResults.push({
+              contractId: contract.id,
+              contractNumber: contract.contractNumber,
+              companyId: contract.companyId,
+              currentEndDate: contract.endDate,
+              renewalQuote,
+            });
+          }
+        } catch (error) {
+          const msg = error instanceof Error ? error.message : String(error);
+          result.errors.push(`Contract ${contract.id}: ${msg}`);
+        }
+      }
 
       return result;
     } catch (error) {
@@ -156,11 +194,34 @@ const DEFAULT_CONFIG: RenewalConfig = {
   defaultUpliftPercentage: 3,
 };
 
+export type RenewalCheckInput = {
+  contracts: RenewalContractRecord[];
+};
+
+export type RenewalContractRecord = {
+  id: string;
+  contractNumber: string;
+  status: string;
+  endDate: string;
+  termMonths?: number;
+  companyId?: string;
+  subscriptions: SubscriptionRecord[];
+};
+
+export type RenewalResult = {
+  contractId: string;
+  contractNumber: string;
+  companyId?: string;
+  currentEndDate: string;
+  renewalQuote: RenewalQuoteResult;
+};
+
 export type RenewalJobResult = {
   contractsScanned: number;
   renewalsCreated: number;
   errors: string[];
   status: 'completed' | 'skipped' | 'failed';
+  renewalResults?: RenewalResult[];
 };
 
 export type RenewalConfig = {

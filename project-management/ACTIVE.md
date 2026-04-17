@@ -48,18 +48,15 @@ _None_
 | TASK-034 | 3-Automation | ready | P0 | Daily renewal check background job |
 | TASK-035 | 3-Automation | ready | P0 | Renewal opportunity auto-creation |
 | TASK-036 | 3-Automation | ready | P0 | Renewal quote auto-generation |
-| TASK-037 | 3-Automation | ready | P0 | Renewal pricing engine |
 | TASK-038 | 3-Automation | ready | P1 | CS notification on renewal creation |
 | TASK-039 | 4-Analytics | ready | P1 | Renewal pipeline filtering (US-8.3) |
 | TASK-040 | 4-Analytics | ready | P1 | Renewal pipeline report page |
 | TASK-041 | 4-Analytics | ready | P1 | Renewal kanban board |
-| TASK-042 | 4-Analytics | ready | P1 | At-risk renewal identification engine |
 | TASK-043 | 5-Integration | ready | P2 | HubSpot contract sync |
 | TASK-044 | 5-Integration | ready | P2 | Renewal-to-rev-rec integration |
 | TASK-045 | 5-Integration | ready | P2 | Contract expiration dashboard widget |
 | TASK-046 | 5-Integration | ready | P2 | Renewal analytics CSV export |
 | TASK-047 | 2-UI | ready | P1 | Global contracts list page |
-| TASK-048 | 1-Foundation | ready | P1 | Contract CRUD test coverage |
 
 ## PRJ-003: Full CPQ — Quote-to-Cash Platform (Epics 1-7, 9-10)
 **Status:** Planning complete — ready for execution

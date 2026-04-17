@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import Decimal from 'decimal.js';
 
+import { Decimal, convertCurrency, roundForCurrency } from 'src/modules/cpq/utils/cpq-decimal.utils';
 import { safeDecimal, safePositiveNumber, CpqValidationError } from 'src/modules/cpq/utils/cpq-validation.utils';
-
-Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
 
 // CPQ Pricing Service — 10-step price waterfall engine.
 // All inputs validated before Decimal construction.
@@ -109,10 +107,18 @@ export class CpqPricingService {
       }
     }
 
-    // Step 8: Currency (placeholder)
+    // Step 8: Currency conversion
+    if (input.fromCurrency && input.toCurrency && input.fromCurrency !== input.toCurrency) {
+      const before = price;
+      price = convertCurrency(price, input.fromCurrency, input.toCurrency);
+      audit.push(this.step('currency_conversion', before, price, {
+        from: input.fromCurrency,
+        to: input.toCurrency,
+      }));
+    }
 
-    // Step 9: Rounding
-    price = price.toDecimalPlaces(2, Decimal.ROUND_HALF_UP);
+    // Step 9: Rounding (currency-aware)
+    price = roundForCurrency(price, input.toCurrency || input.fromCurrency || 'USD');
 
     // Step 10: Ensure non-negative
     if (price.lt(0)) price = new Decimal(0);
@@ -231,6 +237,8 @@ export type PricingInput = {
   manualDiscountAmount?: number;
   manualPriceOverride?: number;
   floorPrice?: string;
+  fromCurrency?: string;
+  toCurrency?: string;
 };
 
 export type DiscountTier = {

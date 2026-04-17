@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import Decimal from 'decimal.js';
 
-Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
+import { Decimal } from 'src/modules/cpq/utils/cpq-decimal.utils';
 
 // PDF generation service — renders quote data as structured output
 // suitable for @react-pdf/renderer. The actual PDF rendering requires
