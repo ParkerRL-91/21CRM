@@ -2,7 +2,7 @@
 title: "Fix Rev-Rec Generate Button (Lost During Repo Migration)"
 id: TASK-020
 project: PRJ-001
-status: ready
+status: done
 priority: P0
 created: 2026-03-22
 updated: 2026-03-22

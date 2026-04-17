@@ -1,0 +1,10 @@
+export { CpqSetupPage } from './components/CpqSetupPage';
+export { CpqTemplateGallery } from './components/CpqTemplateGallery';
+export { CpqTemplateEditor } from './components/CpqTemplateEditor';
+export { CpqPricingCalculator } from './components/CpqPricingCalculator';
+export { CpqQuoteBuilder } from './components/CpqQuoteBuilder';
+export { CpqRenewalDashboard } from './components/CpqRenewalDashboard';
+export { useCpqSetup } from './hooks/use-cpq-setup';
+export { useCpqPricing } from './hooks/use-cpq-pricing';
+export { CPQ_PRICING_TEMPLATES } from './constants/cpq-pricing-templates';
+export type { PricingTemplate, PricingModelType } from './constants/cpq-pricing-templates';
