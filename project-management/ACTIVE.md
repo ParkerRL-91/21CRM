@@ -133,11 +133,50 @@ _None_
 | TASK-083 | ready | P1 | Renewal forecast report |
 | TASK-084 | ready | P1 | ARR waterfall report |
 
+## PRJ-005: VP RevOps Market Readiness — Gap Analysis Execution
+**Status:** Planning complete — 15 tasks across 5 phases, 16-week timeline
+
+### Phase 1 — Weeks 1-2: Fix & Interact (P0)
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-101 | backlog | P0 | Clickable drill-down on stat cards (pipeline + team pages) |
+| TASK-102 | backlog | P0 | Deal risk flags engine + pipeline risk badges |
+| TASK-103 | backlog | P0 | Pipeline change newsfeed ("what changed this week") |
+| TASK-104 | backlog | P0 | NRR calculation engine + subscription health dashboard |
+
+### Phase 2 — Weeks 3-4: Risk & Revenue (P1)
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-105 | backlog | P1 | Deferred revenue waterfall view |
+| TASK-106 | backlog | P1 | Pipeline movement view (weekly adds/losses/stage changes) |
+| TASK-107 | backlog | P1 | Quarter progression chart (running closed-won vs quota) |
+
+### Phase 3 — Weeks 5-6: Differentiators (P1)
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-108 | backlog | P1 | Projected rev-rec toggle (closed + weighted pipeline) |
+| TASK-109 | backlog | P1 | Quote-to-revenue bridge visualization |
+| TASK-110 | backlog | P1 | Forecast snapshot capability |
+
+### Phase 4 — Weeks 7-8: Automation & Polish (P1-P2)
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-111 | backlog | P1 | Scheduled auto-sync (background job) |
+| TASK-112 | backlog | P2 | Mobile responsive pass on all dashboard pages |
+| TASK-113 | backlog | P2 | Multi-method forecast display |
+
+### Phase 5 — Weeks 9+: Scale (P2)
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-114 | backlog | P2 | Salesforce connector (sync engine abstraction) |
+| TASK-115 | backlog | P2 | AI deal scoring prototype |
+
 ## Full Task Count
 - **PRJ-001**: 26 tasks (P0:3, P1:11, P2:5, P3:5, Bugs:2)
 - **PRJ-002**: 22 tasks (P0:9, P1:8, P2:4, P3:1) — Epic 8
 - **PRJ-003**: 36 tasks (P0:16, P1:16, P2:4) — Epics 1-7, 9-10
-- **Grand Total**: 84 tasks
+- **PRJ-005**: 15 tasks (P0:4, P1:6, P2:5) — VP RevOps Gap Analysis
+- **Grand Total**: 99 tasks
 
 ## PRJ-004: CPQ Twenty Integration Completion (8.0 → 9.5/10)
 **Status:** Ready — requires running Twenty dev environment
