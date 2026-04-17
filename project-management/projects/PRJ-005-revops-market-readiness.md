@@ -95,3 +95,4 @@ A gap analysis evaluated 21CRM from the perspective of a VP RevOps at a mid-mark
 - 2026-04-17: TASK IDs 101-115 allocated to avoid conflicts with PRJ-001 through PRJ-004 (TASK-001 through TASK-100).
 - 2026-04-17: Persona-driven user stories using Alex (Sales Rep), Morgan (Sales Manager), Dana (VP RevOps), Casey (Finance/Controller), Jordan (CRM Admin).
 - 2026-04-17: Salesforce connector (TASK-114) and AI scoring (TASK-115) scoped as prototypes — full implementations would be separate projects.
+- 2026-04-17: All 15 task files (TASK-101 through TASK-115) created with full user stories, outcomes, success metrics, implementation plans, files to change, and tests to write. ACTIVE.md updated with PRJ-005 section.
