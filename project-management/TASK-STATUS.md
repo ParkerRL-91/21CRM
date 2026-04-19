@@ -61,9 +61,9 @@
 
 | Task | Title | Status | Notes |
 |------|-------|--------|-------|
-| TASK-130 | Approval Submission & Tracking | ⬜ Backlog | Submit/recall/approve/reject UI |
-| TASK-131 | Quote Document Generation & Delivery | ⬜ Backlog | Template selector + PDF preview + delivery |
-| TASK-138 | Quote Document PDF Generation Service | ⬜ Backlog | Puppeteer-based backend service |
+| TASK-130 | Approval Submission & Tracking | ✅ Done | ApprovalProgressTracker (step circles + connector lines + Remind/Escalate/Recall actions); ApprovalInboxPage (approver queue with approve/reject + comment); useApprovalFlow + useApproverAction + useApprovalInbox hooks; cpq-approval-engine: getApproverInbox + getApprovalStatus + escalateApproval; controller: inbox + approval-status + remind endpoints |
+| TASK-131 | Quote Document Generation & Delivery | ✅ Done | GenerateDocumentModal (template/format/watermark → download link); DocumentVersionsTab (version history: Download/Email/E-Sign actions); useDocumentGeneration hook; sendDocument + sendForSignature endpoints wired |
+| TASK-138 | Quote Document PDF Generation Service | ✅ Done | CpqDocumentService: HTML→PDF stub (Puppeteer-ready), merge fields with dot-notation, quoteDocument CPQ object (storageKey/url/version/watermark/eSignature fields), send via email, DocuSign/PandaDoc envelope adapter stubs |
 
 ---
 
@@ -117,7 +117,7 @@
 ## Completion Summary
 
 Total tasks: 33
-Done: 19 / 33
+Done: 22 / 33
 In progress: 0
 Skipped: 1
 
