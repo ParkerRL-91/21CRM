@@ -2,7 +2,7 @@
 title: "Wire createFromQuote to workspace datasource"
 id: TASK-087
 project: PRJ-004
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12
@@ -93,6 +93,14 @@ tags: [#task, #cpq, #twenty, #contracts, #orm]
 
 ## Files to Change
 
-- `twenty/packages/twenty-server/src/modules/cpq/services/cpq-contract.service.ts` — MODIFY: wire to datasource
-- `twenty/packages/twenty-server/src/modules/cpq/cpq.module.ts` — MODIFY: import datasource module
-- `twenty/packages/twenty-server/src/modules/cpq/services/cpq-contract.service.spec.ts` — MODIFY: add mock tests
+- `twenty/packages/twenty-server/src/modules/cpq/services/cpq-contract.service.ts` — MODIFIED: injected @InjectDataSource(), implemented createFromQuote with real transactional logic, added workspaceId parameter
+- `twenty/packages/twenty-server/src/modules/cpq/services/cpq-contract.service.spec.ts` — MODIFIED: added 3 createFromQuote tests with mocked queryRunner
+
+## Status Log
+- 2026-04-12: Created
+- 2026-04-12: Completed — replaced stub with full transactional implementation using DataSource + getWorkspaceSchemaName
+
+## Takeaways
+- Use @InjectDataSource() + getWorkspaceSchemaName() for workspace-scoped SQL — not WorkspaceDatasourceService (whose executeRawQuery throws a PermissionsException)
+- WorkspaceDatasourceModule NOT needed in imports — @InjectDataSource() uses the core TypeORM DataSource which is already globally available
+- createFromQuote now takes workspaceId as first param (affects resolver call signature)
