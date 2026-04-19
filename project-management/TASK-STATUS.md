@@ -102,7 +102,7 @@
 
 | Task | Title | Status | Notes |
 |------|-------|--------|-------|
-| TASK-144 | CPQ Setup Wizard & Data Migration | ⬜ Backlog | 9-step wizard + health check |
+| TASK-144 | CPQ Setup Wizard & Data Migration | ✅ Done | CpqSetupWizardService: 9 idempotent steps (create objects, settings, seed catalog, deal configs, configure price books/approvals/tax/templates, health check); run/skip/reset/runAll; runHealthCheck (5 checks → healthy/degraded/critical); CpqSetupWizardPage with progress bar, per-step icons, health panel |
 
 ---
 
@@ -117,7 +117,7 @@
 ## Completion Summary
 
 Total tasks: 33
-Done: 32 / 33
+Done: 33 / 33
 In progress: 0
 Skipped: 1
 
