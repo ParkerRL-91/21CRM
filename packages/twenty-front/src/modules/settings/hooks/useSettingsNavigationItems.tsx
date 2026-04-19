@@ -28,6 +28,7 @@ import {
   IconHierarchy2,
   IconKey,
   IconLock,
+  IconBox,
   IconMail,
   IconMessage,
   IconPlug,
@@ -185,6 +186,12 @@ const useSettingsNavigationItems = (): SettingsNavigationSection[] => {
           isHidden:
             !isAIEnabled || !permissionMap[PermissionFlagType.WORKSPACE],
           modifier: 'new',
+        },
+        {
+          label: t`CPQ`,
+          path: SettingsPath.Cpq,
+          Icon: IconBox,
+          isHidden: !permissionMap[PermissionFlagType.WORKSPACE],
         },
         {
           label: t`Security`,
