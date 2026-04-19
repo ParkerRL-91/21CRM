@@ -2,7 +2,7 @@
 title: "Wire runRenewalCheck to workspace datasource"
 id: TASK-088
 project: PRJ-004
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12
@@ -65,6 +65,15 @@ tags: [#task, #cpq, #twenty, #renewals, #orm, #cron]
 
 ## Files to Change
 
-- `twenty/packages/twenty-server/src/modules/cpq/services/cpq-renewal.service.ts` — MODIFY
-- `twenty/packages/twenty-server/src/modules/cpq/cpq.module.ts` — MODIFY: import datasource
-- `twenty/packages/twenty-server/src/modules/cpq/services/cpq-renewal.service.spec.ts` — MODIFY
+- `twenty/packages/twenty-server/src/modules/cpq/services/cpq-renewal.service.ts` — MODIFIED: replaced ObjectMetadataService with @InjectDataSource(), implemented real SQL queries + advisory locking, per-contract transactions
+- `twenty/packages/twenty-server/src/modules/cpq/services/cpq-renewal.service.spec.ts` — MODIFIED: added 4 runRenewalCheck tests with mocked dataSource and queryRunner
+
+## Status Log
+- 2026-04-12: Created
+- 2026-04-12: Completed — full implementation with advisory locking, per-contract transactions, and renewal quote/opportunity creation
+
+## Takeaways
+- Advisory lock ID derived from workspace UUID using a deterministic 32-bit hash (Math.imul)
+- Each contract is processed in its own queryRunner transaction — one failure doesn't block the batch
+- Advisory lock is released in the finally block even on outer failure
+- Removed ObjectMetadataService dependency (was only checking if contract object exists — now queries workspace schema directly)
