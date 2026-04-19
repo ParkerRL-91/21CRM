@@ -14,6 +14,7 @@
 _None_
 
 ## Recently Completed
+- PRJ-004 Phase 1: TASK-085–088 backend wiring complete (2026-04-18) — 86 tests passing
 - Codebase foundation: sync engine, rev-rec, forecast, pipeline, team pages (pre-PRJ-001)
 - CLAUDE.md + knowledge base + project management framework (2026-03-22)
 - Competitive analysis: Clari, HubiFi, Kluster (2026-03-22)
@@ -143,15 +144,15 @@ _None_
 - **Grand Total**: 84 tasks
 
 ## PRJ-004: CPQ Twenty Integration Completion (8.0 → 9.5/10)
-**Status:** Ready — requires running Twenty dev environment
+**Status:** Phase 1 complete (2026-04-18) — Phase 2 frontend integration is next
 
 ### Phase 1 — Backend Wiring (P0, unblocks everything)
 | Task | Status | Priority | Description |
 |------|--------|----------|-------------|
-| TASK-085 | ready | P0 | Workspace auth on CPQ controller |
-| TASK-086 | ready | P0 | GraphQL resolvers for CPQ business logic |
-| TASK-087 | ready | P0 | Wire createFromQuote to workspace datasource |
-| TASK-088 | ready | P0 | Wire runRenewalCheck to workspace datasource |
+| TASK-085 | done | P0 | Workspace auth on CPQ controller |
+| TASK-086 | done | P0 | GraphQL resolvers for CPQ business logic |
+| TASK-087 | done | P0 | Wire createFromQuote to workspace datasource |
+| TASK-088 | done | P0 | Wire runRenewalCheck to workspace datasource |
 | TASK-089 | ready | P1 | BullMQ scheduled renewal job |
 | TASK-090 | ready | P2 | Schema evolution / version upgrade |
 
