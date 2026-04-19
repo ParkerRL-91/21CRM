@@ -18,6 +18,15 @@ _None_
 - CLAUDE.md + knowledge base + project management framework (2026-03-22)
 - Competitive analysis: Clari, HubiFi, Kluster (2026-03-22)
 - PRJ-001 project plan: 24 tasks across 6 phases (2026-03-22)
+- **PRJ-005 backend engines** (2026-04-18) — 8 tasks, 8 engine files, 147 tests in `src/lib/pipeline/`:
+  - TASK-106: pipeline-movement (11 tests)
+  - TASK-107: quarter-progression (14 tests)
+  - TASK-108: projected-rev-rec (16 tests)
+  - TASK-110: forecast-snapshot (16 tests)
+  - TASK-111: auto-sync scheduler (10 tests)
+  - TASK-113: multi-method-forecast (19 tests)
+  - TASK-114: salesforce-connector + crm-provider (20 tests)
+  - TASK-115: deal-scoring (41 tests)
 
 ## Up Next (After Phase 1)
 **Phase 2 — Unique Differentiators:**
