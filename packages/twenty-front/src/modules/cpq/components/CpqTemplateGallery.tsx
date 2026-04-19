@@ -3,7 +3,7 @@ import { styled } from '@linaria/react';
 import {
   CPQ_PRICING_TEMPLATES,
   type PricingTemplate,
-} from 'src/modules/cpq/constants/cpq-pricing-templates';
+} from '@/cpq/constants/cpq-pricing-templates';
 
 const StyledGrid = styled.div`
   display: grid;
