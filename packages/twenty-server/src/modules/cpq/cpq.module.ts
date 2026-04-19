@@ -12,6 +12,17 @@ import { CpqPricingService } from 'src/modules/cpq/services/cpq-pricing.service'
 import { CpqRenewalService } from 'src/modules/cpq/services/cpq-renewal.service';
 import { CpqContractService } from 'src/modules/cpq/services/cpq-contract.service';
 import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
+import { CpqSettingsService } from 'src/modules/cpq/services/cpq-settings.service';
+// Phase 1 services — admin configuration
+import { CpqProductCatalogService } from 'src/modules/cpq/services/cpq-product-catalog.service';
+import { CpqPriceBookService } from 'src/modules/cpq/services/cpq-price-book.service';
+import { CpqDiscountScheduleService } from 'src/modules/cpq/services/cpq-discount-schedule.service';
+import { CpqApprovalRuleService } from 'src/modules/cpq/services/cpq-approval-rule.service';
+import { CpqQuoteTemplateService } from 'src/modules/cpq/services/cpq-quote-template.service';
+import { CpqTaxService } from 'src/modules/cpq/services/cpq-tax.service';
+import { CpqBundleConfigurationService } from 'src/modules/cpq/services/cpq-bundle-configuration.service';
+import { CpqIntegrationService } from 'src/modules/cpq/services/cpq-integration.service';
+import { CpqExchangeRateService } from 'src/modules/cpq/services/cpq-exchange-rate.service';
 
 // CPQ module — extends Twenty CRM with quote-to-cash functionality.
 // Uses Twenty's metadata API to create native custom objects (Quote,
@@ -33,6 +44,17 @@ import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
     CpqRenewalService,
     CpqContractService,
     CpqRiskService,
+    CpqSettingsService,
+    // Phase 1 — admin configuration services
+    CpqProductCatalogService,
+    CpqPriceBookService,
+    CpqDiscountScheduleService,
+    CpqApprovalRuleService,
+    CpqQuoteTemplateService,
+    CpqTaxService,
+    CpqBundleConfigurationService,
+    CpqIntegrationService,
+    CpqExchangeRateService,
   ],
   exports: [
     CpqSetupService,
@@ -40,6 +62,16 @@ import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
     CpqRenewalService,
     CpqContractService,
     CpqRiskService,
+    CpqSettingsService,
+    CpqProductCatalogService,
+    CpqPriceBookService,
+    CpqDiscountScheduleService,
+    CpqApprovalRuleService,
+    CpqQuoteTemplateService,
+    CpqTaxService,
+    CpqBundleConfigurationService,
+    CpqIntegrationService,
+    CpqExchangeRateService,
   ],
 })
 export class CpqModule {}
