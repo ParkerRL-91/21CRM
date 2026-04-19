@@ -2,7 +2,7 @@
 title: "Add workspace auth to CPQ controller"
 id: TASK-085
 project: PRJ-004
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12
@@ -51,5 +51,14 @@ All CPQ controller endpoints use Twenty's `@AuthWorkspace()` decorator to extrac
 
 ## Files to Change
 
-- `twenty/packages/twenty-server/src/modules/cpq/cpq.controller.ts` — MODIFY: add auth decorators
-- `twenty/packages/twenty-server/src/modules/cpq/cpq.controller.spec.ts` — MODIFY: mock auth
+- `twenty/packages/twenty-server/src/modules/cpq/cpq.controller.ts` — MODIFIED: added JwtAuthGuard + WorkspaceAuthGuard at class level, replaced all body/param workspaceId with @AuthWorkspace()
+- `twenty/packages/twenty-server/src/modules/cpq/cpq.controller.spec.ts` — MODIFIED: tests now pass mockWorkspace entity instead of { workspaceId } body
+
+## Status Log
+- 2026-04-12: Created
+- 2026-04-12: Completed — added @UseGuards(JwtAuthGuard, WorkspaceAuthGuard) at controller level, replaced all workspaceId body/param params with @AuthWorkspace() decorator, changed GET /status/:workspaceId to GET /status, updated all tests
+
+## Takeaways
+- JwtAuthGuard + WorkspaceAuthGuard applied at class level covers all endpoints
+- @AuthWorkspace() works for both REST and GraphQL contexts via getRequest() utility
+- Status endpoint changed from path param to auth-based (cleaner API)

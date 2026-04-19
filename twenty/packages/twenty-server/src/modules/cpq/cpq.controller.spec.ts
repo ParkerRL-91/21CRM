@@ -1,5 +1,7 @@
 import { CpqController } from './cpq.controller';
 
+import type { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
+
 const mockSetupService = {
   setupCpq: jest.fn(),
   teardownCpq: jest.fn(),
@@ -25,6 +27,9 @@ const mockRiskService = {
   assessRenewalRisk: jest.fn(),
 };
 
+// Minimal workspace entity for tests — guards are not evaluated in unit tests
+const mockWorkspace = { id: 'ws-123' } as WorkspaceEntity;
+
 describe('CpqController', () => {
   let controller: CpqController;
 
@@ -40,7 +45,7 @@ describe('CpqController', () => {
   });
 
   describe('POST /cpq/setup', () => {
-    it('should call setupCpq with workspace ID', async () => {
+    it('should call setupCpq with workspace ID from auth context', async () => {
       mockSetupService.setupCpq.mockResolvedValue({
         objectsCreated: ['quote', 'contract'],
         fieldsCreated: 20,
@@ -49,7 +54,7 @@ describe('CpqController', () => {
         errors: [],
       });
 
-      const result = await controller.setup({ workspaceId: 'ws-123' });
+      const result = await controller.setup(mockWorkspace);
 
       expect(mockSetupService.setupCpq).toHaveBeenCalledWith('ws-123');
       expect(result.objectsCreated).toHaveLength(2);
@@ -57,21 +62,21 @@ describe('CpqController', () => {
   });
 
   describe('DELETE /cpq/teardown', () => {
-    it('should call teardownCpq with workspace ID', async () => {
+    it('should call teardownCpq with workspace ID from auth context', async () => {
       mockSetupService.teardownCpq.mockResolvedValue({
         objectsRemoved: ['quote', 'contract'],
         errors: [],
       });
 
-      const result = await controller.teardown({ workspaceId: 'ws-123' });
+      const result = await controller.teardown(mockWorkspace);
 
       expect(mockSetupService.teardownCpq).toHaveBeenCalledWith('ws-123');
       expect(result.objectsRemoved).toHaveLength(2);
     });
   });
 
-  describe('GET /cpq/status/:workspaceId', () => {
-    it('should return detailed setup status', async () => {
+  describe('GET /cpq/status', () => {
+    it('should return detailed setup status for authenticated workspace', async () => {
       mockSetupService.getSetupStatus.mockResolvedValue({
         isSetUp: true,
         objectCount: 6,
@@ -81,8 +86,9 @@ describe('CpqController', () => {
         version: '1.0.0',
       });
 
-      const result = await controller.status('ws-123');
+      const result = await controller.status(mockWorkspace);
 
+      expect(mockSetupService.getSetupStatus).toHaveBeenCalledWith('ws-123');
       expect(result.isSetUp).toBe(true);
       expect(result.version).toBe('1.0.0');
     });
@@ -184,7 +190,7 @@ describe('CpqController', () => {
   });
 
   describe('POST /cpq/run-renewal-check', () => {
-    it('should delegate to renewal service', async () => {
+    it('should delegate to renewal service with workspace ID from auth context', async () => {
       mockRenewalService.runRenewalCheck.mockResolvedValue({
         contractsScanned: 10,
         renewalsCreated: 2,
@@ -192,8 +198,9 @@ describe('CpqController', () => {
         status: 'completed',
       });
 
-      const result = await controller.runRenewalCheck({ workspaceId: 'ws-123' });
+      const result = await controller.runRenewalCheck(mockWorkspace);
 
+      expect(mockRenewalService.runRenewalCheck).toHaveBeenCalledWith('ws-123');
       expect(result.status).toBe('completed');
       expect(result.renewalsCreated).toBe(2);
     });

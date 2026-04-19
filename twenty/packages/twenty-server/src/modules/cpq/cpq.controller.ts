@@ -1,4 +1,17 @@
-import { Controller, Post, Get, Delete, Body, Param, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Delete,
+  Body,
+  Logger,
+  UseGuards,
+} from '@nestjs/common';
+
+import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
+import { AuthWorkspace } from 'src/engine/decorators/auth/auth-workspace.decorator';
+import { JwtAuthGuard } from 'src/engine/guards/jwt-auth.guard';
+import { WorkspaceAuthGuard } from 'src/engine/guards/workspace-auth.guard';
 
 import { CpqSetupService } from 'src/modules/cpq/services/cpq-setup.service';
 import { CpqPricingService } from 'src/modules/cpq/services/cpq-pricing.service';
@@ -14,6 +27,7 @@ import type { RiskAssessmentInput } from 'src/modules/cpq/services/cpq-risk.serv
 // This controller exposes CPQ-specific operations beyond CRUD:
 // setup/teardown, pricing, risk, transitions, renewal, proration.
 @Controller('cpq')
+@UseGuards(JwtAuthGuard, WorkspaceAuthGuard)
 export class CpqController {
   private readonly logger = new Logger(CpqController.name);
 
@@ -27,28 +41,28 @@ export class CpqController {
 
   // POST /cpq/setup — bootstrap CPQ custom objects in the workspace
   @Post('setup')
-  async setup(@Body() body: { workspaceId: string }) {
-    this.logger.log(`CPQ setup requested for workspace ${body.workspaceId}`);
-    return this.setupService.setupCpq(body.workspaceId);
+  async setup(@AuthWorkspace() { id: workspaceId }: WorkspaceEntity) {
+    this.logger.log(`CPQ setup requested for workspace ${workspaceId}`);
+    return this.setupService.setupCpq(workspaceId);
   }
 
   // DELETE /cpq/teardown — remove all CPQ custom objects from workspace
   @Delete('teardown')
-  async teardown(@Body() body: { workspaceId: string }) {
-    this.logger.log(`CPQ teardown requested for workspace ${body.workspaceId}`);
-    return this.setupService.teardownCpq(body.workspaceId);
+  async teardown(@AuthWorkspace() { id: workspaceId }: WorkspaceEntity) {
+    this.logger.log(`CPQ teardown requested for workspace ${workspaceId}`);
+    return this.setupService.teardownCpq(workspaceId);
   }
 
-  // GET /cpq/status/:workspaceId — detailed setup status
-  @Get('status/:workspaceId')
-  async status(@Param('workspaceId') workspaceId: string) {
+  // GET /cpq/status — detailed setup status for authenticated workspace
+  @Get('status')
+  async status(@AuthWorkspace() { id: workspaceId }: WorkspaceEntity) {
     return this.setupService.getSetupStatus(workspaceId);
   }
 
   // POST /cpq/run-renewal-check — trigger the daily renewal scan
   @Post('run-renewal-check')
-  async runRenewalCheck(@Body() body: { workspaceId: string }) {
-    return this.renewalService.runRenewalCheck(body.workspaceId);
+  async runRenewalCheck(@AuthWorkspace() { id: workspaceId }: WorkspaceEntity) {
+    return this.renewalService.runRenewalCheck(workspaceId);
   }
 
   // POST /cpq/calculate-price — run the 10-step price waterfall
