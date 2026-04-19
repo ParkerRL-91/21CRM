@@ -46,6 +46,9 @@ export const useCpqPricing = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
       });
+      if (!response.ok) {
+        throw new Error(`Pricing request failed: ${response.status} ${response.statusText}`);
+      }
       const data: PricingResult = await response.json();
       setResult(data);
       return data;
