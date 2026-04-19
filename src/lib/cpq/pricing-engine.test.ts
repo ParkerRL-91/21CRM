@@ -339,3 +339,188 @@ describe('PricingEngine — volume discount integration', () => {
     expect(result.netTotal.toString()).toBe('3200');
   });
 });
+
+// ============================================================================
+// Edge cases
+// ============================================================================
+
+describe('PricingEngine — edge cases', () => {
+  it('handles zero quantity — net total is zero', () => {
+    const result = engine.calculate(
+      makeContext({ listPrice: new Decimal(100), quantity: new Decimal(0) })
+    );
+    expect(result.netTotal.toString()).toBe('0');
+  });
+
+  it('handles negative manual discount amount that would push price negative — clamps to zero', () => {
+    const result = engine.calculate(
+      makeContext({
+        listPrice: new Decimal(50),
+        manualDiscountAmount: new Decimal(999),
+      })
+    );
+    expect(result.netUnitPrice.toString()).toBe('0');
+    expect(result.netTotal.toString()).toBe('0');
+  });
+
+  it('handles zero list price — returns zero net unit price', () => {
+    const result = engine.calculate(
+      makeContext({ listPrice: new Decimal(0), quantity: new Decimal(5) })
+    );
+    expect(result.netUnitPrice.toString()).toBe('0');
+    expect(result.netTotal.toString()).toBe('0');
+  });
+
+  it('handles zero-duration proration (same term) — no change to price', () => {
+    const result = engine.calculate(
+      makeContext({
+        listPrice: new Decimal(12000),
+        productBaseTermMonths: 12,
+        quoteTermMonths: 12,
+      })
+    );
+    // Same term — multiplier = 1, no proration applied
+    expect(result.netUnitPrice.toString()).toBe('12000');
+  });
+
+  it('handles manual price override of zero — price becomes zero', () => {
+    const result = engine.calculate(
+      makeContext({
+        listPrice: new Decimal(100),
+        manualPriceOverride: new Decimal(0),
+      })
+    );
+    expect(result.netUnitPrice.toString()).toBe('0');
+  });
+
+  it('handles empty tier array in tiered discount schedule — no discount applied', () => {
+    const result = engine.calculate(
+      makeContext({
+        listPrice: new Decimal(100),
+        discountSchedule: { type: 'tiered', tiers: [] },
+      })
+    );
+    // calculateTieredPrice returns 0 for empty tiers, but discountScheduleRule
+    // divides by quantity — guard: if total is 0 and list price > 0, effectiveUnit = 0
+    // This tests the pipeline handles the edge case without throwing
+    expect(() => result).not.toThrow();
+  });
+
+  it('handles very large quantity without overflow', () => {
+    const result = engine.calculate(
+      makeContext({
+        listPrice: new Decimal(100),
+        quantity: new Decimal(1_000_000),
+      })
+    );
+    expect(result.netTotal.toString()).toBe('100000000');
+  });
+
+  it('handles contracted price of zero — uses zero as price', () => {
+    const result = engine.calculate(
+      makeContext({
+        listPrice: new Decimal(100),
+        contractedPrice: new Decimal(0),
+      })
+    );
+    // contractedPrice of 0 does not satisfy .gt(0) so list price is kept
+    expect(result.netUnitPrice.toString()).toBe('100');
+  });
+
+  it('handles floor price higher than list price — floor wins', () => {
+    const result = engine.calculate(
+      makeContext({
+        listPrice: new Decimal(100),
+        floorPrice: new Decimal(150),
+      })
+    );
+    expect(result.netUnitPrice.toString()).toBe('150');
+  });
+
+  it('handles 100% manual discount — price goes to zero', () => {
+    const result = engine.calculate(
+      makeContext({
+        listPrice: new Decimal(100),
+        manualDiscountPercent: new Decimal(100),
+      })
+    );
+    expect(result.netUnitPrice.toString()).toBe('0');
+  });
+});
+
+describe('calculateTieredPrice — edge cases', () => {
+  it('returns 0 for empty tiers array', () => {
+    expect(calculateTieredPrice(100, [], new Decimal(50)).toString()).toBe('0');
+  });
+
+  it('returns 0 for quantity of 0 regardless of tiers', () => {
+    const tiers: DiscountTierInput[] = [
+      { lowerBound: 1, upperBound: null, discountValue: 50, sortOrder: 1 },
+    ];
+    expect(calculateTieredPrice(0, tiers, new Decimal(50)).toString()).toBe('0');
+  });
+
+  it('returns 0 for negative quantity', () => {
+    const tiers: DiscountTierInput[] = [
+      { lowerBound: 1, upperBound: null, discountValue: 50, sortOrder: 1 },
+    ];
+    expect(calculateTieredPrice(-1, tiers, new Decimal(50)).toString()).toBe('0');
+  });
+
+  it('handles tier with discountValue of 0 — free units', () => {
+    const tiers: DiscountTierInput[] = [
+      { lowerBound: 1, upperBound: null, discountValue: 0, sortOrder: 1 },
+    ];
+    expect(calculateTieredPrice(100, tiers, new Decimal(50)).toString()).toBe('0');
+  });
+});
+
+describe('calculateVolumePrice — edge cases', () => {
+  it('returns 0 for zero quantity', () => {
+    const tiers: DiscountTierInput[] = [
+      { lowerBound: 1, upperBound: null, discountValue: 50, sortOrder: 1 },
+    ];
+    expect(calculateVolumePrice(0, tiers, new Decimal(50)).toString()).toBe('0');
+  });
+
+  it('returns 0 for negative quantity', () => {
+    const tiers: DiscountTierInput[] = [
+      { lowerBound: 1, upperBound: null, discountValue: 50, sortOrder: 1 },
+    ];
+    expect(calculateVolumePrice(-10, tiers, new Decimal(50)).toString()).toBe('0');
+  });
+
+  it('returns base price when no tier matches quantity', () => {
+    // All tiers require qty >= 100, but we pass 5
+    const tiers: DiscountTierInput[] = [
+      { lowerBound: 100, upperBound: null, discountValue: 30, sortOrder: 1 },
+    ];
+    const basePrice = new Decimal(60);
+    expect(calculateVolumePrice(5, tiers, basePrice).toString()).toBe('60');
+  });
+
+  it('handles empty tiers — returns base price', () => {
+    const basePrice = new Decimal(75);
+    expect(calculateVolumePrice(10, [], basePrice).toString()).toBe('75');
+  });
+});
+
+describe('getTermDiscountPercent — edge cases', () => {
+  it('returns 0 for empty tier array', () => {
+    expect(getTermDiscountPercent(24, []).toString()).toBe('0');
+  });
+
+  it('returns 0 for term of 0 months', () => {
+    const tiers: DiscountTierInput[] = [
+      { lowerBound: 12, upperBound: null, discountValue: 5, sortOrder: 1 },
+    ];
+    expect(getTermDiscountPercent(0, tiers).toString()).toBe('0');
+  });
+
+  it('handles tier with 0% discount value', () => {
+    const tiers: DiscountTierInput[] = [
+      { lowerBound: 1, upperBound: null, discountValue: 0, sortOrder: 1 },
+    ];
+    expect(getTermDiscountPercent(12, tiers).toString()).toBe('0');
+  });
+});

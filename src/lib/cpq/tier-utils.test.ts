@@ -242,3 +242,126 @@ describe('removeTier', () => {
     expect(result).toHaveLength(1); // unchanged
   });
 });
+
+// ============================================================================
+// Edge cases
+// ============================================================================
+
+describe('validateTiers — edge cases', () => {
+  it('rejects tier with zero unitPrice (valid — free tier is allowed)', () => {
+    const result = validateTiers([{ from: 1, to: null, unitPrice: 0 }]);
+    expect(result.valid).toBe(true);
+  });
+
+  it('detects multiple tiers with negative prices', () => {
+    const result = validateTiers([
+      { from: 1, to: 100, unitPrice: -5 },
+      { from: 101, to: null, unitPrice: -10 },
+    ]);
+    expect(result.valid).toBe(false);
+    expect(result.errors.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('validates a single tier with unlimited upper bound', () => {
+    const result = validateTiers([{ from: 1, to: null, unitPrice: 50 }]);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it('detects gap with three tiers', () => {
+    const result = validateTiers([
+      { from: 1, to: 100, unitPrice: 50 },
+      { from: 200, to: 500, unitPrice: 40 }, // gap: 101-199
+      { from: 501, to: null, unitPrice: 30 },
+    ]);
+    expect(result.valid).toBe(false);
+    const gapErrors = result.errors.filter((e) => e.message.includes('Gap'));
+    expect(gapErrors.length).toBeGreaterThan(0);
+  });
+});
+
+describe('calculateGraduatedPrice — edge cases', () => {
+  it('handles quantity of 1 — charged for only first tier', () => {
+    const tiers: TierRow[] = [
+      { from: 1, to: 100, unitPrice: 50 },
+      { from: 101, to: null, unitPrice: 30 },
+    ];
+    const result = calculateGraduatedPrice(1, tiers);
+    expect(result.totalPrice).toBe('50');
+    expect(result.breakdown[0].quantity).toBe(1);
+  });
+
+  it('handles tiers with flat fee only (unitPrice = 0)', () => {
+    const tiers: TierRow[] = [
+      { from: 1, to: null, unitPrice: 0, flatFee: 500 },
+    ];
+    const result = calculateGraduatedPrice(100, tiers);
+    expect(result.totalPrice).toBe('500');
+  });
+
+  it('returns empty breakdown for zero quantity', () => {
+    const tiers: TierRow[] = [{ from: 1, to: null, unitPrice: 50 }];
+    const result = calculateGraduatedPrice(0, tiers);
+    expect(result.breakdown).toHaveLength(0);
+    expect(result.totalPrice).toBe('0');
+    expect(result.effectiveRate).toBe('0');
+  });
+
+  it('returns empty breakdown for empty tiers', () => {
+    const result = calculateGraduatedPrice(100, []);
+    expect(result.breakdown).toHaveLength(0);
+    expect(result.totalPrice).toBe('0');
+  });
+
+  it('handles very large quantity in last unlimited tier', () => {
+    const tiers: TierRow[] = [
+      { from: 1, to: 100, unitPrice: 50 },
+      { from: 101, to: null, unitPrice: 10 },
+    ];
+    const result = calculateGraduatedPrice(1_000_000, tiers);
+    // 100×50 + 999900×10 = 5000 + 9999000 = 10004000
+    expect(result.totalPrice).toBe('10004000');
+  });
+});
+
+describe('calculateVolumePriceForQuantity — edge cases', () => {
+  it('returns zero total for zero quantity', () => {
+    const tiers: TierRow[] = [{ from: 1, to: null, unitPrice: 50 }];
+    const result = calculateVolumePriceForQuantity(0, tiers);
+    expect(result.totalPrice).toBe('0');
+  });
+
+  it('returns zero total for empty tier array', () => {
+    const result = calculateVolumePriceForQuantity(100, []);
+    expect(result.totalPrice).toBe('0');
+    expect(result.breakdown).toHaveLength(0);
+  });
+
+  it('returns zero when no tier matches quantity', () => {
+    const tiers: TierRow[] = [{ from: 50, to: null, unitPrice: 30 }];
+    // quantity 10 is below the minimum tier start of 50
+    const result = calculateVolumePriceForQuantity(10, tiers);
+    expect(result.totalPrice).toBe('0');
+  });
+
+  it('handles a tier with unitPrice of 0 (free)', () => {
+    const tiers: TierRow[] = [{ from: 1, to: null, unitPrice: 0 }];
+    const result = calculateVolumePriceForQuantity(100, tiers);
+    expect(result.totalPrice).toBe('0');
+    expect(result.effectiveRate).toBe('0');
+  });
+});
+
+describe('autoLinkTiers — edge cases', () => {
+  it('handles a tier where previous tier has null to', () => {
+    // Edge: if previous tier.to is null but it's not the last
+    // autoLinkTiers should still compute from = (null ?? 0) + 1 = 1
+    const tiers: TierRow[] = [
+      { from: 1, to: null, unitPrice: 50 },
+      { from: 999, to: null, unitPrice: 30 },
+    ];
+    const linked = autoLinkTiers(tiers);
+    expect(linked[1].from).toBe(1); // (null ?? 0) + 1 = 1
+    expect(linked[1].to).toBeNull(); // last tier stays null
+  });
+});

@@ -227,3 +227,138 @@ describe('calculateARRWaterfall', () => {
     expect(result.endingARR).toBe('1079012.33');
   });
 });
+
+// ============================================================================
+// Edge cases — quoteToContractPayload
+// ============================================================================
+
+describe('quoteToContractPayload — edge cases', () => {
+  const minimalQuote: QuoteForConversion = {
+    id: 'q-edge-001',
+    orgId: 'org-001',
+    quoteNumber: 'Q-2026-0099',
+    startDate: '2026-01-01',
+    subscriptionTermMonths: 12,
+    currencyCode: 'CAD',
+    grandTotal: '0.00',
+    lineItems: [],
+  };
+
+  it('handles quote with no line items — creates empty subscriptions array', () => {
+    const result = quoteToContractPayload(minimalQuote);
+    expect(result.subscriptions).toHaveLength(0);
+    expect(result.status).toBe('active');
+  });
+
+  it('handles grandTotal of zero', () => {
+    const result = quoteToContractPayload(minimalQuote);
+    expect(result.totalValue).toBe('0.00');
+    expect(result.initialAmendment.deltaValue).toBe('0.00');
+  });
+
+  it('handles undefined accountName — falls back to "Contract"', () => {
+    const result = quoteToContractPayload({ ...minimalQuote, accountName: undefined });
+    expect(result.contractName).toContain('Contract');
+  });
+
+  it('handles undefined accountHubspotId — omits from payload', () => {
+    const result = quoteToContractPayload({ ...minimalQuote, accountHubspotId: undefined });
+    expect(result.accountHubspotId).toBeUndefined();
+  });
+
+  it('handles one-month subscription term — calculates correct end date', () => {
+    const result = quoteToContractPayload({
+      ...minimalQuote,
+      subscriptionTermMonths: 1,
+      startDate: '2026-01-01',
+    });
+    expect(result.endDate).toBe('2026-02-01');
+  });
+
+  it('handles large term (60 months) — calculates correct end date', () => {
+    const result = quoteToContractPayload({
+      ...minimalQuote,
+      subscriptionTermMonths: 60,
+      startDate: '2026-01-01',
+    });
+    expect(result.endDate).toBe('2031-01-01');
+  });
+
+  it('handles line item with no product ID — still creates subscription', () => {
+    const result = quoteToContractPayload({
+      ...minimalQuote,
+      grandTotal: '5000.00',
+      lineItems: [
+        {
+          id: 'li-no-product',
+          productName: 'Custom Item',
+          quantity: '1',
+          netUnitPrice: '5000.00',
+          netTotal: '5000.00',
+          billingType: 'one_time',
+        },
+      ],
+    });
+    expect(result.subscriptions).toHaveLength(1);
+    expect(result.subscriptions[0].productHubspotId).toBeUndefined();
+    expect(result.subscriptions[0].subscriptionType).toBe('one_time');
+  });
+});
+
+// ============================================================================
+// Edge cases — calculateARRWaterfall
+// ============================================================================
+
+describe('calculateARRWaterfall — edge cases', () => {
+  it('handles all zeros — ending ARR is zero', () => {
+    const input: ARRWaterfallInput = {
+      beginningARR: new Decimal(0),
+      newARR: new Decimal(0),
+      expansionARR: new Decimal(0),
+      contractionARR: new Decimal(0),
+      churnARR: new Decimal(0),
+    };
+    const result = calculateARRWaterfall(input);
+    expect(result.endingARR).toBe('0');
+    expect(result.netChange).toBe('0');
+    expect(result.netRetentionRate).toBe('0');
+  });
+
+  it('handles contraction + churn larger than beginning ARR — ending ARR can be negative', () => {
+    const input: ARRWaterfallInput = {
+      beginningARR: new Decimal(100000),
+      newARR: new Decimal(0),
+      expansionARR: new Decimal(0),
+      contractionARR: new Decimal(60000),
+      churnARR: new Decimal(80000),
+    };
+    const result = calculateARRWaterfall(input);
+    // 100000 - 60000 - 80000 = -40000
+    expect(result.endingARR).toBe('-40000');
+    expect(parseFloat(result.netRetentionRate)).toBeLessThan(0);
+  });
+
+  it('handles very small decimal amounts without precision loss', () => {
+    const input: ARRWaterfallInput = {
+      beginningARR: new Decimal('0.01'),
+      newARR: new Decimal('0.01'),
+      expansionARR: new Decimal('0.00'),
+      contractionARR: new Decimal('0.00'),
+      churnARR: new Decimal('0.00'),
+    };
+    const result = calculateARRWaterfall(input);
+    expect(result.endingARR).toBe('0.02');
+  });
+
+  it('net retention rate is exactly 100 when no expansion/contraction/churn', () => {
+    const input: ARRWaterfallInput = {
+      beginningARR: new Decimal(500000),
+      newARR: new Decimal(100000),
+      expansionARR: new Decimal(0),
+      contractionARR: new Decimal(0),
+      churnARR: new Decimal(0),
+    };
+    const result = calculateARRWaterfall(input);
+    expect(result.netRetentionRate).toBe('100');
+  });
+});

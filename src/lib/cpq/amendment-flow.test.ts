@@ -202,3 +202,201 @@ describe('generateInvoiceFromContract', () => {
     expect(result.subtotal).toBe('0');
   });
 });
+
+// ============================================================================
+// Edge cases
+// ============================================================================
+
+describe('buildAmendmentQuote — edge cases', () => {
+  it('handles empty changes array — returns zero deltas', () => {
+    const result = buildAmendmentQuote({
+      existingSubscriptions: baseSubscriptions,
+      changes: [],
+      contractStartDate: '2026-01-01',
+      contractEndDate: '2027-01-01',
+      effectiveDate: '2026-07-01',
+    });
+
+    expect(result.lineItems).toHaveLength(0);
+    expect(result.totalProratedDelta).toBe('0');
+    expect(result.totalAnnualDelta).toBe('0');
+  });
+
+  it('handles add change with zero unit price — zero delta', () => {
+    const result = buildAmendmentQuote({
+      existingSubscriptions: baseSubscriptions,
+      changes: [
+        {
+          type: 'add',
+          productName: 'Free Module',
+          newQuantity: 1,
+          newUnitPrice: '0',
+        },
+      ],
+      contractStartDate: '2026-01-01',
+      contractEndDate: '2027-01-01',
+      effectiveDate: '2026-07-01',
+    });
+
+    expect(result.lineItems[0].annualDelta).toBe('0');
+    expect(result.totalProratedDelta).toBe('0');
+  });
+
+  it('handles add change with zero quantity — zero annual delta', () => {
+    const result = buildAmendmentQuote({
+      existingSubscriptions: baseSubscriptions,
+      changes: [
+        {
+          type: 'add',
+          productName: 'Placeholder',
+          newQuantity: 0,
+          newUnitPrice: '10000',
+        },
+      ],
+      contractStartDate: '2026-01-01',
+      contractEndDate: '2027-01-01',
+      effectiveDate: '2026-07-01',
+    });
+
+    expect(result.lineItems[0].annualDelta).toBe('0');
+  });
+
+  it('handles modify_quantity where new qty equals old qty — zero delta', () => {
+    const result = buildAmendmentQuote({
+      existingSubscriptions: baseSubscriptions,
+      changes: [
+        {
+          type: 'modify_quantity',
+          subscriptionId: 'sub-1',
+          newQuantity: 1, // same as existing qty
+        },
+      ],
+      contractStartDate: '2026-01-01',
+      contractEndDate: '2027-01-01',
+      effectiveDate: '2026-07-01',
+    });
+
+    expect(result.lineItems[0].annualDelta).toBe('0');
+    expect(result.totalProratedDelta).toBe('0');
+  });
+
+  it('handles effective date at contract start — full proration (100%)', () => {
+    const result = buildAmendmentQuote({
+      existingSubscriptions: baseSubscriptions,
+      changes: [
+        {
+          type: 'add',
+          productName: 'New Product',
+          newQuantity: 1,
+          newUnitPrice: '12000',
+        },
+      ],
+      contractStartDate: '2026-01-01',
+      contractEndDate: '2027-01-01',
+      effectiveDate: '2026-01-01', // effective at start
+    });
+
+    // Full term remaining — prorated value ~= annual value
+    const prorated = parseFloat(result.totalProratedDelta);
+    const annual = parseFloat(result.lineItems[0].annualDelta);
+    expect(prorated).toBeCloseTo(annual, 0);
+  });
+
+  it('handles effective date at contract end — zero prorated delta', () => {
+    const result = buildAmendmentQuote({
+      existingSubscriptions: baseSubscriptions,
+      changes: [
+        {
+          type: 'add',
+          productName: 'Late Addition',
+          newQuantity: 1,
+          newUnitPrice: '12000',
+        },
+      ],
+      contractStartDate: '2026-01-01',
+      contractEndDate: '2027-01-01',
+      effectiveDate: '2027-01-01', // effective at exact end
+    });
+
+    expect(result.daysRemaining).toBe(0);
+    expect(result.totalProratedDelta).toBe('0');
+  });
+
+  it('throws for remove on unknown subscription', () => {
+    expect(() =>
+      buildAmendmentQuote({
+        existingSubscriptions: baseSubscriptions,
+        changes: [{ type: 'remove', subscriptionId: 'sub-does-not-exist' }],
+        contractStartDate: '2026-01-01',
+        contractEndDate: '2027-01-01',
+        effectiveDate: '2026-07-01',
+      })
+    ).toThrow('Subscription sub-does-not-exist not found');
+  });
+});
+
+describe('generateInvoiceFromContract — edge cases', () => {
+  it('handles subscription with quantity of 0 — zero line total', () => {
+    const zeroQtySub: ActiveSubscription = {
+      id: 'sub-zero',
+      productName: 'Zero Qty Product',
+      quantity: 0,
+      unitPrice: '5000',
+      annualValue: '0',
+      billingFrequency: 'annual',
+      startDate: '2026-01-01',
+      endDate: '2026-12-31',
+    };
+    const result = generateInvoiceFromContract({
+      subscriptions: [zeroQtySub],
+      billingPeriodStart: '2026-01-01',
+      billingPeriodEnd: '2026-12-31',
+    });
+
+    expect(result.lineItems[0].total).toBe('0');
+    expect(result.subtotal).toBe('0');
+  });
+
+  it('handles subscription with zero unit price — free line item', () => {
+    const freeSub: ActiveSubscription = {
+      id: 'sub-free',
+      productName: 'Free Tier',
+      quantity: 10,
+      unitPrice: '0',
+      annualValue: '0',
+      billingFrequency: 'monthly',
+      startDate: '2026-01-01',
+      endDate: '2026-12-31',
+    };
+    const result = generateInvoiceFromContract({
+      subscriptions: [freeSub],
+      billingPeriodStart: '2026-01-01',
+      billingPeriodEnd: '2026-01-31',
+    });
+
+    expect(result.lineItems[0].total).toBe('0');
+    expect(result.subtotal).toBe('0');
+  });
+
+  it('handles large number of subscriptions without loss of precision', () => {
+    const subs: ActiveSubscription[] = Array.from({ length: 100 }, (_, i) => ({
+      id: `sub-${i}`,
+      productName: `Product ${i}`,
+      quantity: 1,
+      unitPrice: '999.99',
+      annualValue: '999.99',
+      billingFrequency: 'annual',
+      startDate: '2026-01-01',
+      endDate: '2026-12-31',
+    }));
+
+    const result = generateInvoiceFromContract({
+      subscriptions: subs,
+      billingPeriodStart: '2026-01-01',
+      billingPeriodEnd: '2026-12-31',
+    });
+
+    // 100 × 999.99 = 99999.00
+    expect(result.subtotal).toBe('99999');
+  });
+});
