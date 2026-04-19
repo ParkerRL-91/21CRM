@@ -3920,6 +3920,12 @@ msgstr "Contar valores únicos"
 msgid "Country"
 msgstr "País"
 
+#. js-lingui-id: 5sML6x
+#: src/pages/settings/cpq/SettingsCpq.tsx
+#: src/pages/settings/cpq/SettingsCpq.tsx
+msgid "CPQ"
+msgstr ""
+
 #. js-lingui-id: gJdfqX
 #: src/modules/metadata-error-handler/hooks/useMetadataErrorHandler.ts
 msgid "create"
@@ -16129,6 +16135,7 @@ msgstr "Workflows"
 #: src/pages/settings/data-model/SettingsNewObject.tsx
 #: src/pages/settings/data-model/new-field/SettingsObjectNewFieldSelect.tsx
 #: src/pages/settings/data-model/new-field/SettingsObjectNewFieldConfigure.tsx
+#: src/pages/settings/cpq/SettingsCpq.tsx
 #: src/pages/settings/applications/SettingsAvailableApplicationDetails.tsx
 #: src/pages/settings/applications/SettingsApplications.tsx
 #: src/pages/settings/applications/SettingsApplicationRegistrationDetails.tsx
