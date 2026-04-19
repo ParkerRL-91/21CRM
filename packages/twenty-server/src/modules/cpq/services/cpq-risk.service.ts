@@ -100,21 +100,21 @@ export class CpqRiskService {
 // Types
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 
-export interface RiskSignal {
+export type RiskSignal = {
   name: string;
   weight: number;
   score: number;
   description: string;
-}
+};
 
-export interface RiskAssessment {
+export type RiskAssessment = {
   overallScore: number;
   riskLevel: RiskLevel;
   signals: RiskSignal[];
   assessedAt: Date;
-}
+};
 
-export interface RiskAssessmentInput {
+export type RiskAssessmentInput = {
   daysSinceLastStageChange: number;
   dealCloseDate: Date;
   contractEndDate: Date;
@@ -124,4 +124,4 @@ export interface RiskAssessmentInput {
   proposedValue: number;
   daysSinceLastActivity: number;
   hasPreviousChurn: boolean;
-}
+};

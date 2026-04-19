@@ -50,6 +50,58 @@ const StyledAuditStep = styled.div`
   padding: 2px 0;
 `;
 
+const StyledCalculateButton = styled.button`
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--twentyborder-color);
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const StyledError = styled.div`
+  color: var(--twentycolor-red);
+  font-size: 12px;
+`;
+
+const StyledResultRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+`;
+
+const StyledResultRowLast = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+`;
+
+const StyledNetUnitLabel = styled.span`
+  font-size: 14px;
+  font-weight: 600;
+`;
+
+const StyledNetTotalLabel = styled.span`
+  font-size: 14px;
+  font-weight: 600;
+`;
+
+const StyledNetTotalValue = styled.span`
+  font-size: 16px;
+  font-weight: 700;
+`;
+
+const StyledAuditSummary = styled.summary`
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--twentyfont-color-secondary);
+`;
+
 // Live pricing calculator component.
 // Used in the quote builder to show real-time price calculations
 // as the user adjusts quantity, discounts, or pricing model.
@@ -103,42 +155,29 @@ export const CpqPricingCalculator = () => {
             max={100}
           />
         </div>
-        <button
-          onClick={handleCalculate}
-          disabled={isCalculating}
-          style={{
-            padding: '8px 16px',
-            borderRadius: 4,
-            border: '1px solid var(--twentyborder-color)',
-            background: 'white',
-            cursor: 'pointer',
-            fontSize: 14,
-          }}
-        >
+        <StyledCalculateButton onClick={handleCalculate} disabled={isCalculating}>
           {isCalculating ? '...' : 'Calculate'}
-        </button>
+        </StyledCalculateButton>
       </StyledRow>
 
-      {error && (
-        <div style={{ color: 'var(--twentycolor-red)', fontSize: 12 }}>{error}</div>
-      )}
+      {error && <StyledError>{error}</StyledError>}
 
       {result && (
         <StyledResult>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontSize: 14, fontWeight: 600 }}>Net Unit Price</span>
-            <span style={{ fontSize: 14, fontWeight: 600 }}>${result.netUnitPrice}</span>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-            <span style={{ fontSize: 14, fontWeight: 600 }}>Net Total</span>
-            <span style={{ fontSize: 16, fontWeight: 700 }}>${result.netTotal}</span>
-          </div>
+          <StyledResultRow>
+            <StyledNetUnitLabel>Net Unit Price</StyledNetUnitLabel>
+            <StyledNetUnitLabel>${result.netUnitPrice}</StyledNetUnitLabel>
+          </StyledResultRow>
+          <StyledResultRowLast>
+            <StyledNetTotalLabel>Net Total</StyledNetTotalLabel>
+            <StyledNetTotalValue>${result.netTotal}</StyledNetTotalValue>
+          </StyledResultRowLast>
 
           {result.auditSteps.length > 0 && (
             <details>
-              <summary style={{ fontSize: 12, cursor: 'pointer', color: 'var(--twentyfont-color-secondary)' }}>
+              <StyledAuditSummary>
                 Pricing audit trail ({result.auditSteps.length} steps)
-              </summary>
+              </StyledAuditSummary>
               {result.auditSteps.map((step, index) => (
                 <StyledAuditStep key={index}>
                   {step.ruleName}: ${step.inputPrice} → ${step.outputPrice}

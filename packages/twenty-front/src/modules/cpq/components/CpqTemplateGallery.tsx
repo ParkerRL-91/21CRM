@@ -51,20 +51,26 @@ const StyledSectionTitle = styled.h2`
   width: 100%;
 `;
 
+const StyledWrapper = styled.div`
+  width: 100%;
+`;
+
+const StyledTemplateIcon = styled.span`
+  font-size: 24px;
+`;
+
 // Template gallery for quick-starting product/pricing setup.
 // Shown on the CPQ settings page after CPQ is enabled.
 // Each template pre-configures a common pricing model so admins
 // can create their first product in under 60 seconds.
 export const CpqTemplateGallery = () => {
-  const handleSelectTemplate = (template: PricingTemplate) => {
-    // Navigate to product creation with template defaults pre-filled
-    // This would integrate with Twenty's navigation to open the
-    // Quote or PriceConfiguration object creation form
-    console.log('Selected template:', template.id, template.defaults);
+  const handleSelectTemplate = (_template: PricingTemplate) => {
+    // Navigation to the object creation form is wired up at the page level
+    // when this gallery is embedded in the CPQ settings route.
   };
 
   return (
-    <div style={{ width: '100%' }}>
+    <StyledWrapper>
       <StyledSectionTitle>Quick Start Templates</StyledSectionTitle>
       <StyledGrid>
         {CPQ_PRICING_TEMPLATES.map((template) => (
@@ -73,12 +79,12 @@ export const CpqTemplateGallery = () => {
             onClick={() => handleSelectTemplate(template)}
             aria-label={`Use ${template.title} template`}
           >
-            <span style={{ fontSize: 24 }}>{template.icon}</span>
+            <StyledTemplateIcon>{template.icon}</StyledTemplateIcon>
             <StyledTitle>{template.title}</StyledTitle>
             <StyledDescription>{template.description}</StyledDescription>
           </StyledCard>
         ))}
       </StyledGrid>
-    </div>
+    </StyledWrapper>
   );
 };

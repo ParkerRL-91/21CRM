@@ -1,3 +1,5 @@
+import Decimal from 'decimal.js';
+
 import { CpqPricingService } from './cpq-pricing.service';
 
 describe('CpqPricingService', () => {
@@ -137,7 +139,7 @@ describe('CpqPricingService', () => {
     ];
 
     it('should return first tier rate for low quantity', () => {
-      const price = service.calculateVolumePrice(50, tiers, {} as any);
+      const price = service.calculateVolumePrice(50, tiers, new Decimal(0));
       expect(price.toString()).toBe('50');
     });
 
