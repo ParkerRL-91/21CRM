@@ -32,6 +32,10 @@ export enum AppPath {
 
   Authorize = '/authorize',
 
+  // CPQ
+  CpqQuoteNew = '/cpq/quotes/new',
+  CpqQuoteDetail = '/cpq/quotes/:id',
+
   // 404 page not found
   NotFoundWildcard = '*',
   NotFound = '/not-found',

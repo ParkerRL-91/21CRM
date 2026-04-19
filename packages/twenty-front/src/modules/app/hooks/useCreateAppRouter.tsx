@@ -106,6 +106,12 @@ const NotFound = lazy(() =>
   })),
 );
 
+const QuoteBuilderPage = lazy(() =>
+  import('~/pages/cpq/QuoteBuilderPage').then((module) => ({
+    default: module.QuoteBuilderPage,
+  })),
+);
+
 export const useCreateAppRouter = (
   isFunctionSettingsEnabled?: boolean,
   isAdminPageEnabled?: boolean,
@@ -231,6 +237,22 @@ export const useCreateAppRouter = (
             element={
               <LazyRoute>
                 <StandalonePageLayoutPage />
+              </LazyRoute>
+            }
+          />
+          <Route
+            path={AppPath.CpqQuoteNew}
+            element={
+              <LazyRoute>
+                <QuoteBuilderPage />
+              </LazyRoute>
+            }
+          />
+          <Route
+            path={AppPath.CpqQuoteDetail}
+            element={
+              <LazyRoute>
+                <QuoteBuilderPage />
               </LazyRoute>
             }
           />
