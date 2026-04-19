@@ -84,8 +84,8 @@
 
 | Task | Title | Status | Notes |
 |------|-------|--------|-------|
-| TASK-141 | E-Signature Integration | ⬜ Backlog | DocuSign + PandaDoc adapters |
-| TASK-142 | Billing System Sync | ⬜ Backlog | Stripe + Chargebee adapters |
+| TASK-141 | E-Signature Integration | ✅ Done | CpqESignatureService: DocuSign + PandaDoc adapters (ESignatureAdapter interface); createEnvelope, getEnvelopeStatus, voidEnvelope, handleWebhook; controller endpoints: esignature/send, status, void, webhook/:provider |
+| TASK-142 | Billing System Sync | ✅ Done | CpqBillingSyncService: Stripe + Chargebee adapters (BillingAdapter interface); syncSubscription, cancelSubscription, recordUsage, calculateBillingAmount; controller: billing/sync, cancel, usage, preview |
 
 ---
 
@@ -117,7 +117,7 @@
 ## Completion Summary
 
 Total tasks: 33
-Done: 28 / 33
+Done: 30 / 33
 In progress: 0
 Skipped: 1
 
