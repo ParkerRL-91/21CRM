@@ -10,10 +10,20 @@
 | TASK-024 | PRJ-001 | ready | P1 | Currency conversion to CAD |
 | TASK-027 | PRJ-001 | done | P2 | Add skill-creator-harness skill |
 
+## PRJ-004: CPQ Phase 3 Backend (completed 2026-04-18)
+| Task | Status | Priority | Description |
+|------|--------|----------|-------------|
+| TASK-097 | done | P1 | Edge case tests for CPQ services |
+| TASK-098 | done | P1 | Cache object list in setup service (N+1 fix) |
+| TASK-099 | done | P1 | Validated DTOs for CPQ module |
+
 ## Blockers
 _None_
 
 ## Recently Completed
+- TASK-097: Added 101 edge case tests across all CPQ services (2026-04-18)
+- TASK-098: CpqSetupService with single-fetch object list caching (2026-04-18)
+- TASK-099: CPQ DTOs in `src/lib/cpq/dtos/` with Zod validation + 83 tests (2026-04-18)
 - Codebase foundation: sync engine, rev-rec, forecast, pipeline, team pages (pre-PRJ-001)
 - CLAUDE.md + knowledge base + project management framework (2026-03-22)
 - Competitive analysis: Clari, HubiFi, Kluster (2026-03-22)
