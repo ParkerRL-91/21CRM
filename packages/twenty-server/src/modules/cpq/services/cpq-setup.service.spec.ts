@@ -11,6 +11,11 @@ const mockFieldMetadataService = {
   createOneField: jest.fn(),
 };
 
+const mockGlobalWorkspaceOrmManager = {
+  getRepository: jest.fn(),
+  executeInWorkspaceContext: jest.fn(),
+};
+
 describe('CpqSetupService', () => {
   let service: CpqSetupService;
 
@@ -19,6 +24,7 @@ describe('CpqSetupService', () => {
     service = new CpqSetupService(
       mockObjectMetadataService as never,
       mockFieldMetadataService as never,
+      mockGlobalWorkspaceOrmManager as never,
     );
   });
 
