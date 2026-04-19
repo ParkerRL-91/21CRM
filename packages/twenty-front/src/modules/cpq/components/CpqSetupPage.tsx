@@ -4,10 +4,6 @@ import { styled } from '@linaria/react';
 import { useCpqSetup } from 'src/modules/cpq/hooks/use-cpq-setup';
 import { CpqTemplateGallery } from 'src/modules/cpq/components/CpqTemplateGallery';
 
-type CpqSetupPageProps = {
-  workspaceId: string;
-};
-
 const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -117,9 +113,8 @@ const CPQ_OBJECTS_LIST = [
 // Guides the admin through enabling CPQ, which creates all custom objects
 // via Twenty's metadata API. After setup, objects appear natively in the
 // sidebar, record pages, search, and GraphQL API.
-export const CpqSetupPage = ({ workspaceId }: CpqSetupPageProps) => {
-  const { isSetUp, isLoading, error, checkStatus, runSetup } =
-    useCpqSetup(workspaceId);
+export const CpqSetupPage = () => {
+  const { isSetUp, isLoading, error, checkStatus, runSetup } = useCpqSetup();
 
   useEffect(() => {
     checkStatus();

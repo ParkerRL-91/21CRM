@@ -1,4 +1,7 @@
 import { useCallback, useState } from 'react';
+import { useMutation } from '@apollo/client';
+
+import { CALCULATE_PRICE } from 'src/modules/cpq/graphql/cpq.operations';
 
 // Types matching the backend PricingInput / PricingResult
 type PricingInput = {
@@ -34,28 +37,32 @@ type PricingResult = {
 // Used in the quote builder to calculate line item prices in real-time.
 export const useCpqPricing = () => {
   const [result, setResult] = useState<PricingResult | null>(null);
-  const [isCalculating, setIsCalculating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const calculatePrice = useCallback(async (input: PricingInput) => {
-    setIsCalculating(true);
-    setError(null);
-    try {
-      const response = await fetch('/cpq/calculate-price', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(input),
-      });
-      const data: PricingResult = await response.json();
-      setResult(data);
-      return data;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Pricing calculation failed');
-      return null;
-    } finally {
-      setIsCalculating(false);
-    }
-  }, []);
+  const [calculatePriceMutation, { loading: isCalculating }] =
+    useMutation(CALCULATE_PRICE);
+
+  const calculatePrice = useCallback(
+    async (input: PricingInput) => {
+      setError(null);
+      try {
+        const response = await calculatePriceMutation({
+          variables: { input },
+        });
+        const data = response.data?.calculatePrice as PricingResult | null;
+        if (data) {
+          setResult(data);
+        }
+        return data;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'Pricing calculation failed',
+        );
+        return null;
+      }
+    },
+    [calculatePriceMutation],
+  );
 
   return { result, isCalculating, error, calculatePrice };
 };

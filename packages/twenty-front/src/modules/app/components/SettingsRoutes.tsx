@@ -503,6 +503,12 @@ const SettingsRoleAddObjectLevel = lazy(() =>
   ),
 );
 
+const SettingsCpqPage = lazy(() =>
+  import('~/pages/settings/cpq/SettingsCpqPage').then((module) => ({
+    default: module.SettingsCpqPage,
+  })),
+);
+
 type SettingsRoutesProps = {
   isFunctionSettingsEnabled?: boolean;
   isAdminPageEnabled?: boolean;
@@ -841,6 +847,7 @@ export const SettingsRoutes = ({ isAdminPageEnabled }: SettingsRoutesProps) => (
         }
       >
         <Route path={SettingsPath.Updates} element={<SettingsUpdates />} />
+        <Route path={SettingsPath.Cpq} element={<SettingsCpqPage />} />
       </Route>
     </Routes>
   </Suspense>

@@ -197,4 +197,71 @@ describe('CpqPricingService', () => {
       expect(result.newUnitPrice).toBe('150'); // capped at 50%
     });
   });
+
+  describe('edge cases', () => {
+    it('should return netTotal of 0 when quantity is 0', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '100',
+        quantity: 0,
+      });
+      expect(result.netTotal).toBe('0');
+    });
+
+    it('should not throw when listPrice is NaN and should return a defined result', () => {
+      expect(() => {
+        service.calculatePriceWaterfall({
+          listPrice: 'NaN',
+          quantity: 1,
+        });
+      }).not.toThrow();
+      const result = service.calculatePriceWaterfall({
+        listPrice: 'NaN',
+        quantity: 1,
+      });
+      expect(result).toBeDefined();
+      expect(result.netUnitPrice).toBeDefined();
+    });
+
+    it('should not throw when discountSchedule has an empty tiers array', () => {
+      expect(() => {
+        service.calculatePriceWaterfall({
+          listPrice: '100',
+          quantity: 1,
+          discountSchedule: { type: 'tiered', tiers: [] },
+        });
+      }).not.toThrow();
+    });
+
+    it('should handle very large numbers without overflow', () => {
+      const result = service.calculatePriceWaterfall({
+        listPrice: '999999999.99',
+        quantity: 1000,
+      });
+      // 999999999.99 * 1000 = 999999999990
+      expect(result.netTotal).toBe('999999999990');
+    });
+
+    it('should return correct price for volume schedule with a single tier', () => {
+      const tiers = [{ lowerBound: 1, upperBound: null, value: 25 }];
+      const price = service.calculateVolumePrice(500, tiers, {} as any);
+      expect(price.toString()).toBe('25');
+    });
+
+    it('should not throw when term discount schedule has no matching tier for quoteTermMonths', () => {
+      expect(() => {
+        service.calculatePriceWaterfall({
+          listPrice: '100',
+          quantity: 1,
+          quoteTermMonths: 999,
+          discountSchedule: {
+            type: 'term',
+            tiers: [
+              { lowerBound: 12, upperBound: 12, value: 5 },
+              { lowerBound: 24, upperBound: 24, value: 10 },
+            ],
+          },
+        });
+      }).not.toThrow();
+    });
+  });
 });

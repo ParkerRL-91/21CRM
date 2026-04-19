@@ -6,6 +6,8 @@ import {
   Body,
   Logger,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 
 import { WorkspaceEntity } from 'src/engine/core-modules/workspace/workspace.entity';
@@ -28,6 +30,7 @@ import type { RiskAssessmentInput } from 'src/modules/cpq/services/cpq-risk.serv
 // setup/teardown, pricing, risk, transitions, renewal, proration.
 @Controller('cpq')
 @UseGuards(JwtAuthGuard, WorkspaceAuthGuard)
+@UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: false, transform: true }))
 export class CpqController {
   private readonly logger = new Logger(CpqController.name);
 

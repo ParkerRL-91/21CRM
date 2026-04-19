@@ -1,50 +1,43 @@
-import { useCallback, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+
+import {
+  GET_CPQ_STATUS,
+  SETUP_CPQ,
+} from 'src/modules/cpq/graphql/cpq.operations';
 
 // Hook to manage CPQ setup state — checks if CPQ objects exist
 // and triggers setup when needed.
-export const useCpqSetup = (workspaceId: string) => {
-  const [isSetUp, setIsSetUp] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+// Workspace context comes from the auth token automatically via Apollo Client.
+export const useCpqSetup = () => {
+  const {
+    data,
+    loading: isLoading,
+    error,
+    refetch,
+  } = useQuery(GET_CPQ_STATUS, {
+    fetchPolicy: 'cache-and-network',
+  });
 
-  const checkStatus = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/cpq/status/${workspaceId}`);
-      const data = await response.json();
-      // Backend getSetupStatus() returns { isSetUp, objectCount, ... }
-      setIsSetUp(data.isSetUp);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to check CPQ status');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [workspaceId]);
+  const [setupCpqMutation, { loading: isSettingUp }] = useMutation(SETUP_CPQ, {
+    refetchQueries: [{ query: GET_CPQ_STATUS }],
+  });
 
-  const runSetup = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch('/cpq/setup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ workspaceId }),
-      });
-      const data = await response.json();
+  const isSetUp = data?.cpqStatus?.isSetUp ?? null;
 
-      if (data.errors?.length > 0) {
-        setError(`Setup completed with errors: ${data.errors.join(', ')}`);
-      }
+  const runSetup = async () => {
+    const result = await setupCpqMutation();
+    return result.data?.setupCpq;
+  };
 
-      setIsSetUp(true);
-      return data;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'CPQ setup failed');
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [workspaceId]);
+  const checkStatus = async () => {
+    await refetch();
+  };
 
-  return { isSetUp, isLoading, error, checkStatus, runSetup };
+  return {
+    isSetUp,
+    isLoading: isLoading || isSettingUp,
+    error: error?.message ?? null,
+    checkStatus,
+    runSetup,
+  };
 };

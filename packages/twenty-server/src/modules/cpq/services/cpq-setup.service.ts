@@ -331,14 +331,17 @@ export class CpqSetupService {
       errors: [],
     };
 
+    // Fetch all workspace objects once to avoid N+1 queries during existence checks
+    const allObjects = await this.objectMetadataService.findManyWithinWorkspace(workspaceId);
+
     // Track created object IDs for relation creation
     const objectIds: Record<string, string> = {};
 
     // Phase 1: Create objects
     for (const [key, def] of Object.entries(CPQ_OBJECTS)) {
       try {
-        // Check if object already exists
-        const existing = await this.findObjectByName(workspaceId, def.nameSingular);
+        // Check if object already exists using the cached list
+        const existing = this.findObjectByNameInList(allObjects, def.nameSingular);
         if (existing) {
           objectIds[key] = existing.id;
           result.skipped.push(def.nameSingular);
@@ -359,11 +362,11 @@ export class CpqSetupService {
       }
     }
 
-    // Also get standard object IDs for relations
+    // Also get standard object IDs for relations using the cached list
     try {
-      const companyObj = await this.findObjectByName(workspaceId, 'company');
+      const companyObj = this.findObjectByNameInList(allObjects, 'company');
       if (companyObj) objectIds['company'] = companyObj.id;
-      const oppObj = await this.findObjectByName(workspaceId, 'opportunity');
+      const oppObj = this.findObjectByNameInList(allObjects, 'opportunity');
       if (oppObj) objectIds['opportunity'] = oppObj.id;
     } catch (error) {
       this.logger.warn(`Could not find standard objects for relations: ${error}`);
@@ -439,6 +442,14 @@ export class CpqSetupService {
     );
 
     return result;
+  }
+
+  // Filter from a pre-fetched list — no DB call, used inside setupCpq to avoid N+1
+  private findObjectByNameInList(
+    objects: Array<{ nameSingular: string; id: string }>,
+    name: string,
+  ): { id: string } | null {
+    return objects.find((o) => o.nameSingular === name) ?? null;
   }
 
   private async findObjectByName(workspaceId: string, name: string): Promise<{ id: string } | null> {

@@ -130,6 +130,21 @@ describe('CpqSetupService', () => {
       // 8 relations defined in CPQ_RELATIONS
       expect(result.relationsCreated).toBe(8);
     });
+
+    it('should call findManyWithinWorkspace exactly once regardless of object count (no N+1)', async () => {
+      mockObjectMetadataService.findManyWithinWorkspace.mockResolvedValue([
+        { nameSingular: 'company', id: 'company-id' },
+        { nameSingular: 'opportunity', id: 'opp-id' },
+      ]);
+      mockObjectMetadataService.createOneObject.mockResolvedValue({ id: 'new-obj-id' });
+      mockFieldMetadataService.createOneField.mockResolvedValue({ id: 'new-field-id' });
+
+      await service.setupCpq('workspace-123');
+
+      // All 6 CPQ object existence checks + company/opportunity lookup must use
+      // the single up-front fetch, not individual DB calls per object
+      expect(mockObjectMetadataService.findManyWithinWorkspace).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('teardownCpq', () => {
