@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 
 import { ObjectMetadataModule } from 'src/engine/metadata-modules/object-metadata/object-metadata.module';
 import { FieldMetadataModule } from 'src/engine/metadata-modules/field-metadata/field-metadata.module';
+import { TokenModule } from 'src/engine/core-modules/auth/token/token.module';
+import { WorkspaceCacheStorageModule } from 'src/engine/workspace-cache-storage/workspace-cache-storage.module';
 
 import { CpqController } from 'src/modules/cpq/cpq.controller';
 import { CpqResolver } from 'src/modules/cpq/cpq.resolver';
@@ -17,7 +19,12 @@ import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
 // record pages, navigation, and search.
 // Custom business logic (pricing, renewals, risk) exposed via controller and resolver.
 @Module({
-  imports: [ObjectMetadataModule, FieldMetadataModule],
+  imports: [
+    ObjectMetadataModule,
+    FieldMetadataModule,
+    TokenModule,
+    WorkspaceCacheStorageModule,
+  ],
   controllers: [CpqController],
   providers: [
     CpqResolver,

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { ObjectMetadataService } from 'src/engine/metadata-modules/object-metadata/object-metadata.service';
 import { FieldMetadataService } from 'src/engine/metadata-modules/field-metadata/services/field-metadata.service';
+import { RelationType } from 'src/engine/metadata-modules/field-metadata/interfaces/relation-type.interface';
 import {
   type FieldMetadataDefaultValue,
   type FieldMetadataOptions,
@@ -422,7 +423,7 @@ export class CpqSetupService {
               label: rel.sourceLabel,
               type: FieldMetadataType.RELATION,
               relationCreationPayload: {
-                type: 'MANY_TO_ONE',
+                type: RelationType.MANY_TO_ONE,
                 targetObjectMetadataId: targetObjectId,
                 targetFieldLabel: rel.targetLabel,
                 targetFieldIcon: rel.targetIcon,
