@@ -45,6 +45,11 @@ const jestConfig = {
     '^src/(.*)': '<rootDir>/src/$1',
     '^test/(.*)': '<rootDir>/test/$1',
     '^file-type$': '<rootDir>/node_modules/file-type/index.js',
+    // twenty-shared is not pre-built in this env — point jest directly at source
+    '^twenty-shared/(.*)$': '<rootDir>/../twenty-shared/src/$1',
+    '^twenty-shared$': '<rootDir>/../twenty-shared/src/index.ts',
+    // @/ is the twenty-shared internal path alias (maps to its own src/)
+    '^@/(.*)$': '<rootDir>/../twenty-shared/src/$1',
   },
   moduleFileExtensions: ['js', 'json', 'ts'],
   modulePathIgnorePatterns: ['<rootDir>/dist'],

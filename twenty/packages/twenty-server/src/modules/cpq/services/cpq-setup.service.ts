@@ -475,10 +475,10 @@ export class CpqSetupService {
         const existing = await this.findObjectByName(workspaceId, objectName);
         if (!existing) continue;
 
-        await this.objectMetadataService.deleteOneObject(
-          { objectMetadataId: existing.id },
+        await this.objectMetadataService.deleteOneObject({
+          deleteObjectInput: { id: existing.id },
           workspaceId,
-        );
+        });
         result.objectsRemoved.push(objectName);
         this.logger.log(`Removed object: ${objectName}`);
       } catch (error) {
@@ -494,7 +494,7 @@ export class CpqSetupService {
   // Get current CPQ setup version and object count for a workspace.
   async getSetupStatus(workspaceId: string): Promise<SetupStatus> {
     const objects = await this.objectMetadataService.findManyWithinWorkspace(workspaceId);
-    const cpqObjectNames = Object.values(CPQ_OBJECTS).map((o) => o.nameSingular);
+    const cpqObjectNames: string[] = Object.values(CPQ_OBJECTS).map((o) => o.nameSingular);
     const foundObjects = objects
       .filter((o: { nameSingular: string }) => cpqObjectNames.includes(o.nameSingular))
       .map((o: { nameSingular: string }) => o.nameSingular);

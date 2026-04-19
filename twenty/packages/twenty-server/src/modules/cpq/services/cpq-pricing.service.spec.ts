@@ -1,4 +1,4 @@
-import { CpqPricingService } from '../cpq-pricing.service';
+import { CpqPricingService } from './cpq-pricing.service';
 
 describe('CpqPricingService', () => {
   let service: CpqPricingService;

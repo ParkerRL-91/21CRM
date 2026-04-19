@@ -1,4 +1,4 @@
-import { CpqRiskService } from '../cpq-risk.service';
+import { CpqRiskService } from './cpq-risk.service';
 
 describe('CpqRiskService', () => {
   let service: CpqRiskService;
