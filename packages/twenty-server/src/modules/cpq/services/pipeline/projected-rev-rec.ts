@@ -1,14 +1,12 @@
-/**
- * Projected revenue recognition engine.
- *
- * Three modes:
- *   1. closed_only    — Recognized revenue from closed-won deals only
- *   2. plus_pipeline  — Closed-won + probability-weighted open pipeline
- *   3. plus_quotes    — Closed-won + pipeline + probability-weighted open quotes
- *
- * Each mode produces a monthly schedule of projected recognized revenue,
- * spreading deal/quote amounts evenly over their subscription term.
- */
+// Projected revenue recognition engine.
+//
+// Three modes:
+//   1. closed_only    — Recognized revenue from closed-won deals only
+//   2. plus_pipeline  — Closed-won + probability-weighted open pipeline
+//   3. plus_quotes    — Closed-won + pipeline + probability-weighted open quotes
+//
+// Each mode produces a monthly schedule of projected recognized revenue,
+// spreading deal/quote amounts evenly over their subscription term.
 
 import Decimal from 'decimal.js';
 
@@ -63,25 +61,25 @@ export type ProjectedRevRecResult = {
 // Date utilities
 // ============================================================================
 
-/** Parse YYYY-MM or YYYY-MM-DD to { year, month } (1-indexed month) */
+// Parse YYYY-MM or YYYY-MM-DD to { year, month } (1-indexed month)
 function parseYearMonth(iso: string): { year: number; month: number } {
   const parts = iso.split('-');
   return { year: parseInt(parts[0]), month: parseInt(parts[1]) };
 }
 
-/** Format { year, month } to YYYY-MM */
+// Format { year, month } to YYYY-MM
 function toYearMonth(year: number, month: number): string {
   return `${year}-${String(month).padStart(2, '0')}`;
 }
 
-/** Number of months between two YYYY-MM strings (inclusive). */
+// Number of months between two YYYY-MM strings (inclusive).
 function monthsBetween(start: string, end: string): number {
   const s = parseYearMonth(start);
   const e = parseYearMonth(end);
   return (e.year - s.year) * 12 + (e.month - s.month) + 1;
 }
 
-/** Advance by N months. */
+// Advance by N months.
 function addMonths(base: { year: number; month: number }, n: number): { year: number; month: number } {
   const totalMonths = base.year * 12 + (base.month - 1) + n;
   return { year: Math.floor(totalMonths / 12), month: (totalMonths % 12) + 1 };
@@ -98,10 +96,8 @@ type SpreadItem = {
   weight: number;    // 0-1 multiplier (probability / 100 for pipeline/quotes; 1 for closed)
 };
 
-/**
- * Spread a deal's amount evenly over its term and return per-month amounts.
- * Returns a map of YYYY-MM → contribution.
- */
+// Spread a deal's amount evenly over its term and return per-month amounts.
+// Returns a map of YYYY-MM → contribution.
 function spreadOverTerm(item: SpreadItem): Map<string, number> {
   const result = new Map<string, number>();
 

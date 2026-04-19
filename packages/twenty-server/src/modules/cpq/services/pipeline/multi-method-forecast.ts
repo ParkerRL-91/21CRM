@@ -1,7 +1,5 @@
-/**
- * Multi-method forecast display engine.
- * Computes pipeline, historical, and blended forecasts side-by-side.
- */
+// Multi-method forecast display engine.
+// Computes pipeline, historical, and blended forecasts side-by-side.
 
 import Decimal from 'decimal.js';
 
@@ -44,9 +42,7 @@ export type MultiMethodForecastResult = {
   attainmentPercent?: Record<ForecastMethod, number>;
 };
 
-/**
- * Pipeline method: sum of (amount × probability) for all open deals.
- */
+// Pipeline method: sum of (amount × probability) for all open deals.
 export function computePipelineForecast(deals: OpenDeal[]): number {
   return deals.reduce(
     (sum, d) =>
@@ -58,12 +54,9 @@ export function computePipelineForecast(deals: OpenDeal[]): number {
   );
 }
 
-/**
- * Historical method: applies the historical win rate to the current open pipeline value.
- *
- * historicalWinRate = totalClosedWon / totalPipelineEntered (average across provided periods)
- * forecast = sum(open deal amounts) × historicalWinRate
- */
+// Historical method: applies the historical win rate to the current open pipeline value.
+// historicalWinRate = totalClosedWon / totalPipelineEntered (average across provided periods)
+// forecast = sum(open deal amounts) × historicalWinRate
 export function computeHistoricalForecast(
   deals: OpenDeal[],
   history: HistoricalPeriod[],
@@ -84,10 +77,8 @@ export function computeHistoricalForecast(
   return new Decimal(openPipeline).times(winRate).toDecimalPlaces(2).toNumber();
 }
 
-/**
- * Blended method: weighted average of pipeline and historical.
- * Default: 50/50. Pass pipelineWeight (0-1) to adjust.
- */
+// Blended method: weighted average of pipeline and historical.
+// Default: 50/50. Pass pipelineWeight (0-1) to adjust.
 export function computeBlendedForecast(
   pipelineForecast: number,
   historicalForecast: number,
@@ -102,9 +93,7 @@ export function computeBlendedForecast(
     .toNumber();
 }
 
-/**
- * Compute all three methods and return a side-by-side result.
- */
+// Compute all three methods and return a side-by-side result.
 export function computeMultiMethodForecast(
   deals: OpenDeal[],
   history: HistoricalPeriod[],

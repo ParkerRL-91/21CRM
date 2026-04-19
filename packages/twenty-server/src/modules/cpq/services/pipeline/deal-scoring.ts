@@ -1,15 +1,13 @@
-/**
- * Deal scoring engine.
- * Scores deals 0-100 across 6 factors and produces a composite health score.
- *
- * Factors (weights sum to 1.0):
- *   1. engagement           (0.20) — email/call activity recency
- *   2. stage_fit            (0.20) — alignment between stage and days-to-close
- *   3. close_date_health    (0.20) — how far the close date is from today
- *   4. deal_size            (0.15) — deal size relative to company average
- *   5. activity_recency     (0.15) — days since last logged activity
- *   6. relationship_strength (0.10) — number of contacts engaged
- */
+// Deal scoring engine.
+// Scores deals 0-100 across 6 factors and produces a composite health score.
+//
+// Factors (weights sum to 1.0):
+//   1. engagement           (0.20) — email/call activity recency
+//   2. stage_fit            (0.20) — alignment between stage and days-to-close
+//   3. close_date_health    (0.20) — how far the close date is from today
+//   4. deal_size            (0.15) — deal size relative to company average
+//   5. activity_recency     (0.15) — days since last logged activity
+//   6. relationship_strength (0.10) — number of contacts engaged
 
 export type DealScoreFactor = {
   name: string;
@@ -31,12 +29,7 @@ export type DealScore = {
 // Factor 1 — Engagement
 // ============================================================================
 
-/**
- * Engagement score based on recent email/call touches.
- *
- * @param touchesLast14Days  Number of logged touches in the last 14 days
- * @param benchmark          Expected touches in a healthy deal (default: 5)
- */
+// Engagement score based on recent email/call touches.
 export function scoreEngagement(
   touchesLast14Days: number,
   benchmark: number = 5,
@@ -59,13 +52,8 @@ export function scoreEngagement(
 // Factor 2 — Stage Fit
 // ============================================================================
 
-/**
- * Stage fit: deals in late stages should have a close date soon.
- * Penalizes deals where the stage implies urgency but close date is far away.
- *
- * @param stageProbability   Stage probability 0-100
- * @param daysToClose        Calendar days until close date
- */
+// Stage fit: deals in late stages should have a close date soon.
+// Penalizes deals where the stage implies urgency but close date is far away.
 export function scoreStageFit(
   stageProbability: number,
   daysToClose: number,
@@ -104,12 +92,8 @@ export function scoreStageFit(
 // Factor 3 — Close Date Health
 // ============================================================================
 
-/**
- * Close date health: how far in the future the close date is.
- * Very near-term = likely to resolve (good or bad). Very far = risky.
- *
- * @param daysToClose  Days until close date (negative = past)
- */
+// Close date health: how far in the future the close date is.
+// Very near-term = likely to resolve (good or bad). Very far = risky.
 export function scoreCloseDateHealth(daysToClose: number): DealScoreFactor {
   let raw: number;
   if (daysToClose < 0) {
@@ -139,13 +123,8 @@ export function scoreCloseDateHealth(daysToClose: number): DealScoreFactor {
 // Factor 4 — Deal Size
 // ============================================================================
 
-/**
- * Deal size relative to company average. Larger deals need more attention.
- * Penalizes deals that are very large (high risk) or very small (low priority).
- *
- * @param dealAmount     Deal amount
- * @param averageDeal    Company average deal size (ACV)
- */
+// Deal size relative to company average. Larger deals need more attention.
+// Penalizes deals that are very large (high risk) or very small (low priority).
 export function scoreDealSize(dealAmount: number, averageDeal: number): DealScoreFactor {
   if (averageDeal <= 0) {
     return { name: 'deal_size', weight: 0.15, rawScore: 50, weightedScore: 7.5, label: 'No baseline' };
@@ -176,12 +155,7 @@ export function scoreDealSize(dealAmount: number, averageDeal: number): DealScor
 // Factor 5 — Activity Recency
 // ============================================================================
 
-/**
- * Activity recency: days since last logged activity (call, email, meeting).
- *
- * @param daysSinceLastActivity
- * @param threshold  Days after which score starts dropping (default: 7)
- */
+// Activity recency: days since last logged activity (call, email, meeting).
 export function scoreActivityRecency(
   daysSinceLastActivity: number,
   threshold: number = 7,
@@ -208,13 +182,8 @@ export function scoreActivityRecency(
 // Factor 6 — Relationship Strength
 // ============================================================================
 
-/**
- * Relationship strength: number of distinct contacts engaged at the account.
- * Multi-threading = healthier deal.
- *
- * @param contactsEngaged  Number of contacts with logged interactions
- * @param benchmark        Ideal number of contacts (default: 3)
- */
+// Relationship strength: number of distinct contacts engaged at the account.
+// Multi-threading = healthier deal.
 export function scoreRelationshipStrength(
   contactsEngaged: number,
   benchmark: number = 3,

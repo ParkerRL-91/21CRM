@@ -1,8 +1,6 @@
-/**
- * Quarter progression chart engine.
- * Produces cumulative closed-won vs quota data points with a pace projection
- * to quarter-end, suitable for a line/area chart.
- */
+// Quarter progression chart engine.
+// Produces cumulative closed-won vs quota data points with a pace projection
+// to quarter-end, suitable for a line/area chart.
 
 import Decimal from 'decimal.js';
 
@@ -36,36 +34,31 @@ export type QuarterProgressionResult = {
   dataPoints: ProgressionDataPoint[];
 };
 
-/** Parse ISO date string to midnight UTC Date */
+// Parse ISO date string to midnight UTC Date
 function parseDate(iso: string): Date {
   return new Date(`${iso}T00:00:00Z`);
 }
 
-/** Format Date to ISO date string YYYY-MM-DD */
+// Format Date to ISO date string YYYY-MM-DD
 function formatDate(d: Date): string {
   return d.toISOString().split('T')[0];
 }
 
-/** Add N calendar days to a Date */
+// Add N calendar days to a Date
 function addDays(d: Date, n: number): Date {
   const copy = new Date(d.getTime());
   copy.setUTCDate(copy.getUTCDate() + n);
   return copy;
 }
 
-/** Number of days between two dates (inclusive start, exclusive end) */
+// Number of days between two dates (inclusive start, exclusive end)
 function daysBetween(from: Date, to: Date): number {
   return Math.round((to.getTime() - from.getTime()) / 86_400_000);
 }
 
-/**
- * Compute the quarter progression data.
- *
- * @param deals     Closed-won deals (only those within the quarter are counted)
- * @param quarter   Quarter start/end bounds
- * @param quota     Total quota for the quarter
- * @param asOf      "Today" date — used to project pace (defaults to current date)
- */
+// Compute the quarter progression data.
+// Closed-won deals outside the quarter bounds are ignored.
+// asOf defaults to current date for pace projection.
 export function computeQuarterProgression(
   deals: ClosedDeal[],
   quarter: QuarterBounds,
@@ -152,7 +145,7 @@ export function computeQuarterProgression(
   };
 }
 
-/** Helper: derive standard quarter bounds from a year+quarter number (1-4). */
+// Helper: derive standard quarter bounds from a year+quarter number (1-4).
 export function quarterBounds(year: number, q: 1 | 2 | 3 | 4): QuarterBounds {
   const startMonths: Record<number, number> = { 1: 1, 2: 4, 3: 7, 4: 10 };
   const startMonth = startMonths[q];

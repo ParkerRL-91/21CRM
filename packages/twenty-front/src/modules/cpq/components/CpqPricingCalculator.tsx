@@ -50,6 +50,20 @@ const StyledAuditStep = styled.div`
   padding: 2px 0;
 `;
 
+const StyledCalculateButton = styled.button`
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--twentyborder-color);
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
 // Live pricing calculator component.
 // Used in the quote builder to show real-time price calculations
 // as the user adjusts quantity, discounts, or pricing model.
@@ -103,20 +117,9 @@ export const CpqPricingCalculator = () => {
             max={100}
           />
         </div>
-        <button
-          onClick={handleCalculate}
-          disabled={isCalculating}
-          style={{
-            padding: '8px 16px',
-            borderRadius: 4,
-            border: '1px solid var(--twentyborder-color)',
-            background: 'white',
-            cursor: 'pointer',
-            fontSize: 14,
-          }}
-        >
+        <StyledCalculateButton onClick={handleCalculate} disabled={isCalculating}>
           {isCalculating ? '...' : 'Calculate'}
-        </button>
+        </StyledCalculateButton>
       </StyledRow>
 
       {error && (

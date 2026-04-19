@@ -1,8 +1,6 @@
-/**
- * Pipeline movement view engine.
- * Compares two pipeline snapshots to compute weekly adds, losses,
- * closed-won, and stage changes — broken down by rep.
- */
+// Pipeline movement view engine.
+// Compares two pipeline snapshots to compute weekly adds, losses,
+// closed-won, and stage changes — broken down by rep.
 
 import Decimal from 'decimal.js';
 
@@ -65,15 +63,12 @@ function isClosedLost(stage: string): boolean {
   return CLOSED_LOST_STAGES.has(stage.toLowerCase().replace(/-/g, ' '));
 }
 
-/**
- * Compute pipeline movement between two snapshots.
- *
- * - Deals in `endSnapshot` but not `startSnapshot` → added
- * - Deals in `startSnapshot` but not `endSnapshot`:
- *   - if end stage was closed_won → closedWon
- *   - if end stage was closed_lost OR simply missing → lost
- * - Deals present in both but stage changed → stageChange
- */
+// Compute pipeline movement between two snapshots.
+// - Deals in endSnapshot but not startSnapshot → added
+// - Deals in startSnapshot but not endSnapshot:
+//   - if end stage was closed_won → closedWon
+//   - if end stage was closed_lost OR simply missing → lost
+// - Deals present in both but stage changed → stageChange
 export function computePipelineMovement(
   startSnapshot: DealSnapshot[],
   endSnapshot: DealSnapshot[],

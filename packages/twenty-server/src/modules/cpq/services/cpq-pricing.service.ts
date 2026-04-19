@@ -162,7 +162,7 @@ export class CpqPricingService {
   }
 }
 // Types
-export interface PricingInput {
+export type PricingInput = {
   listPrice: string;
   quantity: number;
   productBaseTermMonths?: number;
@@ -173,32 +173,32 @@ export interface PricingInput {
   manualDiscountAmount?: number;
   manualPriceOverride?: number;
   floorPrice?: string;
-}
-export interface DiscountTier {
+};
+export type DiscountTier = {
   lowerBound: number;
   upperBound: number | null;
   value: number;
-}
-export interface PricingAuditStep {
+};
+export type PricingAuditStep = {
   ruleName: string;
   inputPrice: string;
   outputPrice: string;
   parameters?: Record<string, string>;
   timestamp: string;
-}
-export interface PricingResult {
+};
+export type PricingResult = {
   netUnitPrice: string;
   netTotal: string;
   listPrice: string;
   auditSteps: PricingAuditStep[];
-}
-export interface RenewalPricingInput {
+};
+export type RenewalPricingInput = {
   currentPrice: string;
   method: 'same_price' | 'current_list' | 'uplift_percentage';
   currentListPrice?: string;
   upliftPercentage?: number;
-}
-export interface RenewalPricingResult {
+};
+export type RenewalPricingResult = {
   newUnitPrice: string;
   method: string;
-}
+};

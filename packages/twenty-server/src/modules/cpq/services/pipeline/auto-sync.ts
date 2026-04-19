@@ -1,10 +1,7 @@
-/**
- * Scheduled auto-sync job abstraction.
- *
- * Defines the SyncJob contract and runDailySync runner.
- * Intentionally scheduler-agnostic — can be wired to cron, BullMQ,
- * Vercel Cron, or any other trigger without changing this module.
- */
+// Scheduled auto-sync job abstraction.
+// Defines the SyncJob contract and runDailySync runner.
+// Intentionally scheduler-agnostic — can be wired to cron, BullMQ,
+// or any other trigger without changing this module.
 
 export type SyncProvider = 'hubspot' | 'salesforce' | 'mock';
 
@@ -41,10 +38,8 @@ async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * Run a single sync attempt with retry logic.
- * Returns the first successful result or the last error result.
- */
+// Run a single sync attempt with retry logic.
+// Returns the first successful result or the last error result.
 export async function runWithRetry(
   handler: SyncHandler,
   provider: SyncProvider,
@@ -78,10 +73,8 @@ export async function runWithRetry(
   return lastResult!;
 }
 
-/**
- * Execute the daily sync for a given job config.
- * Updates lastRunAt and lastResult on the job object.
- */
+// Execute the daily sync for a given job config.
+// Updates lastRunAt and lastResult on the job object.
 export async function runDailySync(
   job: SyncJob,
   handler: SyncHandler,
@@ -111,9 +104,7 @@ export async function runDailySync(
   return { job: updatedJob, result };
 }
 
-/**
- * Build a SyncResult from counts (convenience for implementors).
- */
+// Build a SyncResult from counts (convenience for implementors).
 export function buildSyncResult(
   provider: SyncProvider,
   startedAt: string,

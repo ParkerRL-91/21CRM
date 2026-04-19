@@ -1,7 +1,5 @@
-/**
- * CRM provider abstraction.
- * Normalizes deal/contact/account data from any CRM into 21CRM's internal model.
- */
+// CRM provider abstraction.
+// Normalizes deal/contact/account data from any CRM into 21CRM's internal model.
 
 export type NormalizedDeal = {
   id: string;
@@ -57,9 +55,7 @@ export type FetchResult<T> = {
   hasMore: boolean;
 };
 
-/**
- * CrmProvider interface — implement this to add a new CRM integration.
- */
+// CrmProvider type — implement this to add a new CRM integration.
 export type CrmProvider = {
   readonly name: string;
 

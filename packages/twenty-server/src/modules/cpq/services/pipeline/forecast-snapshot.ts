@@ -1,7 +1,5 @@
-/**
- * Forecast snapshot engine.
- * Point-in-time pipeline freeze, snapshot comparison, and accuracy tracking.
- */
+// Forecast snapshot engine.
+// Point-in-time pipeline freeze, snapshot comparison, and accuracy tracking.
 
 import Decimal from 'decimal.js';
 
@@ -56,9 +54,7 @@ export type AccuracyMetrics = {
   accurate: boolean;           // errorPercent <= threshold
 };
 
-/**
- * Create a new forecast snapshot from a list of deals.
- */
+// Create a new forecast snapshot from a list of deals.
 export function createSnapshot(
   id: string,
   periodLabel: string,
@@ -87,9 +83,7 @@ export function createSnapshot(
   };
 }
 
-/**
- * Compare a baseline snapshot to a current snapshot and return a diff.
- */
+// Compare a baseline snapshot to a current snapshot and return a diff.
 export function compareSnapshots(
   baseline: ForecastSnapshot,
   current: ForecastSnapshot,
@@ -166,13 +160,7 @@ export function compareSnapshots(
   };
 }
 
-/**
- * Compute forecast accuracy against actual closed-won revenue.
- *
- * @param snapshot   The forecast snapshot taken at period start
- * @param actualAmount  Actual revenue closed during the period
- * @param accuracyThresholdPercent  Acceptable error % (default 10%)
- */
+// Compute forecast accuracy against actual closed-won revenue.
 export function computeAccuracy(
   snapshot: ForecastSnapshot,
   actualAmount: number,

@@ -10,7 +10,7 @@ export const useCpqSetup = (workspaceId: string) => {
   const checkStatus = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/cpq/status/${workspaceId}`);
+      const response = await fetch('/cpq/status');
       const data = await response.json();
       // Backend getSetupStatus() returns { isSetUp, objectCount, ... }
       setIsSetUp(data.isSetUp);
