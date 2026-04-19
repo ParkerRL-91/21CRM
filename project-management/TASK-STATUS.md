@@ -93,8 +93,8 @@
 
 | Task | Title | Status | Notes |
 |------|-------|--------|-------|
-| TASK-143 | CPQ Reporting & Analytics Dashboard | ⬜ Backlog | ARR waterfall + quote funnel + rep performance |
-| TASK-148 | CPQ Home Dashboard | ⬜ Backlog | Rep home + admin home |
+| TASK-143 | CPQ Reporting & Analytics Dashboard | ✅ Done | CpqAnalyticsService: ARR waterfall (new biz/expansion/contraction/churn/ending), quote funnel by status, rep leaderboard (win rate/avg deal/days to close), pipeline metrics (weighted by stage); CpqAnalyticsDashboardPage with bar charts + tables |
+| TASK-148 | CPQ Home Dashboard | ✅ Done | CpqHomeDashboardPage: 6 summary metric cards (Active ARR, open pipeline, win rate, avg deal, pending renewal ARR, total contracts), urgency renewal banner, 6 quick-action nav cards; useDashboardSummary hook |
 
 ---
 
@@ -117,7 +117,7 @@
 ## Completion Summary
 
 Total tasks: 33
-Done: 30 / 33
+Done: 32 / 33
 In progress: 0
 Skipped: 1
 
