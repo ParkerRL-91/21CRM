@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { styled } from '@linaria/react';
 
-import { useCpqPricing } from 'src/modules/cpq/hooks/use-cpq-pricing';
+import { useCpqPricing } from '@/cpq/hooks/use-cpq-pricing';
 
 const StyledContainer = styled.div`
   border: 1px solid var(--twentyborder-color);
@@ -29,6 +29,11 @@ const StyledInput = styled.input`
     outline: 2px solid var(--twentyfont-color-primary);
     border-color: transparent;
   }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    box-sizing: border-box;
+  }
 `;
 
 const StyledRow = styled.div`
@@ -36,6 +41,13 @@ const StyledRow = styled.div`
   gap: 16px;
   align-items: flex-end;
   margin-bottom: 12px;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
 `;
 
 const StyledResult = styled.div`
@@ -139,7 +151,7 @@ export const CpqPricingCalculator = () => {
               <summary style={{ fontSize: 12, cursor: 'pointer', color: 'var(--twentyfont-color-secondary)' }}>
                 Pricing audit trail ({result.auditSteps.length} steps)
               </summary>
-              {result.auditSteps.map((step, index) => (
+              {result.auditSteps.map((step: { ruleName: string; inputPrice: string; outputPrice: string }, index: number) => (
                 <StyledAuditStep key={index}>
                   {step.ruleName}: ${step.inputPrice} → ${step.outputPrice}
                 </StyledAuditStep>
