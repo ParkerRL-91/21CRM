@@ -4,6 +4,7 @@ import { ObjectMetadataModule } from 'src/engine/metadata-modules/object-metadat
 import { FieldMetadataModule } from 'src/engine/metadata-modules/field-metadata/field-metadata.module';
 
 import { CpqController } from 'src/modules/cpq/cpq.controller';
+import { CpqResolver } from 'src/modules/cpq/cpq.resolver';
 import { CpqSetupService } from 'src/modules/cpq/services/cpq-setup.service';
 import { CpqPricingService } from 'src/modules/cpq/services/cpq-pricing.service';
 import { CpqRenewalService } from 'src/modules/cpq/services/cpq-renewal.service';
@@ -14,11 +15,12 @@ import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
 // Uses Twenty's metadata API to create native custom objects (Quote,
 // Contract, Subscription, etc.) that get automatic CRUD, GraphQL,
 // record pages, navigation, and search.
-// Custom business logic (pricing, renewals, risk) exposed via controller.
+// Custom business logic (pricing, renewals, risk) exposed via controller and resolver.
 @Module({
   imports: [ObjectMetadataModule, FieldMetadataModule],
   controllers: [CpqController],
   providers: [
+    CpqResolver,
     CpqSetupService,
     CpqPricingService,
     CpqRenewalService,

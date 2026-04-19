@@ -2,7 +2,7 @@
 title: "Build GraphQL resolvers for CPQ business logic"
 id: TASK-086
 project: PRJ-004
-status: ready
+status: done
 priority: P0
 created: 2026-04-12
 updated: 2026-04-12
@@ -75,7 +75,22 @@ Custom GraphQL resolver class exposing CPQ business logic as mutations. Twenty i
 
 ## Files to Change
 
-- `twenty/packages/twenty-server/src/modules/cpq/cpq.resolver.ts` — NEW: GraphQL resolver
-- `twenty/packages/twenty-server/src/modules/cpq/dtos/` — NEW: Input/Output types
-- `twenty/packages/twenty-server/src/modules/cpq/cpq.module.ts` — MODIFY: register resolver
-- `twenty/packages/twenty-server/src/modules/cpq/cpq.resolver.spec.ts` — NEW: tests
+- `twenty/packages/twenty-server/src/modules/cpq/cpq.resolver.ts` — CREATED: GraphQL resolver with 6 mutations + 1 query
+- `twenty/packages/twenty-server/src/modules/cpq/dtos/calculate-price.input.ts` — CREATED
+- `twenty/packages/twenty-server/src/modules/cpq/dtos/pricing-result.output.ts` — CREATED
+- `twenty/packages/twenty-server/src/modules/cpq/dtos/setup-result.output.ts` — CREATED
+- `twenty/packages/twenty-server/src/modules/cpq/dtos/cpq-status.output.ts` — CREATED
+- `twenty/packages/twenty-server/src/modules/cpq/dtos/assess-risk.input.ts` — CREATED
+- `twenty/packages/twenty-server/src/modules/cpq/dtos/risk-assessment.output.ts` — CREATED
+- `twenty/packages/twenty-server/src/modules/cpq/dtos/renewal-result.output.ts` — CREATED
+- `twenty/packages/twenty-server/src/modules/cpq/cpq.module.ts` — MODIFIED: added CpqResolver to providers
+- `twenty/packages/twenty-server/src/modules/cpq/cpq.resolver.spec.ts` — CREATED: 7 tests
+
+## Status Log
+- 2026-04-12: Created
+- 2026-04-12: Completed — created resolver + DTOs, registered in module, 7 tests
+
+## Takeaways
+- Twenty module resolvers use @MetadataResolver() (not bare @Resolver()) to route to the metadata GraphQL schema
+- Date fields are passed as strings in GraphQL InputTypes and converted to Date objects in the resolver before calling services
+- @AuthWorkspace() works in both HTTP and GraphQL contexts via getRequest() which handles both execution context types
