@@ -1,9 +1,10 @@
 import { styled } from '@linaria/react';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
 import {
   CPQ_PRICING_TEMPLATES,
   type PricingTemplate,
-} from 'src/modules/cpq/constants/cpq-pricing-templates';
+} from '@/cpq/constants/cpq-pricing-templates';
 
 const StyledGrid = styled.div`
   display: grid;
@@ -13,21 +14,21 @@ const StyledGrid = styled.div`
 `;
 
 const StyledCard = styled.button`
-  background: white;
-  border: 2px solid var(--twentyborder-color);
-  border-radius: 8px;
+  background: ${themeCssVariables.background.primary};
+  border: 2px solid ${themeCssVariables.border.color.medium};
+  border-radius: ${themeCssVariables.border.radius.md};
   padding: 20px;
   text-align: left;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 
   &:hover {
-    border-color: var(--twentyfont-color-primary);
-    background: var(--twentycolor-blue-10);
+    border-color: ${themeCssVariables.font.color.primary};
+    background: ${themeCssVariables.background.transparent.blue};
   }
 
   &:focus {
-    outline: 2px solid var(--twentyfont-color-primary);
+    outline: 2px solid ${themeCssVariables.font.color.primary};
     outline-offset: 2px;
   }
 `;
@@ -40,7 +41,7 @@ const StyledTitle = styled.h3`
 
 const StyledDescription = styled.p`
   font-size: 12px;
-  color: var(--twentyfont-color-secondary);
+  color: ${themeCssVariables.font.color.secondary};
   margin: 0;
 `;
 
@@ -48,6 +49,14 @@ const StyledSectionTitle = styled.h2`
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 16px;
+  width: 100%;
+`;
+
+const StyledTemplateIcon = styled.span`
+  font-size: 24px;
+`;
+
+const StyledWrapper = styled.div`
   width: 100%;
 `;
 
@@ -64,21 +73,21 @@ export const CpqTemplateGallery = () => {
   };
 
   return (
-    <div style={{ width: '100%' }}>
+    <StyledWrapper>
       <StyledSectionTitle>Quick Start Templates</StyledSectionTitle>
       <StyledGrid>
-        {CPQ_PRICING_TEMPLATES.map((template) => (
+        {CPQ_PRICING_TEMPLATES.map((template: PricingTemplate) => (
           <StyledCard
             key={template.id}
             onClick={() => handleSelectTemplate(template)}
             aria-label={`Use ${template.title} template`}
           >
-            <span style={{ fontSize: 24 }}>{template.icon}</span>
+            <StyledTemplateIcon>{template.icon}</StyledTemplateIcon>
             <StyledTitle>{template.title}</StyledTitle>
             <StyledDescription>{template.description}</StyledDescription>
           </StyledCard>
         ))}
       </StyledGrid>
-    </div>
+    </StyledWrapper>
   );
 };

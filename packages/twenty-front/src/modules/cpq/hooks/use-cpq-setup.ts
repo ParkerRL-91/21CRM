@@ -1,50 +1,63 @@
-import { useCallback, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client/react';
+
+import { useAtomState } from '@/ui/utilities/state/jotai/hooks/useAtomState';
+import { cpqSetupErrorState } from '@/cpq/states/cpqSetupErrorState';
+import { GET_CPQ_STATUS } from '@/cpq/graphql/queries/getCpqStatus';
+import { SETUP_CPQ } from '@/cpq/graphql/mutations/setupCpq';
+
+type CpqStatusData = {
+  cpqStatus: {
+    isSetUp: boolean;
+    objectCount: number;
+    expectedCount: number;
+    foundObjects: string[];
+    missingObjects: string[];
+    version: string;
+  };
+};
+
+type SetupCpqData = {
+  setupCpq: {
+    objectsCreated: string[];
+    fieldsCreated: number;
+    relationsCreated: number;
+    skipped: string[];
+    errors: string[];
+  };
+};
 
 // Hook to manage CPQ setup state — checks if CPQ objects exist
-// and triggers setup when needed.
-export const useCpqSetup = (workspaceId: string) => {
-  const [isSetUp, setIsSetUp] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+// and triggers setup when needed. Uses Apollo instead of fetch.
+export const useCpqSetup = () => {
+  const [error, setError] = useAtomState(cpqSetupErrorState);
 
-  const checkStatus = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/cpq/status/${workspaceId}`);
-      const data = await response.json();
-      // Backend getSetupStatus() returns { isSetUp, objectCount, ... }
-      setIsSetUp(data.isSetUp);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to check CPQ status');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [workspaceId]);
+  const { data, loading: isLoading, refetch } = useQuery<CpqStatusData>(
+    GET_CPQ_STATUS,
+    { fetchPolicy: 'cache-and-network' },
+  );
 
-  const runSetup = useCallback(async () => {
-    setIsLoading(true);
+  const [setupCpqMutation, { loading: isSettingUp }] =
+    useMutation<SetupCpqData>(SETUP_CPQ);
+
+  const isSetUp = data?.cpqStatus.isSetUp ?? null;
+
+  const runSetup = async () => {
     setError(null);
-    try {
-      const response = await fetch('/cpq/setup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ workspaceId }),
-      });
-      const data = await response.json();
+    const result = await setupCpqMutation();
+    const setupResult = result.data?.setupCpq;
 
-      if (data.errors?.length > 0) {
-        setError(`Setup completed with errors: ${data.errors.join(', ')}`);
-      }
-
-      setIsSetUp(true);
-      return data;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'CPQ setup failed');
-      throw err;
-    } finally {
-      setIsLoading(false);
+    if (setupResult && setupResult.errors.length > 0) {
+      setError(`Setup completed with errors: ${setupResult.errors.join(', ')}`);
     }
-  }, [workspaceId]);
 
-  return { isSetUp, isLoading, error, checkStatus, runSetup };
+    await refetch();
+    return setupResult;
+  };
+
+  return {
+    isSetUp,
+    isLoading: isLoading || isSettingUp,
+    error,
+    runSetup,
+  };
 };
