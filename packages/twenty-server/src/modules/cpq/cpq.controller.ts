@@ -21,6 +21,7 @@ import { CpqRiskService } from 'src/modules/cpq/services/cpq-risk.service';
 
 import type { PricingInput } from 'src/modules/cpq/services/cpq-pricing.service';
 import type { RiskAssessmentInput } from 'src/modules/cpq/services/cpq-risk.service';
+import type { ProductSeedInput } from 'src/modules/cpq/services/cpq-setup.service';
 
 // REST controller exposing CPQ business logic as API endpoints.
 // Standard CRUD is handled automatically by Twenty's GraphQL via custom objects.
@@ -57,6 +58,16 @@ export class CpqController {
   @Get('status')
   async status(@AuthWorkspace() { id: workspaceId }: WorkspaceEntity) {
     return this.setupService.getSetupStatus(workspaceId);
+  }
+
+  // POST /cpq/seed-catalog — create PriceConfiguration records from product list
+  @Post('seed-catalog')
+  async seedCatalog(
+    @AuthWorkspace() { id: workspaceId }: WorkspaceEntity,
+    @Body() body: { products: ProductSeedInput[] },
+  ) {
+    this.logger.log(`CPQ seed-catalog requested for workspace ${workspaceId}`);
+    return this.setupService.seedProductCatalog(workspaceId, body.products);
   }
 
   // POST /cpq/run-renewal-check — trigger the daily renewal scan
@@ -99,7 +110,10 @@ export class CpqController {
     }
     if (body.entityType === 'subscription') {
       return {
-        valid: this.contractService.isValidSubscriptionTransition(body.from, body.to),
+        valid: this.contractService.isValidSubscriptionTransition(
+          body.from,
+          body.to,
+        ),
         entityType: body.entityType,
         from: body.from,
         to: body.to,

@@ -1,95 +1,154 @@
 import { useCallback, useState } from 'react';
 
-import { tokenPairState } from '@/auth/states/tokenPairState';
-import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+import { REACT_APP_SERVER_BASE_URL } from '~/config';
 
-// Hook to manage CPQ setup state — checks if CPQ objects exist
-// and triggers setup when needed.
-// Workspace identity is derived server-side from the JWT — no workspaceId
-// path param or body field needed on the REST calls.
+export type CpqStatus = {
+  isSetUp: boolean;
+  objectCount: number;
+  expectedCount: number;
+  foundObjects: string[];
+  missingObjects: string[];
+  version: string;
+};
+
+export type ProductSeedInput = {
+  name: string;
+  productFamily: string;
+  configType: string;
+  listPriceAmountMicros: number;
+  listPriceCurrencyCode: string;
+  region: string;
+  currency: string;
+  sku: string;
+  isActive: boolean;
+};
+
+const SERVER_BASE = REACT_APP_SERVER_BASE_URL ?? '';
+
+// Hook to manage CPQ setup state — checks if CPQ objects exist,
+// triggers setup/teardown, and seeds the product catalog.
 export const useCpqSetup = (_workspaceId: string) => {
-  const [isSetUp, setIsSetUp] = useState<boolean | null>(null);
+  const [status, setStatus] = useState<CpqStatus | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTearingDown, setIsTearingDown] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const tokenPair = useAtomStateValue(tokenPairState);
-
-  const getAuthHeaders = useCallback((): HeadersInit => {
-    const token = tokenPair?.accessOrWorkspaceAgnosticToken?.token;
-    return {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    };
-  }, [tokenPair]);
+  const [seedResult, setSeedResult] = useState<{
+    created: number;
+    skipped: number;
+    errors: string[];
+  } | null>(null);
 
   const checkStatus = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
-      // Route is GET /cpq/status — workspace resolved from JWT by guard
-      const response = await fetch('/cpq/status', {
-        headers: getAuthHeaders(),
+      const response = await fetch(`${SERVER_BASE}/cpq/status`, {
+        credentials: 'include',
       });
-      if (!response.ok) {
-        throw new Error(`Status check failed: ${response.status}`);
-      }
-      const data = await response.json();
-      // Backend getSetupStatus() returns { isSetUp, objectCount, ... }
-      setIsSetUp(data.isSetUp);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data: CpqStatus = await response.json();
+      setStatus(data);
+      return data;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to check CPQ status');
+      setError(
+        err instanceof Error ? err.message : 'Failed to check CPQ status',
+      );
+      return null;
     } finally {
       setIsLoading(false);
     }
-  }, [getAuthHeaders]);
+  }, []);
 
   const runSetup = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      // Workspace resolved from JWT by @AuthWorkspace() — no body needed
-      const response = await fetch('/cpq/setup', {
+      const response = await fetch(`${SERVER_BASE}/cpq/setup`, {
         method: 'POST',
-        headers: getAuthHeaders(),
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
       });
-      if (!response.ok) {
-        const errBody = await response.json().catch(() => ({}));
-        throw new Error(errBody?.message ?? `Setup failed: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
 
       if (data.errors?.length > 0) {
         setError(`Setup completed with errors: ${data.errors.join(', ')}`);
       }
 
-      setIsSetUp(true);
-      return data;
+      // Refresh status after setup
+      const freshStatus = await checkStatus();
+      return { setupResult: data, status: freshStatus };
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'CPQ setup failed');
+      const message = err instanceof Error ? err.message : 'CPQ setup failed';
+      setError(message);
       throw err;
     } finally {
       setIsLoading(false);
     }
-  }, [getAuthHeaders]);
+  }, [checkStatus]);
 
   const runTeardown = useCallback(async () => {
-    setIsLoading(true);
+    setIsTearingDown(true);
     setError(null);
     try {
-      const response = await fetch('/cpq/teardown', {
+      const response = await fetch(`${SERVER_BASE}/cpq/teardown`, {
         method: 'DELETE',
-        headers: getAuthHeaders(),
+        credentials: 'include',
       });
-      if (!response.ok) {
-        throw new Error(`Teardown failed: ${response.status}`);
-      }
-      setIsSetUp(false);
-      return await response.json();
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+
+      // Refresh status after teardown
+      const freshStatus = await checkStatus();
+      return { teardownResult: data, status: freshStatus };
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'CPQ teardown failed');
+      const message =
+        err instanceof Error ? err.message : 'CPQ teardown failed';
+      setError(message);
       throw err;
     } finally {
-      setIsLoading(false);
+      setIsTearingDown(false);
     }
-  }, [getAuthHeaders]);
+  }, [checkStatus]);
 
-  return { isSetUp, isLoading, error, checkStatus, runSetup, runTeardown };
+  const seedCatalog = useCallback(async (products: ProductSeedInput[]) => {
+    setIsSeeding(true);
+    setSeedResult(null);
+    setError(null);
+    try {
+      const response = await fetch(`${SERVER_BASE}/cpq/seed-catalog`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ products }),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const result = await response.json();
+      setSeedResult(result);
+      return result;
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Product seeding failed';
+      setError(message);
+      throw err;
+    } finally {
+      setIsSeeding(false);
+    }
+  }, []);
+
+  return {
+    // backward-compat alias
+    isSetUp: status?.isSetUp ?? null,
+    status,
+    isLoading,
+    isTearingDown,
+    isSeeding,
+    error,
+    seedResult,
+    checkStatus,
+    runSetup,
+    runTeardown,
+    seedCatalog,
+  };
 };

@@ -187,6 +187,12 @@ const useSettingsNavigationItems = (): SettingsNavigationSection[] => {
           modifier: 'new',
         },
         {
+          label: t`CPQ`,
+          path: SettingsPath.Cpq,
+          Icon: IconCurrencyDollar,
+          isHidden: !permissionMap[PermissionFlagType.WORKSPACE],
+        },
+        {
           label: t`Security`,
           path: SettingsPath.Security,
           Icon: IconKey,
