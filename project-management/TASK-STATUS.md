@@ -71,12 +71,12 @@
 
 | Task | Title | Status | Notes |
 |------|-------|--------|-------|
-| TASK-132 | Quote-to-Contract Conversion | ⬜ Backlog | Order creation + activation flow |
-| TASK-133 | Contract Management Screen | ⬜ Backlog | Contract list + detail + subscription management |
-| TASK-134 | Renewal Queue & Renewal Quote | ⬜ Backlog | Renewal pipeline + start renewal flow |
-| TASK-135 | Contract Amendment Flow | ⬜ Backlog | Amend contract + proration |
-| TASK-139 | Contract Lifecycle Management Service | ⬜ Backlog | ContractService backend |
-| TASK-140 | Renewal Automation — Scheduled Jobs | ⬜ Backlog | BullMQ renewal jobs |
+| TASK-132 | Quote-to-Contract Conversion | ✅ Done | POST /cpq/quotes/:id/convert-to-contract → createFromQuote() atomic transaction (contract + subscriptions + amendment + quote status update); useQuoteToContract hook |
+| TASK-133 | Contract Management Screen | ✅ Done | ContractManagementPage (status-filtered list); ContractDetailPage (subscriptions + amendments tabs, status transitions); useContractList + useContractDetail hooks |
+| TASK-134 | Renewal Queue & Renewal Quote | ✅ Done | RenewalQueuePage (urgency-color badges, Start Renewal per row, Run Renewal Job button); getRenewalQueue() + startRenewalQuote() service methods |
+| TASK-135 | Contract Amendment Flow | ✅ Done | Inline amendment form on ContractDetailPage (type/effectiveDate/qty/price); createAmendment() with prorated delta via calculateAmendmentDelta; subscription update |
+| TASK-139 | Contract Lifecycle Management Service | ✅ Done | CpqContractService enhanced: listContracts, getContractDetail (with subs+amendments), transitionContractStatus, createAmendment, getRenewalQueue, startRenewalQuote; ContractRecord/SubscriptionRow/AmendmentRow types exported |
+| TASK-140 | Renewal Automation — Scheduled Jobs | ✅ Done | POST /cpq/run-renewal-job triggers CpqRenewalService.runRenewalCheck with config params; advisory lock concurrency safety; per-contract transactions; RenewalQueuePage wires "Run Renewal Job" button |
 
 ---
 
@@ -117,7 +117,7 @@
 ## Completion Summary
 
 Total tasks: 33
-Done: 22 / 33
+Done: 28 / 33
 In progress: 0
 Skipped: 1
 
