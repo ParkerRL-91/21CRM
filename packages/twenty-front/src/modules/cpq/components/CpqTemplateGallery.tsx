@@ -3,7 +3,7 @@ import { styled } from '@linaria/react';
 import {
   CPQ_PRICING_TEMPLATES,
   type PricingTemplate,
-} from '~/modules/cpq/constants/cpq-pricing-templates';
+} from '@/cpq/constants/cpq-pricing-templates';
 
 const StyledGrid = styled.div`
   display: grid;
@@ -56,10 +56,11 @@ const StyledSectionTitle = styled.h2`
 // Each template pre-configures a common pricing model so admins
 // can create their first product in under 60 seconds.
 export const CpqTemplateGallery = () => {
-  const handleSelectTemplate = (_template: PricingTemplate) => {
+  const handleSelectTemplate = (template: PricingTemplate) => {
     // Navigate to product creation with template defaults pre-filled
     // This would integrate with Twenty's navigation to open the
     // Quote or PriceConfiguration object creation form
+    console.log('Selected template:', template.id, template.defaults);
   };
 
   return (

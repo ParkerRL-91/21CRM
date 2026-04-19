@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
-import { CpqSetupPage } from '~/modules/cpq/components/CpqSetupPage';
+import { CpqSetupPage } from '@/cpq/components/CpqSetupPage';
 import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { SettingsPath } from 'twenty-shared/types';

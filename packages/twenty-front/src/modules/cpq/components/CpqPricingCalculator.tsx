@@ -1,34 +1,38 @@
 import { useState, useCallback } from 'react';
 import { styled } from '@linaria/react';
-import { themeCssVariables } from 'twenty-ui/theme-constants';
 
-import { useCpqPricing } from '~/modules/cpq/hooks/use-cpq-pricing';
+import { useCpqPricing } from '@/cpq/hooks/use-cpq-pricing';
 
 const StyledContainer = styled.div`
-  border: 1px solid ${themeCssVariables.border.color.medium};
+  border: 1px solid var(--twentyborder-color);
   border-radius: 8px;
   padding: 16px;
-  background: ${themeCssVariables.background.secondary};
+  background: var(--twentybackground-color-secondary);
 `;
 
 const StyledLabel = styled.label`
   font-size: 12px;
   font-weight: 500;
-  color: ${themeCssVariables.font.color.secondary};
+  color: var(--twentyfont-color-secondary);
   display: block;
   margin-bottom: 4px;
 `;
 
 const StyledInput = styled.input`
-  border: 1px solid ${themeCssVariables.border.color.medium};
+  border: 1px solid var(--twentyborder-color);
   border-radius: 4px;
   padding: 8px 12px;
   font-size: 14px;
   width: 120px;
 
   &:focus {
-    outline: 2px solid ${themeCssVariables.font.color.primary};
+    outline: 2px solid var(--twentyfont-color-primary);
     border-color: transparent;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    box-sizing: border-box;
   }
 `;
 
@@ -37,66 +41,25 @@ const StyledRow = styled.div`
   gap: 16px;
   align-items: flex-end;
   margin-bottom: 12px;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
 `;
 
 const StyledResult = styled.div`
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid ${themeCssVariables.border.color.medium};
+  border-top: 1px solid var(--twentyborder-color);
 `;
 
 const StyledAuditStep = styled.div`
   font-size: 12px;
-  color: ${themeCssVariables.font.color.tertiary};
+  color: var(--twentyfont-color-tertiary);
   padding: 2px 0;
-`;
-
-const StyledCalculateButton = styled.button`
-  padding: 8px 16px;
-  border-radius: 4px;
-  border: 1px solid ${themeCssVariables.border.color.medium};
-  background: ${themeCssVariables.background.primary};
-  cursor: pointer;
-  font-size: 14px;
-  color: ${themeCssVariables.font.color.primary};
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
-const StyledError = styled.div`
-  color: ${themeCssVariables.font.color.danger};
-  font-size: 12px;
-`;
-
-const StyledNetLabel = styled.span`
-  font-size: 14px;
-  font-weight: 600;
-`;
-
-const StyledNetTotal = styled.span`
-  font-size: 16px;
-  font-weight: 700;
-`;
-
-const StyledSummaryRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-`;
-
-const StyledTotalRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-`;
-
-const StyledAuditSummary = styled.summary`
-  font-size: 12px;
-  cursor: pointer;
-  color: ${themeCssVariables.font.color.secondary};
 `;
 
 // Live pricing calculator component.
@@ -152,46 +115,47 @@ export const CpqPricingCalculator = () => {
             max={100}
           />
         </div>
-        <StyledCalculateButton
+        <button
           onClick={handleCalculate}
           disabled={isCalculating}
+          style={{
+            padding: '8px 16px',
+            borderRadius: 4,
+            border: '1px solid var(--twentyborder-color)',
+            background: 'white',
+            cursor: 'pointer',
+            fontSize: 14,
+          }}
         >
           {isCalculating ? '...' : 'Calculate'}
-        </StyledCalculateButton>
+        </button>
       </StyledRow>
 
-      {error && <StyledError>{error}</StyledError>}
+      {error && (
+        <div style={{ color: 'var(--twentycolor-red)', fontSize: 12 }}>{error}</div>
+      )}
 
       {result && (
         <StyledResult>
-          <StyledSummaryRow>
-            <StyledNetLabel>Net Unit Price</StyledNetLabel>
-            <StyledNetLabel>${result.netUnitPrice}</StyledNetLabel>
-          </StyledSummaryRow>
-          <StyledTotalRow>
-            <StyledNetLabel>Net Total</StyledNetLabel>
-            <StyledNetTotal>${result.netTotal}</StyledNetTotal>
-          </StyledTotalRow>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontSize: 14, fontWeight: 600 }}>Net Unit Price</span>
+            <span style={{ fontSize: 14, fontWeight: 600 }}>${result.netUnitPrice}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+            <span style={{ fontSize: 14, fontWeight: 600 }}>Net Total</span>
+            <span style={{ fontSize: 16, fontWeight: 700 }}>${result.netTotal}</span>
+          </div>
 
           {result.auditSteps.length > 0 && (
             <details>
-              <StyledAuditSummary>
+              <summary style={{ fontSize: 12, cursor: 'pointer', color: 'var(--twentyfont-color-secondary)' }}>
                 Pricing audit trail ({result.auditSteps.length} steps)
-              </StyledAuditSummary>
-              {result.auditSteps.map(
-                (
-                  step: {
-                    ruleName: string;
-                    inputPrice: string;
-                    outputPrice: string;
-                  },
-                  index: number,
-                ) => (
-                  <StyledAuditStep key={index}>
-                    {step.ruleName}: ${step.inputPrice} → ${step.outputPrice}
-                  </StyledAuditStep>
-                ),
-              )}
+              </summary>
+              {result.auditSteps.map((step: { ruleName: string; inputPrice: string; outputPrice: string }, index: number) => (
+                <StyledAuditStep key={index}>
+                  {step.ruleName}: ${step.inputPrice} → ${step.outputPrice}
+                </StyledAuditStep>
+              ))}
             </details>
           )}
         </StyledResult>
