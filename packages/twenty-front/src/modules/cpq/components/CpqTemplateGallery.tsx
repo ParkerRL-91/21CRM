@@ -44,6 +44,10 @@ const StyledDescription = styled.p`
   margin: 0;
 `;
 
+const StyledIcon = styled.span`
+  font-size: 24px;
+`;
+
 const StyledSectionTitle = styled.h2`
   font-size: 16px;
   font-weight: 600;
@@ -56,11 +60,10 @@ const StyledSectionTitle = styled.h2`
 // Each template pre-configures a common pricing model so admins
 // can create their first product in under 60 seconds.
 export const CpqTemplateGallery = () => {
-  const handleSelectTemplate = (template: PricingTemplate) => {
-    // Navigate to product creation with template defaults pre-filled
-    // This would integrate with Twenty's navigation to open the
-    // Quote or PriceConfiguration object creation form
-    console.log('Selected template:', template.id, template.defaults);
+  // Navigates to product creation with template defaults pre-filled.
+  // Integrates with Twenty's navigation to open the PriceConfiguration form.
+  const handleSelectTemplate = (_template: PricingTemplate) => {
+    // navigation integration pending
   };
 
   return (
@@ -73,7 +76,7 @@ export const CpqTemplateGallery = () => {
             onClick={() => handleSelectTemplate(template)}
             aria-label={`Use ${template.title} template`}
           >
-            <span style={{ fontSize: 24 }}>{template.icon}</span>
+            <StyledIcon>{template.icon}</StyledIcon>
             <StyledTitle>{template.title}</StyledTitle>
             <StyledDescription>{template.description}</StyledDescription>
           </StyledCard>

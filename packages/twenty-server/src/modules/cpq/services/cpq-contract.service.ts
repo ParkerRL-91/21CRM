@@ -6,8 +6,6 @@ import { DataSource } from 'typeorm';
 
 import { getWorkspaceSchemaName } from 'src/engine/workspace-datasource/utils/get-workspace-schema-name.util';
 
-Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
-
 //
 // CPQ Contract Service — handles contract lifecycle operations.
 //

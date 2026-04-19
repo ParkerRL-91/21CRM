@@ -8,8 +8,6 @@ import { getWorkspaceSchemaName } from 'src/engine/workspace-datasource/utils/ge
 
 import { CpqPricingService } from './cpq-pricing.service';
 
-Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
-
 // Renewal service — orchestrates automated renewal generation.
 // Called by the daily cron job to find expiring contracts,
 // create renewal opportunities, and generate draft renewal quotes.
@@ -63,16 +61,19 @@ export class CpqRenewalService {
     try {
       // Find active contracts approaching expiration that don't already have
       // an open renewal quote
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() + config.defaultLeadDays);
       const contracts: ContractRow[] = await this.dataSource.query(
         `SELECT c.* FROM ${schema}."contract" c
          WHERE c.status = 'active'
-           AND c."endDate" <= NOW() + INTERVAL '${config.defaultLeadDays} days'
+           AND c."endDate" <= $1
            AND NOT EXISTS (
              SELECT 1 FROM ${schema}."quote" q
              WHERE q."contractId" = c.id
                AND q.type = 'renewal'
                AND q.status IN ('draft', 'in_review', 'approved', 'presented')
            )`,
+        [cutoffDate],
       );
 
       result.contractsScanned = contracts.length;

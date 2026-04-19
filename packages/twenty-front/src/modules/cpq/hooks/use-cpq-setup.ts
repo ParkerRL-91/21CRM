@@ -11,6 +11,9 @@ export const useCpqSetup = (workspaceId: string) => {
     setIsLoading(true);
     try {
       const response = await fetch(`/cpq/status/${workspaceId}`);
+      if (!response.ok) {
+        throw new Error(`Status check failed: ${response.status} ${response.statusText}`);
+      }
       const data = await response.json();
       // Backend getSetupStatus() returns { isSetUp, objectCount, ... }
       setIsSetUp(data.isSetUp);
@@ -30,6 +33,9 @@ export const useCpqSetup = (workspaceId: string) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ workspaceId }),
       });
+      if (!response.ok) {
+        throw new Error(`CPQ setup request failed: ${response.status} ${response.statusText}`);
+      }
       const data = await response.json();
 
       if (data.errors?.length > 0) {

@@ -1,11 +1,7 @@
-/**
- * Salesforce CRM provider implementation.
- * Maps SFDC Opportunity/Contact/Account objects to the NormalizedDeal model.
- *
- * NOTE: This module implements the mapping and normalization logic.
- * The actual HTTP transport (SFDC REST API calls) is injected via SfClient
- * to keep the connector testable without live Salesforce credentials.
- */
+// Salesforce CRM provider implementation.
+// Maps SFDC Opportunity/Contact/Account objects to the NormalizedDeal model.
+// HTTP transport (SFDC REST API calls) is injected via SfClient
+// to keep the connector testable without live Salesforce credentials.
 
 import {
   CrmProvider,
@@ -69,7 +65,7 @@ export type SfdcQueryResult<T> = {
   nextRecordsUrl?: string;
 };
 
-/** Minimal Salesforce HTTP client interface */
+// Minimal Salesforce HTTP client interface
 export type SfClient = {
   query<T>(soql: string): Promise<SfdcQueryResult<T>>;
 };
@@ -78,7 +74,7 @@ export type SfClient = {
 // Normalizers
 // ============================================================================
 
-/** Map SFDC StageName to a probability (0-100) if not explicitly set. */
+// Map SFDC StageName to a probability (0-100) if not explicitly set.
 const STAGE_PROBABILITY: Record<string, number> = {
   Prospecting: 10,
   Qualification: 20,
