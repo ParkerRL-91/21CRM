@@ -2,7 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { ObjectMetadataService } from 'src/engine/metadata-modules/object-metadata/object-metadata.service';
 import { FieldMetadataService } from 'src/engine/metadata-modules/field-metadata/services/field-metadata.service';
-import { FieldMetadataType } from 'twenty-shared/types';
+import {
+  type FieldMetadataDefaultValue,
+  type FieldMetadataOptions,
+  FieldMetadataType,
+} from 'twenty-shared/types';
 
 // CPQ object definitions — the single source of truth for all CPQ metadata
 const CPQ_OBJECTS = {
@@ -384,8 +388,10 @@ export class CpqSetupService {
                 label: field.label,
                 type: field.type,
                 description: field.description,
-                defaultValue: field.defaultValue,
-                options: field.options,
+                defaultValue:
+                  field.defaultValue as FieldMetadataDefaultValue<FieldMetadataType>,
+                options:
+                  field.options as FieldMetadataOptions<FieldMetadataType> | undefined,
               },
               workspaceId,
             },

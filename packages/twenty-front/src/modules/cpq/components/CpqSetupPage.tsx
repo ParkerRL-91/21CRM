@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { styled } from '@linaria/react';
+import { themeCssVariables } from 'twenty-ui/theme-constants';
 
-import { useCpqSetup } from 'src/modules/cpq/hooks/use-cpq-setup';
-import { CpqTemplateGallery } from 'src/modules/cpq/components/CpqTemplateGallery';
+import { useCpqSetup } from '~/modules/cpq/hooks/use-cpq-setup';
+import { CpqTemplateGallery } from '~/modules/cpq/components/CpqTemplateGallery';
 
 type CpqSetupPageProps = {
   workspaceId: string;
@@ -25,15 +26,15 @@ const StyledTitle = styled.h1`
 
 const StyledSubtitle = styled.p`
   font-size: 14px;
-  color: ${({ theme }) => theme.font.color.secondary};
+  color: ${themeCssVariables.font.color.secondary};
   margin-bottom: 32px;
 `;
 
 const StyledButton = styled.button`
-  background: ${({ theme }) => theme.color.blue};
-  color: ${({ theme }) => theme.font.color.inverted};
+  background: ${themeCssVariables.color.blue};
+  color: ${themeCssVariables.font.color.inverted};
   border: none;
-  border-radius: ${({ theme }) => theme.border.radius.md};
+  border-radius: ${themeCssVariables.border.radius.md};
   padding: 12px 24px;
   font-size: 14px;
   font-weight: 500;
@@ -50,8 +51,8 @@ const StyledButton = styled.button`
 `;
 
 const StyledStatusCard = styled.div`
-  border: 1px solid ${({ theme }) => theme.border.color.medium};
-  border-radius: ${({ theme }) => theme.border.radius.md};
+  border: 1px solid ${themeCssVariables.border.color.medium};
+  border-radius: ${themeCssVariables.border.radius.md};
   padding: 24px;
   width: 100%;
   margin-bottom: 24px;
@@ -74,7 +75,7 @@ const StyledObjectItem = styled.li`
   align-items: center;
   gap: 12px;
   padding: 8px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.border.color.light};
+  border-bottom: 1px solid ${themeCssVariables.border.color.light};
 `;
 
 const StyledObjectIcon = styled.span`
@@ -87,21 +88,21 @@ const StyledObjectLabel = styled.strong`
 
 const StyledObjectDesc = styled.div`
   font-size: 12px;
-  color: ${({ theme }) => theme.font.color.tertiary};
+  color: ${themeCssVariables.font.color.tertiary};
 `;
 
 const StyledCheckmark = styled.span`
-  color: ${({ theme }) => theme.color.green};
+  color: ${themeCssVariables.color.green};
   margin-right: 8px;
 `;
 
 const StyledError = styled.div`
-  color: ${({ theme }) => theme.color.red};
+  color: ${themeCssVariables.color.red};
   font-size: 14px;
   margin-top: 12px;
   padding: 12px;
-  border: 1px solid ${({ theme }) => theme.color.red};
-  border-radius: ${({ theme }) => theme.border.radius.sm};
+  border: 1px solid ${themeCssVariables.color.red};
+  border-radius: ${themeCssVariables.border.radius.sm};
 `;
 
 const CPQ_OBJECTS_LIST = [
