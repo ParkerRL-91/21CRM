@@ -94,6 +94,12 @@ const BookCall = lazy(() =>
   })),
 );
 
+const QuoteBuilderPage = lazy(() =>
+  import('~/pages/cpq/QuoteBuilderPage').then((module) => ({
+    default: module.QuoteBuilderPage,
+  })),
+);
+
 const StandalonePageLayoutPage = lazy(() =>
   import('~/pages/page-layout/StandalonePageLayoutPage').then((module) => ({
     default: module.StandalonePageLayoutPage,
@@ -241,6 +247,22 @@ export const useCreateAppRouter = (
                 isFunctionSettingsEnabled={isFunctionSettingsEnabled}
                 isAdminPageEnabled={isAdminPageEnabled}
               />
+            }
+          />
+          <Route
+            path={AppPath.CpqQuoteNew}
+            element={
+              <LazyRoute>
+                <QuoteBuilderPage />
+              </LazyRoute>
+            }
+          />
+          <Route
+            path={AppPath.CpqQuotes}
+            element={
+              <LazyRoute>
+                <QuoteBuilderPage />
+              </LazyRoute>
             }
           />
           <Route
