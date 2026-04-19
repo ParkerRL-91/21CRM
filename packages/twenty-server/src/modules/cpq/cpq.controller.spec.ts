@@ -103,7 +103,7 @@ describe('CpqController', () => {
         auditSteps: [],
       });
 
-      const result = controller.calculatePrice({
+      const result = controller.calculatePrice(mockWorkspace, {
         listPrice: '100',
         quantity: 10,
         manualDiscountPercent: 15,
@@ -122,7 +122,7 @@ describe('CpqController', () => {
         assessedAt: new Date(),
       });
 
-      const result = controller.assessRisk({
+      const result = controller.assessRisk(mockWorkspace, {
         daysSinceLastStageChange: 20,
         dealCloseDate: new Date(),
         contractEndDate: new Date(),
@@ -142,7 +142,7 @@ describe('CpqController', () => {
     it('should validate contract transitions', () => {
       mockContractService.isValidTransition.mockReturnValue(true);
 
-      const result = controller.validateTransition({
+      const result = controller.validateTransition(mockWorkspace, {
         entityType: 'contract',
         from: 'draft',
         to: 'active',
@@ -154,7 +154,7 @@ describe('CpqController', () => {
     it('should validate subscription transitions', () => {
       mockContractService.isValidSubscriptionTransition.mockReturnValue(false);
 
-      const result = controller.validateTransition({
+      const result = controller.validateTransition(mockWorkspace, {
         entityType: 'subscription',
         from: 'active',
         to: 'cancelled',
@@ -164,7 +164,7 @@ describe('CpqController', () => {
     });
 
     it('should reject unknown entity types', () => {
-      const result = controller.validateTransition({
+      const result = controller.validateTransition(mockWorkspace, {
         entityType: 'unknown',
         from: 'a',
         to: 'b',
@@ -178,7 +178,7 @@ describe('CpqController', () => {
     it('should delegate to contract service', () => {
       mockContractService.calculateProratedValue.mockReturnValue('60000');
 
-      const result = controller.prorate({
+      const result = controller.prorate(mockWorkspace, {
         annualValue: '120000',
         contractStartDate: '2026-01-01',
         contractEndDate: '2028-01-01',

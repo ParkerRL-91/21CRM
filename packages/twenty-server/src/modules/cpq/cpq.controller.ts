@@ -67,19 +67,28 @@ export class CpqController {
 
   // POST /cpq/calculate-price — run the 10-step price waterfall
   @Post('calculate-price')
-  calculatePrice(@Body() input: PricingInput) {
+  calculatePrice(
+    @AuthWorkspace() _workspace: WorkspaceEntity,
+    @Body() input: PricingInput,
+  ) {
     return this.pricingService.calculatePriceWaterfall(input);
   }
 
   // POST /cpq/assess-risk — score renewal risk
   @Post('assess-risk')
-  assessRisk(@Body() input: RiskAssessmentInput) {
+  assessRisk(
+    @AuthWorkspace() _workspace: WorkspaceEntity,
+    @Body() input: RiskAssessmentInput,
+  ) {
     return this.riskService.assessRenewalRisk(input);
   }
 
   // POST /cpq/validate-transition — check if a status transition is valid
   @Post('validate-transition')
-  validateTransition(@Body() body: { entityType: string; from: string; to: string }) {
+  validateTransition(
+    @AuthWorkspace() _workspace: WorkspaceEntity,
+    @Body() body: { entityType: string; from: string; to: string },
+  ) {
     if (body.entityType === 'contract') {
       return {
         valid: this.contractService.isValidTransition(body.from, body.to),
@@ -101,12 +110,16 @@ export class CpqController {
 
   // POST /cpq/prorate — calculate prorated value
   @Post('prorate')
-  prorate(@Body() body: {
-    annualValue: string;
-    contractStartDate: string;
-    contractEndDate: string;
-    effectiveDate: string;
-  }) {
+  prorate(
+    @AuthWorkspace() _workspace: WorkspaceEntity,
+    @Body()
+    body: {
+      annualValue: string;
+      contractStartDate: string;
+      contractEndDate: string;
+      effectiveDate: string;
+    },
+  ) {
     return {
       proratedValue: this.contractService.calculateProratedValue(
         body.annualValue,
