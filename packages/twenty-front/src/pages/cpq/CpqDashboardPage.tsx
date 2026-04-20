@@ -65,7 +65,7 @@ const StyledBannerBtn = styled.button`
 const StyledSectionTitle = styled.h3`
   font-size: 12px;
   font-weight: 700;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin: 0 0 12px;
@@ -81,28 +81,28 @@ const StyledMetricsGrid = styled.div`
 const StyledMetricCard = styled.div<{ accent?: string }>`
   padding: 16px;
   border-radius: 10px;
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
-  background: var(--twenty-background-primary, #fff);
+  border: 1px solid var(--t-border-color-medium);
+  background: var(--t-background-primary);
   border-top: 3px solid ${({ accent }) => accent ?? '#3b82f6'};
 `;
 
 const StyledMetricLabel = styled.div`
   font-size: 12px;
   font-weight: 500;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
   margin-bottom: 6px;
 `;
 
 const StyledMetricValue = styled.div`
   font-size: 22px;
   font-weight: 800;
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
   line-height: 1;
 `;
 
 const StyledMetricSub = styled.div`
   font-size: 11px;
-  color: var(--twenty-font-color-tertiary, #9ca3af);
+  color: var(--t-font-color-tertiary);
   margin-top: 4px;
 `;
 
@@ -120,8 +120,8 @@ const StyledActionCard = styled.button`
   gap: 8px;
   padding: 16px;
   border-radius: 10px;
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
-  background: var(--twenty-background-primary, #fff);
+  border: 1px solid var(--t-border-color-medium);
+  background: var(--t-background-primary);
   cursor: pointer;
   text-align: left;
   transition: border-color 0.15s, box-shadow 0.15s;
@@ -139,18 +139,18 @@ const StyledActionIcon = styled.span`
 const StyledActionLabel = styled.div`
   font-size: 13px;
   font-weight: 600;
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
 `;
 
 const StyledActionDesc = styled.div`
   font-size: 11px;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
   line-height: 1.4;
 `;
 
 // Pipeline stage breakdown
 const StyledStageTable = styled.div`
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 8px;
   overflow: hidden;
 `;
@@ -160,19 +160,19 @@ const StyledStageRow = styled.div`
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
-  border-bottom: 1px solid var(--twenty-border-color, #e5e7eb);
+  border-bottom: 1px solid var(--t-border-color-medium);
 
   &:last-child { border-bottom: none; }
 
   &:nth-child(even) {
-    background: var(--twenty-background-secondary, #f9fafb);
+    background: var(--t-background-secondary);
   }
 `;
 
 const StyledStageName = styled.div`
   font-size: 13px;
   font-weight: 500;
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
   width: 160px;
   flex-shrink: 0;
 `;
@@ -181,7 +181,7 @@ const StyledStageBar = styled.div`
   flex: 1;
   height: 8px;
   border-radius: 4px;
-  background: var(--twenty-border-color, #e5e7eb);
+  background: var(--t-border-color-medium);
   overflow: hidden;
 `;
 
@@ -196,7 +196,7 @@ const StyledStageProgress = styled.div<{ percent: number; color: string }>`
 const StyledStageValue = styled.div`
   font-size: 12px;
   font-weight: 600;
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
   width: 80px;
   text-align: right;
   flex-shrink: 0;
@@ -204,7 +204,7 @@ const StyledStageValue = styled.div`
 
 const StyledStageCount = styled.div`
   font-size: 11px;
-  color: var(--twenty-font-color-tertiary, #9ca3af);
+  color: var(--t-font-color-tertiary);
   width: 40px;
   text-align: right;
   flex-shrink: 0;
@@ -312,11 +312,11 @@ export const CpqDashboardPage = () => {
         <div>
           <StyledSectionTitle>Pipeline by Stage</StyledSectionTitle>
           <StyledStageTable>
-            <StyledStageRow style={{ background: 'var(--twenty-background-secondary, #f9fafb)', fontWeight: 700 }}>
-              <StyledStageName style={{ fontSize: 11, fontWeight: 700, color: 'var(--twenty-font-color-secondary, #6b7280)', textTransform: 'uppercase' }}>Stage</StyledStageName>
+            <StyledStageRow style={{ background: 'var(--t-background-secondary)', fontWeight: 700 }}>
+              <StyledStageName style={{ fontSize: 11, fontWeight: 700, color: 'var(--t-font-color-secondary)', textTransform: 'uppercase' }}>Stage</StyledStageName>
               <div style={{ flex: 1 }} />
-              <StyledStageValue style={{ fontSize: 11, color: 'var(--twenty-font-color-secondary, #6b7280)', textTransform: 'uppercase' }}>Value</StyledStageValue>
-              <StyledStageCount style={{ fontSize: 11, color: 'var(--twenty-font-color-secondary, #6b7280)', textTransform: 'uppercase' }}>Deals</StyledStageCount>
+              <StyledStageValue style={{ fontSize: 11, color: 'var(--t-font-color-secondary)', textTransform: 'uppercase' }}>Value</StyledStageValue>
+              <StyledStageCount style={{ fontSize: 11, color: 'var(--t-font-color-secondary)', textTransform: 'uppercase' }}>Deals</StyledStageCount>
             </StyledStageRow>
             {PIPELINE_STAGES.map((stage) => (
               <StyledStageRow key={stage.stage}>

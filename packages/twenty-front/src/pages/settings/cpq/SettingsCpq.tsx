@@ -16,7 +16,7 @@ const StyledWrapper = styled.div`
 `;
 
 const StyledSectionLabel = styled.div`
-  color: var(--twenty-font-color-tertiary, #6b7280);
+  color: var(--t-font-color-tertiary);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -32,28 +32,28 @@ const StyledGrid = styled.div`
 `;
 
 const StyledCard = styled.div`
-  background: var(--twenty-background-secondary, #f9fafb);
-  border: 1px solid var(--twenty-border-color-medium, #e5e7eb);
+  background: var(--t-background-secondary);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 8px;
   padding: 16px 20px;
   cursor: pointer;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
   &:hover {
-    border-color: var(--twenty-color-blue, #4f46e5);
+    border-color: var(--t-accent-primary);
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.12);
   }
 `;
 
 const StyledCardTitle = styled.div`
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 4px;
 `;
 
 const StyledCardDesc = styled.div`
-  color: var(--twenty-font-color-tertiary, #6b7280);
+  color: var(--t-font-color-tertiary);
   font-size: 12px;
   line-height: 1.4;
 `;

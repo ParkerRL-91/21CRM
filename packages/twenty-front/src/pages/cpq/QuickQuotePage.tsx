@@ -103,13 +103,13 @@ const StyledHeader = styled.div`
 const StyledHeaderTitle = styled.h2`
   font-size: 22px;
   font-weight: 700;
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
   margin: 0 0 8px;
 `;
 
 const StyledHeaderSub = styled.p`
   font-size: 14px;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
   margin: 0;
 `;
 
@@ -128,7 +128,7 @@ const StyledStep = styled.div<{ active: boolean; done: boolean }>`
   font-size: 13px;
   font-weight: ${({ active }) => (active ? '700' : '500')};
   color: ${({ active, done }) =>
-    done ? '#10b981' : active ? '#3b82f6' : 'var(--twenty-font-color-tertiary, #9ca3af)'};
+    done ? '#10b981' : active ? '#3b82f6' : 'var(--t-font-color-tertiary)'};
 `;
 
 const StyledStepNum = styled.span<{ active: boolean; done: boolean }>`
@@ -141,15 +141,15 @@ const StyledStepNum = styled.span<{ active: boolean; done: boolean }>`
   font-size: 12px;
   font-weight: 700;
   background: ${({ active, done }) =>
-    done ? '#10b981' : active ? '#3b82f6' : 'var(--twenty-border-color, #e5e7eb)'};
+    done ? '#10b981' : active ? '#3b82f6' : 'var(--t-border-color-medium)'};
   color: ${({ active, done }) =>
-    done || active ? '#fff' : 'var(--twenty-font-color-tertiary, #9ca3af)'};
+    done || active ? '#fff' : 'var(--t-font-color-tertiary)'};
 `;
 
 const StyledStepConnector = styled.div`
   width: 40px;
   height: 1px;
-  background: var(--twenty-border-color, #e5e7eb);
+  background: var(--t-border-color-medium);
   margin: 0 8px;
 `;
 
@@ -160,12 +160,12 @@ const StyledConfigGrid = styled.div`
 `;
 
 const StyledConfigCard = styled.div<{ selected: boolean; accentColor: string }>`
-  border: 2px solid ${({ selected, accentColor }) => (selected ? accentColor : 'var(--twenty-border-color, #e5e7eb)')};
+  border: 2px solid ${({ selected, accentColor }) => (selected ? accentColor : 'var(--t-border-color-medium)')};
   border-radius: 10px;
   padding: 18px;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
-  background: ${({ selected }) => (selected ? 'rgba(59,130,246,0.04)' : 'var(--twenty-background-primary, #fff)')};
+  background: ${({ selected }) => (selected ? 'rgba(59,130,246,0.04)' : 'var(--t-background-primary)')};
   box-shadow: ${({ selected }) => (selected ? '0 0 0 3px rgba(59,130,246,0.1)' : 'none')};
 
   &:hover {
@@ -188,44 +188,44 @@ const StyledConfigBadge = styled.span<{ color: string }>`
 const StyledConfigName = styled.h3`
   font-size: 15px;
   font-weight: 700;
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
   margin: 0 0 6px;
 `;
 
 const StyledConfigDesc = styled.p`
   font-size: 13px;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
   margin: 0 0 10px;
   line-height: 1.5;
 `;
 
 const StyledConfigMeta = styled.div`
   font-size: 11px;
-  color: var(--twenty-font-color-tertiary, #9ca3af);
+  color: var(--t-font-color-tertiary);
 `;
 
 const StyledConfigPrice = styled.div`
   font-size: 16px;
   font-weight: 700;
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid var(--twenty-border-color, #e5e7eb);
+  border-top: 1px solid var(--t-border-color-medium);
 `;
 
 const StyledReviewSection = styled.div`
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 8px;
   overflow: hidden;
 `;
 
 const StyledReviewHeader = styled.div`
   padding: 12px 16px;
-  background: var(--twenty-background-secondary, #f9fafb);
-  border-bottom: 1px solid var(--twenty-border-color, #e5e7eb);
+  background: var(--t-background-secondary);
+  border-bottom: 1px solid var(--t-border-color-medium);
   font-size: 13px;
   font-weight: 600;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 `;
@@ -240,25 +240,25 @@ const StyledTh = styled.th`
   padding: 10px 16px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--twenty-font-color-secondary, #6b7280);
-  border-bottom: 1px solid var(--twenty-border-color, #e5e7eb);
+  color: var(--t-font-color-secondary);
+  border-bottom: 1px solid var(--t-border-color-medium);
 `;
 
 const StyledTd = styled.td`
   padding: 10px 16px;
   font-size: 13px;
-  border-bottom: 1px solid var(--twenty-border-color, #e5e7eb);
-  color: var(--twenty-font-color-primary, #111827);
+  border-bottom: 1px solid var(--t-border-color-medium);
+  color: var(--t-font-color-primary);
 `;
 
 const StyledQtyInput = styled.input`
   width: 60px;
   padding: 4px 8px;
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 4px;
   font-size: 13px;
-  background: var(--twenty-background-primary, #fff);
-  color: var(--twenty-font-color-primary, #111827);
+  background: var(--t-background-primary);
+  color: var(--t-font-color-primary);
 
   &:focus {
     outline: 2px solid #3b82f6;
@@ -270,8 +270,8 @@ const StyledActionsRow = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  border-top: 2px solid var(--twenty-border-color, #e5e7eb);
-  background: var(--twenty-background-secondary, #f9fafb);
+  border-top: 2px solid var(--t-border-color-medium);
+  background: var(--t-background-secondary);
 `;
 
 const StyledBtn = styled.button<{ variant?: 'primary' | 'outline' | 'ghost' }>`
@@ -284,7 +284,7 @@ const StyledBtn = styled.button<{ variant?: 'primary' | 'outline' | 'ghost' }>`
   font-weight: 500;
   cursor: pointer;
   transition: opacity 0.15s;
-  border: ${({ variant }) => variant === 'outline' ? '1px solid var(--twenty-border-color, #e5e7eb)' : 'none'};
+  border: ${({ variant }) => variant === 'outline' ? '1px solid var(--t-border-color-medium)' : 'none'};
   background: ${({ variant }) => {
     switch (variant) {
       case 'primary': return '#3b82f6';
@@ -295,8 +295,8 @@ const StyledBtn = styled.button<{ variant?: 'primary' | 'outline' | 'ghost' }>`
   color: ${({ variant }) => {
     switch (variant) {
       case 'primary': return '#fff';
-      case 'outline': return 'var(--twenty-font-color-primary, #111827)';
-      default: return 'var(--twenty-font-color-secondary, #6b7280)';
+      case 'outline': return 'var(--t-font-color-primary)';
+      default: return 'var(--t-font-color-secondary)';
     }
   }};
 
@@ -319,16 +319,16 @@ const StyledFieldGroup = styled.div`
 const StyledLabel = styled.label`
   font-size: 12px;
   font-weight: 600;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
 `;
 
 const StyledInput = styled.input`
   padding: 7px 10px;
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 6px;
   font-size: 13px;
-  background: var(--twenty-background-primary, #fff);
-  color: var(--twenty-font-color-primary, #111827);
+  background: var(--t-background-primary);
+  color: var(--t-font-color-primary);
   width: 220px;
 
   &:focus { outline: 2px solid #3b82f6; }
@@ -502,9 +502,9 @@ export const QuickQuotePage = () => {
                       <select
                         defaultValue={selectedConfig.typicalTerm}
                         style={{
-                          padding: '7px 10px', border: '1px solid var(--twenty-border-color, #e5e7eb)',
-                          borderRadius: 6, fontSize: 13, background: 'var(--twenty-background-primary, #fff)',
-                          color: 'var(--twenty-font-color-primary, #111827)',
+                          padding: '7px 10px', border: '1px solid var(--t-border-color-medium)',
+                          borderRadius: 6, fontSize: 13, background: 'var(--t-background-primary)',
+                          color: 'var(--t-font-color-primary)',
                         }}
                       >
                         <option value={1}>1 Year</option>
@@ -560,10 +560,10 @@ export const QuickQuotePage = () => {
                   <StyledBtn variant="outline" onClick={() => setStep(1)}>← Back</StyledBtn>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: 12, color: 'var(--twenty-font-color-secondary, #6b7280)' }}>
+                      <div style={{ fontSize: 12, color: 'var(--t-font-color-secondary)' }}>
                         Annual Total
                       </div>
-                      <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--twenty-font-color-primary, #111827)' }}>
+                      <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--t-font-color-primary)' }}>
                         ${fmt(quoteTotal)}
                       </div>
                     </div>

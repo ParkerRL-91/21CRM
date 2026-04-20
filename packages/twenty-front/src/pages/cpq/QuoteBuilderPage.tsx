@@ -33,18 +33,18 @@ const StyledContainer = styled.div`
 `;
 
 const StyledSection = styled.div`
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 8px;
   overflow: hidden;
 `;
 
 const StyledSectionHeader = styled.div`
   padding: 12px 16px;
-  background: var(--twenty-background-secondary, #f9fafb);
-  border-bottom: 1px solid var(--twenty-border-color, #e5e7eb);
+  background: var(--t-background-secondary);
+  border-bottom: 1px solid var(--t-border-color-medium);
   font-size: 13px;
   font-weight: 600;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 `;
@@ -59,15 +59,15 @@ const StyledTh = styled.th`
   padding: 10px 16px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--twenty-font-color-secondary, #6b7280);
-  border-bottom: 1px solid var(--twenty-border-color, #e5e7eb);
-  background: var(--twenty-background-secondary, #f9fafb);
+  color: var(--t-font-color-secondary);
+  border-bottom: 1px solid var(--t-border-color-medium);
+  background: var(--t-background-secondary);
 `;
 
 const StyledTd = styled.td`
   padding: 10px 16px;
   font-size: 14px;
-  border-bottom: 1px solid var(--twenty-border-color, #e5e7eb);
+  border-bottom: 1px solid var(--t-border-color-medium);
 
   &:last-child {
     text-align: right;
@@ -75,13 +75,13 @@ const StyledTd = styled.td`
 `;
 
 const StyledInput = styled.input`
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 4px;
   padding: 6px 10px;
   font-size: 13px;
   width: 80px;
-  background: var(--twenty-background-primary, #fff);
-  color: var(--twenty-font-color-primary, #111827);
+  background: var(--t-background-primary);
+  color: var(--t-font-color-primary);
 
   &:focus {
     outline: 2px solid #3b82f6;
@@ -96,17 +96,17 @@ const StyledProductInput = styled(StyledInput)`
 const StyledAddButton = styled.button`
   padding: 8px 16px;
   background: transparent;
-  border: 1px dashed var(--twenty-border-color, #e5e7eb);
+  border: 1px dashed var(--t-border-color-medium);
   border-radius: 6px;
   font-size: 13px;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
   cursor: pointer;
   width: 100%;
   text-align: left;
 
   &:hover {
-    background: var(--twenty-background-secondary, #f9fafb);
-    color: var(--twenty-font-color-primary, #111827);
+    background: var(--t-background-secondary);
+    color: var(--t-font-color-primary);
   }
 `;
 
@@ -115,7 +115,7 @@ const StyledRemoveButton = styled.button`
   border: none;
   padding: 2px 6px;
   font-size: 16px;
-  color: var(--twenty-font-color-tertiary, #9ca3af);
+  color: var(--t-font-color-tertiary);
   cursor: pointer;
   border-radius: 4px;
 
@@ -130,8 +130,8 @@ const StyledTotalsRow = styled.div`
   justify-content: flex-end;
   padding: 16px;
   gap: 32px;
-  border-top: 2px solid var(--twenty-border-color, #e5e7eb);
-  background: var(--twenty-background-secondary, #f9fafb);
+  border-top: 2px solid var(--t-border-color-medium);
+  background: var(--t-background-secondary);
 `;
 
 const StyledTotalItem = styled.div`
@@ -140,14 +140,14 @@ const StyledTotalItem = styled.div`
 
 const StyledTotalLabel = styled.div`
   font-size: 12px;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
   margin-bottom: 2px;
 `;
 
 const StyledTotalValue = styled.div<{ large?: boolean }>`
   font-size: ${({ large }) => (large ? '18px' : '14px')};
   font-weight: ${({ large }) => (large ? '700' : '600')};
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
 `;
 
 const StyledStatusBadge = styled.span<{ status: 'draft' | 'sent' | 'accepted' | 'declined' }>`
@@ -182,8 +182,8 @@ const StyledActionsBar = styled.div`
   justify-content: flex-end;
   gap: 10px;
   padding: 12px 16px;
-  background: var(--twenty-background-secondary, #f9fafb);
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
+  background: var(--t-background-secondary);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 8px;
 `;
 
@@ -197,7 +197,7 @@ const StyledActionBtn = styled.button<{ variant?: 'primary' | 'outline' | 'ghost
   font-weight: 500;
   cursor: pointer;
   transition: opacity 0.15s;
-  border: ${({ variant }) => variant === 'outline' ? '1px solid var(--twenty-border-color, #e5e7eb)' : 'none'};
+  border: ${({ variant }) => variant === 'outline' ? '1px solid var(--t-border-color-medium)' : 'none'};
   background: ${({ variant }) => {
     switch (variant) {
       case 'primary': return '#3b82f6';
@@ -208,8 +208,8 @@ const StyledActionBtn = styled.button<{ variant?: 'primary' | 'outline' | 'ghost
   color: ${({ variant }) => {
     switch (variant) {
       case 'primary': return '#fff';
-      case 'outline': return 'var(--twenty-font-color-primary, #111827)';
-      default: return 'var(--twenty-font-color-secondary, #6b7280)';
+      case 'outline': return 'var(--t-font-color-primary)';
+      default: return 'var(--t-font-color-secondary)';
     }
   }};
 
@@ -218,8 +218,8 @@ const StyledActionBtn = styled.button<{ variant?: 'primary' | 'outline' | 'ghost
     background: ${({ variant }) => {
       switch (variant) {
         case 'primary': return '#2563eb';
-        case 'outline': return 'var(--twenty-background-secondary, #f9fafb)';
-        default: return 'var(--twenty-background-secondary, #f9fafb)';
+        case 'outline': return 'var(--t-background-secondary)';
+        default: return 'var(--t-background-secondary)';
       }
     }};
   }
@@ -242,7 +242,7 @@ const StyledModalOverlay = styled.div`
 `;
 
 const StyledModal = styled.div`
-  background: var(--twenty-background-primary, #fff);
+  background: var(--t-background-primary);
   border-radius: 12px;
   padding: 24px;
   width: 440px;
@@ -253,7 +253,7 @@ const StyledModal = styled.div`
 const StyledModalTitle = styled.h3`
   font-size: 16px;
   font-weight: 700;
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
   margin: 0 0 16px;
 `;
 
@@ -267,16 +267,16 @@ const StyledModalRow = styled.div`
 const StyledModalLabel = styled.label`
   font-size: 12px;
   font-weight: 600;
-  color: var(--twenty-font-color-secondary, #6b7280);
+  color: var(--t-font-color-secondary);
 `;
 
 const StyledSelect = styled.select`
   padding: 8px 10px;
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 6px;
   font-size: 13px;
-  background: var(--twenty-background-primary, #fff);
-  color: var(--twenty-font-color-primary, #111827);
+  background: var(--t-background-primary);
+  color: var(--t-font-color-primary);
   width: 100%;
 
   &:focus {
@@ -430,7 +430,7 @@ export const QuoteBuilderPage = () => {
 
         {/* Action toolbar */}
         <StyledActionsBar>
-          <span style={{ fontSize: 12, color: 'var(--twenty-font-color-secondary, #6b7280)', marginRight: 'auto' }}>
+          <span style={{ fontSize: 12, color: 'var(--t-font-color-secondary)', marginRight: 'auto' }}>
             Status: <StyledStatusBadge status={status}>{status.charAt(0).toUpperCase() + status.slice(1)}</StyledStatusBadge>
           </span>
           <StyledActionBtn variant="ghost" onClick={handleSave}>
@@ -449,7 +449,7 @@ export const QuoteBuilderPage = () => {
           <StyledSectionHeader>Quote Details</StyledSectionHeader>
           <div style={{ padding: '16px', display: 'flex', gap: '16px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
             <div>
-              <label style={{ fontSize: 12, color: 'var(--twenty-font-color-secondary, #6b7280)', display: 'block', marginBottom: 4 }}>
+              <label style={{ fontSize: 12, color: 'var(--t-font-color-secondary)', display: 'block', marginBottom: 4 }}>
                 Quote Name
               </label>
               <StyledProductInput
@@ -460,7 +460,7 @@ export const QuoteBuilderPage = () => {
               />
             </div>
             <div>
-              <label style={{ fontSize: 12, color: 'var(--twenty-font-color-secondary, #6b7280)', display: 'block', marginBottom: 4 }}>
+              <label style={{ fontSize: 12, color: 'var(--t-font-color-secondary)', display: 'block', marginBottom: 4 }}>
                 Term (Years)
               </label>
               <StyledSelect
@@ -474,7 +474,7 @@ export const QuoteBuilderPage = () => {
               </StyledSelect>
             </div>
             <div>
-              <label style={{ fontSize: 12, color: 'var(--twenty-font-color-secondary, #6b7280)', display: 'block', marginBottom: 4 }}>
+              <label style={{ fontSize: 12, color: 'var(--t-font-color-secondary)', display: 'block', marginBottom: 4 }}>
                 Billing Frequency
               </label>
               <StyledSelect
@@ -488,7 +488,7 @@ export const QuoteBuilderPage = () => {
               </StyledSelect>
             </div>
             <div>
-              <label style={{ fontSize: 12, color: 'var(--twenty-font-color-secondary, #6b7280)', display: 'block', marginBottom: 4 }}>
+              <label style={{ fontSize: 12, color: 'var(--t-font-color-secondary)', display: 'block', marginBottom: 4 }}>
                 Valid Until
               </label>
               <StyledInput
@@ -559,7 +559,7 @@ export const QuoteBuilderPage = () => {
                       onChange={(e) => updateLineItem(item.id, 'discountPercent', Number(e.target.value))}
                     />
                   </StyledTd>
-                  <StyledTd style={{ fontWeight: 600, color: 'var(--twenty-font-color-primary, #111827)' }}>
+                  <StyledTd style={{ fontWeight: 600, color: 'var(--t-font-color-primary)' }}>
                     ${fmt(computeNetTotal(item))}
                   </StyledTd>
                   <StyledTd>
@@ -619,7 +619,7 @@ export const QuoteBuilderPage = () => {
                   return (
                     <tr key={i}>
                       <StyledTd style={{ fontWeight: 600 }}>Year {i + 1}</StyledTd>
-                      <StyledTd style={{ color: 'var(--twenty-font-color-secondary, #6b7280)' }}>
+                      <StyledTd style={{ color: 'var(--t-font-color-secondary)' }}>
                         ${fmt(periodPayment)} / {billingFrequency === 'monthly' ? 'mo' : billingFrequency === 'quarterly' ? 'qtr' : 'yr'}
                       </StyledTd>
                       <StyledTd>${fmt(subtotal)}</StyledTd>
@@ -634,7 +634,7 @@ export const QuoteBuilderPage = () => {
                     </tr>
                   );
                 })}
-                <tr style={{ background: 'var(--twenty-background-secondary, #f9fafb)' }}>
+                <tr style={{ background: 'var(--t-background-secondary)' }}>
                   <StyledTd style={{ fontWeight: 700 }}>Total ({term} Years)</StyledTd>
                   <StyledTd></StyledTd>
                   <StyledTd style={{ fontWeight: 600 }}>${fmt(subtotal * term)}</StyledTd>
@@ -661,10 +661,10 @@ export const QuoteBuilderPage = () => {
                   fontSize: 16,
                 }}>⏳</div>
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--twenty-font-color-primary, #111827)' }}>
+                  <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--t-font-color-primary)' }}>
                     Pending Manager Approval
                   </div>
-                  <div style={{ fontSize: 12, color: 'var(--twenty-font-color-secondary, #6b7280)', marginTop: 2 }}>
+                  <div style={{ fontSize: 12, color: 'var(--t-font-color-secondary)', marginTop: 2 }}>
                     Submitted {new Date().toLocaleDateString()} — Awaiting review by Sales Manager
                   </div>
                 </div>
@@ -721,7 +721,7 @@ export const QuoteBuilderPage = () => {
           <StyledModalOverlay onClick={() => setActiveModal(null)}>
             <StyledModal onClick={(e) => e.stopPropagation()}>
               <StyledModalTitle>✓ Submit for Approval</StyledModalTitle>
-              <div style={{ fontSize: 13, color: 'var(--twenty-font-color-secondary, #6b7280)', marginBottom: 16 }}>
+              <div style={{ fontSize: 13, color: 'var(--t-font-color-secondary)', marginBottom: 16 }}>
                 This quote ({quoteName || 'New Quote'}) will be submitted to your Sales Manager for approval.
                 Total value: <strong>${fmt(term > 1 ? grandTotal : subtotal)}</strong>
               </div>
@@ -741,10 +741,10 @@ export const QuoteBuilderPage = () => {
                   placeholder="Add context for the approver…"
                   rows={3}
                   style={{
-                    width: '100%', padding: '8px 10px', border: '1px solid var(--twenty-border-color, #e5e7eb)',
+                    width: '100%', padding: '8px 10px', border: '1px solid var(--t-border-color-medium)',
                     borderRadius: 6, fontSize: 13, resize: 'vertical', fontFamily: 'inherit',
-                    background: 'var(--twenty-background-primary, #fff)',
-                    color: 'var(--twenty-font-color-primary, #111827)',
+                    background: 'var(--t-background-primary)',
+                    color: 'var(--t-font-color-primary)',
                     boxSizing: 'border-box',
                   }}
                 />

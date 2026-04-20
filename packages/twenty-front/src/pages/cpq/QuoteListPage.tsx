@@ -22,15 +22,15 @@ const StyledToolbar = styled.div`
 
 const StyledSearch = styled.input`
   padding: 8px 14px;
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 6px;
   font-size: 13px;
   width: 280px;
-  background: var(--twenty-background-primary, #fff);
-  color: var(--twenty-font-color-primary, #111827);
+  background: var(--t-background-primary);
+  color: var(--t-font-color-primary);
 
   &::placeholder {
-    color: var(--twenty-font-color-secondary, #6b7280);
+    color: var(--t-font-color-secondary);
   }
 
   &:focus {
@@ -62,8 +62,8 @@ const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
-  background: var(--twenty-background-primary, #fff);
-  border: 1px solid var(--twenty-border-color, #e5e7eb);
+  background: var(--t-background-primary);
+  border: 1px solid var(--t-border-color-medium);
   border-radius: 8px;
   overflow: hidden;
 `;
@@ -75,15 +75,15 @@ const StyledTh = styled.th`
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--twenty-font-color-secondary, #6b7280);
-  background: var(--twenty-background-secondary, #f9fafb);
-  border-bottom: 1px solid var(--twenty-border-color, #e5e7eb);
+  color: var(--t-font-color-secondary);
+  background: var(--t-background-secondary);
+  border-bottom: 1px solid var(--t-border-color-medium);
 `;
 
 const StyledTd = styled.td`
   padding: 12px 16px;
-  border-bottom: 1px solid var(--twenty-border-color, #e5e7eb);
-  color: var(--twenty-font-color-primary, #111827);
+  border-bottom: 1px solid var(--t-border-color-medium);
+  color: var(--t-font-color-primary);
 
   &:last-child {
     border-bottom: 0;
@@ -95,7 +95,7 @@ const StyledTr = styled.tr`
   transition: background 0.1s;
 
   &:hover td {
-    background: var(--twenty-background-transparent-primary, rgba(0,0,0,0.02));
+    background: var(--t-background-transparent-primary));
   }
 `;
 
@@ -132,9 +132,9 @@ const StyledStatusBadge = styled.span<{
 
 const StyledAmountCell = styled.td`
   padding: 12px 16px;
-  border-bottom: 1px solid var(--twenty-border-color, #e5e7eb);
+  border-bottom: 1px solid var(--t-border-color-medium);
   font-weight: 600;
-  color: var(--twenty-font-color-primary, #111827);
+  color: var(--t-font-color-primary);
   font-variant-numeric: tabular-nums;
 `;
 
@@ -248,7 +248,7 @@ export const QuoteListPage = () => {
                     style={{
                       fontFamily: 'monospace',
                       fontSize: 11,
-                      color: 'var(--twenty-font-color-secondary, #6b7280)',
+                      color: 'var(--t-font-color-secondary)',
                     }}
                   >
                     {quote.id}
