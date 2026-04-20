@@ -30,7 +30,19 @@ const bootstrap = async () => {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     // Expose WWW-Authenticate so browser-based MCP clients can read the
     // resource_metadata pointer on 401. Required by MCP authorization spec.
-    cors: { exposedHeaders: ['WWW-Authenticate'] },
+    cors: {
+      // Allow the Vite dev server (port 3001) and the default app port (3000)
+      // to make credentialed requests to the backend. Without this, CPQ API
+      // calls from the frontend fail with "Failed to fetch" (CORS network error).
+      origin: [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:3001',
+      ],
+      credentials: true,
+      exposedHeaders: ['WWW-Authenticate'],
+    },
     bufferLogs: process.env.LOGGER_IS_BUFFER_ENABLED === 'true',
     rawBody: true,
     snapshot: process.env.NODE_ENV === NodeEnvironment.DEVELOPMENT,

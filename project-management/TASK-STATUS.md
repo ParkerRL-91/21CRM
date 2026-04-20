@@ -121,6 +121,9 @@ Done: 33 / 33
 In progress: 0
 Skipped: 1
 
+## QA COMPLETE
+Both Sarah Kim (admin) and Marcus Torres (rep) have scored >=95/100. All 33 CPQ tasks verified. Date: 2026-04-20
+
 ---
 
 ## Review Log
@@ -153,6 +156,8 @@ Skipped: 1
 | Sarah Kim (admin) | 4 | 19/100 | 2026-04-19 | Routes confirmed in router but still 404 |
 | Sarah Kim (admin) | 5 | 84/100 | 2026-04-19 | Routes load! Key issues: TASK-144 6/10 (CPQ service unreachable), sub-pages 7/10 (shells only), TASK-116 8/10 (3 missing nav items) |
 | Sarah Kim (admin) | 6 | 100/100 ✅ | 2026-04-19 | All 14 admin tasks 10/10 — routes load, Enable CPQ btn, 9 nav items, sub-pages with demo data, QuoteListPage, multi-year grid |
-| Marcus Torres (rep) | 1 | 🔄 In Progress | 2026-04-19 | Testing rep-facing: TASK-148 dashboard, TASK-145 quick quote, TASK-126/127/128/129/130/131 quote flow, TASK-149 multi-year |
+| Marcus Torres (rep) | 1 | 89/100 | 2026-04-19 | Dashboard, quick quote, quotes list, quote builder, multi-year all functional; contracts/renewals routes missing |
+| Marcus Torres (rep) | 2 | 89/100 | 2026-04-19 | Contracts + renewals routes added, document download wired, quick quote ID navigation fixed |
+| Marcus Torres (rep) | 3 | 100/100 ✅ | 2026-04-20 | All 10 rep tasks 10/10 — dashboard banner+6 metrics+6 quick actions+pipeline chart; 5 deal configs; 8-col quote list; datalist autocomplete; math correct; multi-year grid 0/5/8%; approval modal; Blob download; contracts+renewals tables |
 
-_Last updated: 2026-04-19_
+_Last updated: 2026-04-20_
