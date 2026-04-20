@@ -1,3 +1,4 @@
+import React from 'react';
 import { HeadlessFrontComponentRendererEngineCommand } from '@/command-menu-item/engine-command/components/HeadlessFrontComponentRendererEngineCommand';
 import { HeadlessNavigateEngineCommand } from '@/command-menu-item/engine-command/components/HeadlessNavigateEngineCommand';
 import { HeadlessOpenSidePanelPageEngineCommand } from '@/command-menu-item/engine-command/components/HeadlessOpenSidePanelPageEngineCommand';
@@ -49,10 +50,10 @@ import { AppPath, SettingsPath, SidePanelPages } from 'twenty-shared/types';
 import { IconHistory, IconSearch, IconSparkles } from 'twenty-ui/display';
 import { EngineComponentKey } from '~/generated-metadata/graphql';
 
-export const ENGINE_COMPONENT_KEY_COMPONENT_MAP: Record<
+export const getEngineComponentKeyComponentMap = (): Record<
   EngineComponentKey,
   React.ReactNode
-> = {
+> => ({
   [EngineComponentKey.CREATE_NEW_RECORD]: (
     <CreateNewIndexRecordNoSelectionRecordCommand />
   ),
@@ -259,4 +260,4 @@ export const ENGINE_COMPONENT_KEY_COMPONENT_MAP: Record<
   [EngineComponentKey.EXPORT_FROM_RECORD_INDEX]: <ExportRecordsCommand />,
   [EngineComponentKey.EXPORT_FROM_RECORD_SHOW]: <ExportRecordsCommand />,
   [EngineComponentKey.EXPORT_MULTIPLE_RECORDS]: <ExportRecordsCommand />,
-};
+});

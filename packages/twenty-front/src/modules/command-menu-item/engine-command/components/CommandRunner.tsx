@@ -1,5 +1,5 @@
 import { CommandMenuItemErrorBoundary } from '@/command-menu-item/display/components/CommandMenuItemErrorBoundary';
-import { ENGINE_COMPONENT_KEY_COMPONENT_MAP } from '@/command-menu-item/engine-command/constants/EngineComponentKeyHeadlessComponentMap';
+import { getEngineComponentKeyComponentMap } from '@/command-menu-item/engine-command/constants/EngineComponentKeyHeadlessComponentMap';
 import { useUnmountCommand } from '@/command-menu-item/engine-command/hooks/useUnmountEngineCommand';
 import { CommandComponentInstanceContext } from '@/command-menu-item/engine-command/states/contexts/CommandComponentInstanceContext';
 import { headlessCommandContextApisState } from '@/command-menu-item/engine-command/states/headlessCommandContextApisState';
@@ -27,7 +27,7 @@ export const CommandRunner = () => {
                 shouldReportToSentry
                 onError={() => unmountCommand(commandMenuItemId)}
               >
-                {ENGINE_COMPONENT_KEY_COMPONENT_MAP[context.engineComponentKey]}
+                {getEngineComponentKeyComponentMap()[context.engineComponentKey]}
               </CommandMenuItemErrorBoundary>
             </CommandComponentInstanceContext.Provider>
           </ContextStoreComponentInstanceContext.Provider>
