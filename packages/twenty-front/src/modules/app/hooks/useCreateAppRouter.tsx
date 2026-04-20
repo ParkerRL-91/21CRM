@@ -118,6 +118,18 @@ const CpqDashboardPage = lazy(() =>
   })),
 );
 
+const ContractManagementPage = lazy(() =>
+  import('~/pages/cpq/ContractManagementPage').then((module) => ({
+    default: module.ContractManagementPage,
+  })),
+);
+
+const RenewalQueuePage = lazy(() =>
+  import('~/pages/cpq/RenewalQueuePage').then((module) => ({
+    default: module.RenewalQueuePage,
+  })),
+);
+
 const StandalonePageLayoutPage = lazy(() =>
   import('~/pages/page-layout/StandalonePageLayoutPage').then((module) => ({
     default: module.StandalonePageLayoutPage,
@@ -322,6 +334,22 @@ export const useCreateAppRouter = (
                 element={
                   <LazyRoute>
                     <QuoteListPage />
+                  </LazyRoute>
+                }
+              />
+              <Route
+                path="/cpq/contracts"
+                element={
+                  <LazyRoute>
+                    <ContractManagementPage />
+                  </LazyRoute>
+                }
+              />
+              <Route
+                path="/cpq/renewals"
+                element={
+                  <LazyRoute>
+                    <RenewalQueuePage />
                   </LazyRoute>
                 }
               />

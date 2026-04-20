@@ -374,7 +374,8 @@ export const QuickQuotePage = () => {
 
   const handleCreateQuote = () => {
     setCreated(true);
-    setTimeout(() => navigate('/cpq/quotes'), 2000);
+    const newId = `QTE-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+    setTimeout(() => navigate(`/cpq/quotes/${newId}`), 2000);
   };
 
   return (

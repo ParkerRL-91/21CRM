@@ -367,9 +367,35 @@ export const QuoteBuilderPage = () => {
 
   const handleGenerateDoc = useCallback(() => {
     setActiveModal(null);
-    setSuccessMessage(`Document generated: ${quoteName || 'New Quote'} — ${docFormat.toUpperCase()} (${docTemplate} template). Ready to download.`);
+    // Generate a simple CSV/text file download client-side
+    const content = [
+      `Quote: ${quoteName || 'New Quote'}`,
+      `Template: ${docTemplate}`,
+      `Format: ${docFormat.toUpperCase()}`,
+      `Generated: ${new Date().toLocaleDateString()}`,
+      '',
+      'LINE ITEMS',
+      'Product,List Price,Qty,Discount%,Net Total',
+      ...lineItems.map(
+        (li) =>
+          `${li.productName},$${li.listPrice},${li.quantity},${li.discountPercent}%,$${computeNetTotal(li).toFixed(2)}`,
+      ),
+      '',
+      `Subtotal: $${fmt(subtotal)}`,
+      term > 1 ? `Grand Total (${term} Years): $${fmt(subtotal * term)}` : `Total: $${fmt(subtotal)}`,
+    ].join('\n');
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(quoteName || 'quote').replace(/\s+/g, '-')}.${docFormat === 'pdf' ? 'txt' : 'txt'}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setSuccessMessage(`Document downloaded: ${quoteName || 'New Quote'} — ${docFormat.toUpperCase()} (${docTemplate} template).`);
     setTimeout(() => setSuccessMessage(null), 5000);
-  }, [quoteName, docFormat, docTemplate]);
+  }, [quoteName, docFormat, docTemplate, lineItems, subtotal, term]);
 
   const handleSubmitApproval = useCallback(() => {
     setActiveModal(null);

@@ -19,6 +19,9 @@ export const resolveRelativeDateFilter = (
         throw new Error('Amount is required');
       }
 
+      // amount is defined after isDefined check above; cast for TS narrowing
+      const nextAmount = amount as number;
+
       if (unit === 'QUARTER') {
         const startOfCurrentQuarter = getPeriodStart(
           referenceTodayZonedDateTime,
@@ -35,7 +38,7 @@ export const resolveRelativeDateFilter = (
         const endOfNextPeriod = addUnitToZonedDateTime(
           startOfNextPeriod,
           'QUARTER',
-          amount,
+          nextAmount,
         );
 
         const start = startOfNextPeriod.toPlainDate().toString();
@@ -55,7 +58,7 @@ export const resolveRelativeDateFilter = (
       const startOfNextPeriod = addUnitToZonedDateTime(
         startOfNextDay,
         unit,
-        amount,
+        nextAmount,
       );
 
       const start = startOfNextDay.toPlainDate().toString();
@@ -72,6 +75,9 @@ export const resolveRelativeDateFilter = (
         throw new Error('Amount is required');
       }
 
+      // amount is defined after isDefined check above; cast for TS narrowing
+      const pastAmount = amount as number;
+
       if (unit === 'QUARTER') {
         const startOfCurrentQuarter = getPeriodStart(
           referenceTodayZonedDateTime,
@@ -82,7 +88,7 @@ export const resolveRelativeDateFilter = (
         const startOfPastPeriod = subUnitFromZonedDateTime(
           startOfCurrentQuarter,
           'QUARTER',
-          amount,
+          pastAmount,
         );
 
         const start = startOfPastPeriod.toPlainDate().toString();
@@ -100,7 +106,7 @@ export const resolveRelativeDateFilter = (
       const startOfNextPeriod = subUnitFromZonedDateTime(
         startOfDay,
         unit,
-        amount,
+        pastAmount,
       );
 
       const start = startOfNextPeriod?.toPlainDate().toString();

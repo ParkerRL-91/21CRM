@@ -22,7 +22,7 @@ export const SettingsCpq = () => {
         { children: t`CPQ` },
       ]}
     >
-      {currentWorkspace && <CpqSetupPage workspaceId={currentWorkspace.id} />}
+      {currentWorkspace ? <CpqSetupPage workspaceId={currentWorkspace.id} /> : <></>}
     </SubMenuTopBarContainer>
   );
 };
