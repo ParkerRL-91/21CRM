@@ -141,4 +141,18 @@ Skipped: 1
 | TASK-129 | PM Code Review | PASS | 2026-04-19 | QuoteSummaryPanel (totals + deal metrics + approval risk); QuoteTotalsBar sticky footer |
 | TASK-145 | PM Code Review | PASS | 2026-04-19 | 5 PhenoTips default configs; QuickQuoteModal 2-step flow; DealConfigurationAdminPage; dealConfiguration CPQ object |
 
+---
+
+## UAT Log
+
+| Agent | Pass | Score | Date | Notes |
+|-------|------|-------|------|-------|
+| Sarah Kim (admin) | 1 | ~19/100 | 2026-04-19 | Routes 404ing — CPQ enum values not resolving in dist |
+| Sarah Kim (admin) | 2 | ~19/100 | 2026-04-19 | Same — Vite cache still stale |
+| Sarah Kim (admin) | 3 | ~19/100 | 2026-04-19 | Same — enum values still undefined at runtime |
+| Sarah Kim (admin) | 4 | 19/100 | 2026-04-19 | Routes confirmed in router but still 404 |
+| Sarah Kim (admin) | 5 | 84/100 | 2026-04-19 | Routes load! Key issues: TASK-144 6/10 (CPQ service unreachable), sub-pages 7/10 (shells only), TASK-116 8/10 (3 missing nav items) |
+| Sarah Kim (admin) | 6 | 100/100 ✅ | 2026-04-19 | All 14 admin tasks 10/10 — routes load, Enable CPQ btn, 9 nav items, sub-pages with demo data, QuoteListPage, multi-year grid |
+| Marcus Torres (rep) | 1 | 🔄 In Progress | 2026-04-19 | Testing rep-facing: TASK-148 dashboard, TASK-145 quick quote, TASK-126/127/128/129/130/131 quote flow, TASK-149 multi-year |
+
 _Last updated: 2026-04-19_
