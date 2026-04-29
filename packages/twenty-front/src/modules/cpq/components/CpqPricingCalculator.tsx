@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { styled } from '@linaria/react';
 
 import { useCpqPricing } from '@/cpq/hooks/use-cpq-pricing';
+import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 
 const StyledContainer = styled.div`
   border: 1px solid var(--twentyborder-color);
@@ -67,17 +68,21 @@ const StyledAuditStep = styled.div`
 // as the user adjusts quantity, discounts, or pricing model.
 export const CpqPricingCalculator = () => {
   const { result, isCalculating, error, calculatePrice } = useCpqPricing();
+  const { enqueueErrorSnackBar } = useSnackBar();
   const [listPrice, setListPrice] = useState('100');
   const [quantity, setQuantity] = useState(1);
   const [discountPercent, setDiscountPercent] = useState(0);
 
-  const handleCalculate = useCallback(() => {
-    calculatePrice({
+  const handleCalculate = useCallback(async () => {
+    const calcResult = await calculatePrice({
       listPrice,
       quantity,
       manualDiscountPercent: discountPercent || undefined,
     });
-  }, [listPrice, quantity, discountPercent, calculatePrice]);
+    if (!calcResult && error) {
+      enqueueErrorSnackBar({ message: error });
+    }
+  }, [listPrice, quantity, discountPercent, calculatePrice, error, enqueueErrorSnackBar]);
 
   return (
     <StyledContainer>
@@ -127,7 +132,7 @@ export const CpqPricingCalculator = () => {
             fontSize: 14,
           }}
         >
-          {isCalculating ? '...' : 'Calculate'}
+          {isCalculating ? 'Calculating price…' : 'Calculate'}
         </button>
       </StyledRow>
 

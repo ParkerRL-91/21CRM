@@ -1,5 +1,10 @@
+// REST -> GraphQL migration: This hook currently uses fetch() to call REST endpoints.
+// When the backend CPQ resolver is ready, replace fetch calls with Apollo useMutation/useQuery.
+// GraphQL operations are pre-defined in @/cpq/graphql/cpq-operations.ts
 import { useCallback, useState } from 'react';
 
+import { tokenPairState } from '@/auth/states/tokenPairState';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { REACT_APP_SERVER_BASE_URL } from '~/config';
 
 export type CpqStatus = {
@@ -38,13 +43,18 @@ export const useCpqSetup = (_workspaceId: string) => {
     skipped: number;
     errors: string[];
   } | null>(null);
+  const tokenPair = useAtomStateValue(tokenPairState);
+  const token = tokenPair?.accessOrWorkspaceAgnosticToken?.token;
 
   const checkStatus = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await fetch(`${SERVER_BASE}/cpq/status`, {
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data: CpqStatus = await response.json();
@@ -58,7 +68,7 @@ export const useCpqSetup = (_workspaceId: string) => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [token]);
 
   const runSetup = useCallback(async () => {
     setIsLoading(true);
@@ -66,8 +76,10 @@ export const useCpqSetup = (_workspaceId: string) => {
     try {
       const response = await fetch(`${SERVER_BASE}/cpq/setup`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
@@ -86,7 +98,7 @@ export const useCpqSetup = (_workspaceId: string) => {
     } finally {
       setIsLoading(false);
     }
-  }, [checkStatus]);
+  }, [checkStatus, token]);
 
   const runTeardown = useCallback(async () => {
     setIsTearingDown(true);
@@ -94,7 +106,10 @@ export const useCpqSetup = (_workspaceId: string) => {
     try {
       const response = await fetch(`${SERVER_BASE}/cpq/teardown`, {
         method: 'DELETE',
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
@@ -110,7 +125,7 @@ export const useCpqSetup = (_workspaceId: string) => {
     } finally {
       setIsTearingDown(false);
     }
-  }, [checkStatus]);
+  }, [checkStatus, token]);
 
   const seedCatalog = useCallback(async (products: ProductSeedInput[]) => {
     setIsSeeding(true);
@@ -119,8 +134,10 @@ export const useCpqSetup = (_workspaceId: string) => {
     try {
       const response = await fetch(`${SERVER_BASE}/cpq/seed-catalog`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ products }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -135,7 +152,7 @@ export const useCpqSetup = (_workspaceId: string) => {
     } finally {
       setIsSeeding(false);
     }
-  }, []);
+  }, [token]);
 
   return {
     // backward-compat alias

@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { currentWorkspaceState } from '@/auth/states/currentWorkspaceState';
 import { CpqSetupPage } from '@/cpq/components/CpqSetupPage';
+import { CpqApprovalRulesEditor } from '@/cpq/components/CpqApprovalRulesEditor';
 import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { SettingsPath } from 'twenty-shared/types';
@@ -23,6 +24,11 @@ export const SettingsCpq = () => {
       ]}
     >
       {currentWorkspace && <CpqSetupPage workspaceId={currentWorkspace.id} />}
+      {currentWorkspace && (
+        <div style={{ padding: '0 32px 32px', maxWidth: 860 }}>
+          <CpqApprovalRulesEditor />
+        </div>
+      )}
     </SubMenuTopBarContainer>
   );
 };

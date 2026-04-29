@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
 import { styled } from '@linaria/react';
+import {
+  IconFileText,
+  IconListDetails,
+  IconFileDescription,
+  IconRefresh,
+  IconChartBar,
+  IconCurrencyDollar,
+} from '@tabler/icons-react';
 
 import { useCpqSetup } from '@/cpq/hooks/use-cpq-setup';
 import {
@@ -8,6 +16,8 @@ import {
   formatListPrice,
   type CatalogEntry,
 } from '@/cpq/constants/cpq-phenotips-catalog';
+import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
+import { useDialogManager } from '@/ui/feedback/dialog-manager/hooks/useDialogManager';
 
 type CpqSetupPageProps = {
   workspaceId: string;
@@ -21,6 +31,10 @@ const StyledPage = styled.div`
   gap: 24px;
   padding: 32px;
   max-width: 860px;
+
+  @media (max-width: 480px) {
+    padding: 16px;
+  }
 `;
 
 const StyledSection = styled.section`
@@ -88,6 +102,10 @@ const StyledButtonRow = styled.div`
   display: flex;
   gap: 8px;
   margin-top: 16px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
 `;
 
 const StyledButton = styled.button<{
@@ -157,6 +175,14 @@ const StyledObjectGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const StyledObjectCard = styled.div`
@@ -168,10 +194,16 @@ const StyledObjectCard = styled.div`
   border-radius: 6px;
 `;
 
-const StyledObjectIcon = styled.span`
-  font-size: 18px;
-  line-height: 1;
-  margin-top: 1px;
+const StyledObjectIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--twenty-background-secondary, #f3f4f6);
+  color: var(--twenty-font-color-secondary, #6b7280);
+  flex-shrink: 0;
 `;
 
 const StyledObjectLabel = styled.div`
@@ -237,6 +269,12 @@ const StyledFamilyChip = styled.button<{ active: boolean }>`
     active ? '#2563eb' : 'var(--twenty-font-color-secondary, #6b7280)'};
 `;
 
+const StyledTableWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+`;
+
 const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -287,36 +325,52 @@ const StyledSkuCell = styled.td`
   color: var(--twenty-font-color-secondary, #6b7280);
 `;
 
+const StyledSpinner = styled.span`
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--twenty-border-color, #e5e7eb);
+  border-top-color: var(--twenty-color-blue, #3b82f6);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 // ── Sub-components ───────────────────────────────────────────────────────────
 
 const CPQ_OBJECTS_LIST = [
   {
-    icon: '📄',
+    icon: IconFileText,
     label: 'Quotes',
     description: 'Proposals with pricing waterfall',
   },
   {
-    icon: '📋',
+    icon: IconListDetails,
     label: 'Quote Line Items',
     description: 'Products with discount & tax',
   },
   {
-    icon: '📝',
+    icon: IconFileDescription,
     label: 'Contracts',
     description: 'Active agreements & renewals',
   },
   {
-    icon: '🔄',
+    icon: IconRefresh,
     label: 'Subscriptions',
     description: 'Per-product entitlements',
   },
   {
-    icon: '📊',
+    icon: IconChartBar,
     label: 'Amendments',
     description: 'Immutable change history',
   },
   {
-    icon: '💰',
+    icon: IconCurrencyDollar,
     label: 'Price Configurations',
     description: 'Tiered & volume pricing rules',
   },
@@ -358,10 +412,10 @@ const ProductCatalog = ({
     <div>
       <StyledTabRow>
         <StyledTab active={region === 'US'} onClick={() => setRegion('US')}>
-          🇺🇸 US / Canada (USD)
+          US / Canada (USD)
         </StyledTab>
         <StyledTab active={region === 'UK'} onClick={() => setRegion('UK')}>
-          🇬🇧 United Kingdom (GBP)
+          United Kingdom (GBP)
         </StyledTab>
       </StyledTabRow>
 
@@ -377,6 +431,7 @@ const ProductCatalog = ({
         ))}
       </StyledFilterRow>
 
+      <StyledTableWrapper>
       <StyledTable>
         <thead>
           <tr>
@@ -432,6 +487,7 @@ const ProductCatalog = ({
           ))}
         </tbody>
       </StyledTable>
+      </StyledTableWrapper>
 
       <StyledButtonRow>
         <StyledButton
@@ -439,9 +495,13 @@ const ProductCatalog = ({
           onClick={handleSeedAll}
           disabled={isSeeding}
         >
-          {isSeeding
-            ? 'Importing...'
-            : `Import All ${region} Products (${catalog.length})`}
+          {isSeeding ? (
+            <>
+              <StyledSpinner /> Importing {catalog.length} products…
+            </>
+          ) : (
+            `Import All ${region} Products (${catalog.length})`
+          )}
         </StyledButton>
         {selectedFamily !== 'All' && (
           <StyledButton
@@ -456,7 +516,7 @@ const ProductCatalog = ({
 
       {seedResult && (
         <StyledSuccess>
-          ✓ Import complete — {seedResult.created} created, {seedResult.skipped}{' '}
+          Import complete — {seedResult.created} created, {seedResult.skipped}{' '}
           already existed
           {seedResult.errors.length > 0 && (
             <div style={{ marginTop: 4, color: '#dc2626' }}>
@@ -477,7 +537,6 @@ const ProductCatalog = ({
 //   2. Data Model — List of CPQ objects with descriptions
 //   3. Product Catalog — PhenoTips pricing table with seed button
 export const CpqSetupPage = ({ workspaceId }: CpqSetupPageProps) => {
-  const [showTeardownConfirm, setShowTeardownConfirm] = useState(false);
   const {
     status,
     isLoading,
@@ -491,21 +550,86 @@ export const CpqSetupPage = ({ workspaceId }: CpqSetupPageProps) => {
     seedCatalog,
   } = useCpqSetup(workspaceId);
 
+  const {
+    enqueueSuccessSnackBar,
+    enqueueErrorSnackBar,
+    enqueueInfoSnackBar,
+  } = useSnackBar();
+
+  const { enqueueDialog } = useDialogManager();
+
   useEffect(() => {
     void checkStatus();
   }, [checkStatus]);
 
-  const handleSetup = () => {
-    void runSetup();
+  const handleSetup = async () => {
+    try {
+      const result = await runSetup();
+      enqueueSuccessSnackBar({
+        message: `CPQ enabled — ${result?.status?.objectCount ?? 6} objects created`,
+      });
+    } catch {
+      enqueueErrorSnackBar({
+        message: error ?? 'Failed to enable CPQ',
+      });
+    }
   };
 
   const handleTeardown = async () => {
-    setShowTeardownConfirm(false);
-    await runTeardown();
+    try {
+      await runTeardown();
+      enqueueSuccessSnackBar({ message: 'CPQ objects removed successfully' });
+    } catch {
+      enqueueErrorSnackBar({ message: error ?? 'Failed to remove CPQ objects' });
+    }
+  };
+
+  const handleRequestSetup = () => {
+    enqueueDialog({
+      title: 'Enable CPQ',
+      message:
+        'This will create 6 new object types in your workspace: Quotes, Quote Line Items, Contracts, Subscriptions, Amendments, and Price Configurations.',
+      buttons: [
+        { title: 'Cancel', variant: 'secondary' },
+        {
+          title: 'Enable CPQ',
+          variant: 'secondary',
+          accent: 'blue' as any,
+          onClick: () => void handleSetup(),
+          role: 'confirm',
+        },
+      ],
+    });
+  };
+
+  const handleRequestTeardown = () => {
+    enqueueDialog({
+      title: 'Remove CPQ Objects',
+      message:
+        'This will permanently delete all CPQ objects and their data. Existing quotes, contracts, and subscriptions will be lost. This action cannot be undone.',
+      buttons: [
+        { title: 'Cancel', variant: 'secondary' },
+        {
+          title: 'Remove CPQ',
+          variant: 'secondary',
+          accent: 'danger',
+          onClick: () => void handleTeardown(),
+          role: 'confirm',
+        },
+      ],
+    });
   };
 
   const handleSeedCatalog = async (products: CatalogEntry[]) => {
-    await seedCatalog(products);
+    enqueueInfoSnackBar({ message: `Importing ${products.length} products...` });
+    try {
+      const result = await seedCatalog(products);
+      enqueueSuccessSnackBar({
+        message: `Import complete — ${result.created} created, ${result.skipped} skipped`,
+      });
+    } catch {
+      enqueueErrorSnackBar({ message: error ?? 'Product import failed' });
+    }
   };
 
   const isSetUp = status?.isSetUp ?? false;
@@ -526,7 +650,7 @@ export const CpqSetupPage = ({ workspaceId }: CpqSetupPageProps) => {
           <StyledSectionTitle>Setup Status</StyledSectionTitle>
           {status && (
             <StyledBadge variant={isSetUp ? 'success' : 'warning'}>
-              {isSetUp ? '✓ Enabled' : '○ Not enabled'}
+              {isSetUp ? 'Enabled' : 'Not enabled'}
             </StyledBadge>
           )}
         </StyledSectionHeader>
@@ -555,54 +679,38 @@ export const CpqSetupPage = ({ workspaceId }: CpqSetupPageProps) => {
                       onClick={() => void checkStatus()}
                       disabled={isLoading}
                     >
-                      ↻ Refresh
+                      Refresh
                     </StyledButton>
-                    {!showTeardownConfirm ? (
-                      <StyledButton
-                        variant="danger"
-                        onClick={() => setShowTeardownConfirm(true)}
-                        disabled={isTearingDown}
-                      >
-                        Remove CPQ
-                      </StyledButton>
-                    ) : (
-                      <>
-                        <StyledButton
-                          variant="danger"
-                          onClick={() => void handleTeardown()}
-                          disabled={isTearingDown}
-                        >
-                          {isTearingDown
-                            ? 'Removing…'
-                            : 'Confirm — Remove CPQ Objects'}
-                        </StyledButton>
-                        <StyledButton
-                          variant="ghost"
-                          onClick={() => setShowTeardownConfirm(false)}
-                        >
-                          Cancel
-                        </StyledButton>
-                      </>
-                    )}
+                    <StyledButton
+                      variant="danger"
+                      onClick={handleRequestTeardown}
+                      disabled={isTearingDown}
+                    >
+                      {isTearingDown ? (
+                        <>
+                          <StyledSpinner /> Removing CPQ objects…
+                        </>
+                      ) : (
+                        'Remove CPQ'
+                      )}
+                    </StyledButton>
                   </>
                 ) : (
                   <StyledButton
                     variant="primary"
-                    onClick={handleSetup}
+                    onClick={handleRequestSetup}
                     disabled={isLoading}
                   >
-                    {isLoading ? 'Setting up…' : 'Enable CPQ'}
+                    {isLoading ? (
+                      <>
+                        <StyledSpinner /> Creating 6 CPQ objects…
+                      </>
+                    ) : (
+                      'Enable CPQ'
+                    )}
                   </StyledButton>
                 )}
               </StyledButtonRow>
-
-              {showTeardownConfirm && (
-                <StyledError style={{ marginTop: 12 }}>
-                  ⚠️ This will permanently delete all CPQ objects and their
-                  data. Existing records (quotes, contracts, subscriptions) will
-                  be lost.
-                </StyledError>
-              )}
             </>
           ) : (
             <StyledMeta>Unable to reach CPQ service.</StyledMeta>
@@ -622,7 +730,9 @@ export const CpqSetupPage = ({ workspaceId }: CpqSetupPageProps) => {
           <StyledObjectGrid>
             {CPQ_OBJECTS_LIST.map((item) => (
               <StyledObjectCard key={item.label}>
-                <StyledObjectIcon>{item.icon}</StyledObjectIcon>
+                <StyledObjectIcon>
+                  <item.icon size={16} />
+                </StyledObjectIcon>
                 <div>
                   <StyledObjectLabel>{item.label}</StyledObjectLabel>
                   <StyledObjectDesc>{item.description}</StyledObjectDesc>

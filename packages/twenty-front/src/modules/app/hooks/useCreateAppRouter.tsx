@@ -94,6 +94,12 @@ const BookCall = lazy(() =>
   })),
 );
 
+const CpqLandingPage = lazy(() =>
+  import('~/pages/cpq/CpqLandingPage').then((module) => ({
+    default: module.CpqLandingPage,
+  })),
+);
+
 const QuoteBuilderPage = lazy(() =>
   import('~/pages/cpq/QuoteBuilderPage').then((module) => ({
     default: module.QuoteBuilderPage,
@@ -247,6 +253,14 @@ export const useCreateAppRouter = (
                 isFunctionSettingsEnabled={isFunctionSettingsEnabled}
                 isAdminPageEnabled={isAdminPageEnabled}
               />
+            }
+          />
+          <Route
+            path={AppPath.CpqLanding}
+            element={
+              <LazyRoute>
+                <CpqLandingPage />
+              </LazyRoute>
             }
           />
           <Route

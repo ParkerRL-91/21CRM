@@ -509,6 +509,12 @@ const SettingsCpq = lazy(() =>
   })),
 );
 
+const SettingsCpqTemplateEditor = lazy(() =>
+  import('~/pages/settings/cpq/SettingsCpqTemplateEditor').then((module) => ({
+    default: module.SettingsCpqTemplateEditor,
+  })),
+);
+
 type SettingsRoutesProps = {
   isFunctionSettingsEnabled?: boolean;
   isAdminPageEnabled?: boolean;
@@ -848,6 +854,10 @@ export const SettingsRoutes = ({ isAdminPageEnabled }: SettingsRoutesProps) => (
       >
         <Route path={SettingsPath.Updates} element={<SettingsUpdates />} />
         <Route path={SettingsPath.Cpq} element={<SettingsCpq />} />
+        <Route
+          path="cpq/templates/:templateId"
+          element={<SettingsCpqTemplateEditor />}
+        />
       </Route>
     </Routes>
   </Suspense>
