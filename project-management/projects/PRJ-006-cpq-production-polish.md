@@ -37,6 +37,13 @@ Key findings:
 
 Specifically: a VP RevOps can enable CPQ, configure discount rules without engineering help, build a quote with product search in under 5 minutes, submit it for approval with visible status tracking, generate a PDF, and export renewal data to a board deck — all from a phone on Monday morning.
 
+## Personas
+
+- **Dana (VP RevOps)** — evaluates and buys tools, preps board decks
+- **Raj (Deal Desk Specialist)** — builds quotes daily, configures rules
+- **Alex (Sales Rep)** — needs to quote fast, hates admin work
+- **Jordan (CRM Admin)** — manages the system, trains users
+
 ## Tiers
 
 ### Tier 1 — Blockers (P0) — 18 days
@@ -116,3 +123,34 @@ TASK-128 (CSV Export)     ──> TASK-136 (Renewal Actions)
 - **Apollo Client migration**: The fetch()-to-Apollo migration (TASK-131) touches every CPQ hook; schedule early to unblock caching benefits.
 - **PDF generation**: May need a server-side rendering library (Puppeteer, React-PDF); evaluate before committing to approach.
 - **Mobile responsive**: Five CPQ pages with complex tables; may need dedicated mobile layouts rather than just media queries.
+
+## Key Source Files
+
+### Frontend Components
+- `packages/twenty-front/src/pages/cpq/QuoteBuilderPage.tsx` — quote builder page
+- `packages/twenty-front/src/modules/cpq/components/CpqSetupPage.tsx` — CPQ setup/settings page
+- `packages/twenty-front/src/modules/cpq/components/CpqTemplateGallery.tsx` — template gallery (broken click handlers)
+- `packages/twenty-front/src/modules/cpq/components/CpqPricingCalculator.tsx` — pricing calculator
+- `packages/twenty-front/src/modules/cpq/components/CpqHealthDashboard.tsx` — health dashboard
+- `packages/twenty-front/src/pages/settings/cpq/SettingsCpq.tsx` — settings route wrapper
+
+### Hooks
+- `packages/twenty-front/src/modules/cpq/hooks/use-cpq-setup.ts` — setup hook (uses fetch())
+- `packages/twenty-front/src/modules/cpq/hooks/use-cpq-pricing.ts` — pricing hook (uses fetch())
+
+### Constants
+- `packages/twenty-front/src/modules/cpq/constants/cpq-pricing-templates.ts` — template definitions
+- `packages/twenty-front/src/modules/cpq/constants/cpq-phenotips-catalog.ts` — product catalog data
+
+### Backend
+- `packages/twenty-server/src/modules/cpq/cpq.controller.ts` — REST controller
+- `packages/twenty-server/src/modules/cpq/services/cpq-pricing.service.ts` — pricing engine
+- `packages/twenty-server/src/modules/cpq/services/cpq-renewal.service.ts` — renewal engine
+- `packages/twenty-server/src/modules/cpq/services/cpq-risk.service.ts` — risk scoring
+- `packages/twenty-server/src/modules/cpq/services/cpq-setup.service.ts` — setup/teardown
+
+### Framework Patterns (reference for new code)
+- `packages/twenty-front/src/modules/ui/feedback/snack-bar-manager/hooks/useSnackBar.ts` — toast/snackbar system
+- `packages/twenty-front/src/modules/ui/layout/modal/components/ConfirmationModal.tsx` — confirmation dialog
+- `packages/twenty-front/src/modules/app/components/SettingsRoutes.tsx` — route registration pattern
+- `packages/twenty-front/src/modules/app/components/AppRouter.tsx` — top-level routing
