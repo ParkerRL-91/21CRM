@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { styled } from '@linaria/react';
-import { IconX } from '@tabler/icons-react';
+import { IconX, IconCopy } from '@tabler/icons-react';
 
 import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
 import { CpqPricingCalculator } from '@/cpq/components/CpqPricingCalculator';
@@ -10,11 +10,13 @@ import { CpqApprovalStatus } from '@/cpq/components/CpqApprovalStatus';
 import type { ApprovalStep } from '@/cpq/components/CpqApprovalStatus';
 import { CpqDiscountGuardrail } from '@/cpq/components/CpqDiscountGuardrail';
 import { CpqQuotePdf } from '@/cpq/components/CpqQuotePdf';
+import { CpqQuoteVersioning } from '@/cpq/components/CpqQuoteVersioning';
 import { UnsavedChangesDialog } from '@/cpq/components/UnsavedChangesDialog';
 import { useUnsavedChangesWarning } from '@/cpq/hooks/use-unsaved-changes-warning';
 import { useCpqPricing } from '@/cpq/hooks/use-cpq-pricing';
 import { useCpqCatalog } from '@/cpq/hooks/use-cpq-catalog';
 import { useQuoteAuditTrail } from '@/cpq/hooks/use-quote-audit-trail';
+import { useQuoteVersions } from '@/cpq/hooks/use-quote-versions';
 import { useSnackBar } from '@/ui/feedback/snack-bar-manager/hooks/useSnackBar';
 import { useDialogManager } from '@/ui/feedback/dialog-manager/hooks/useDialogManager';
 import type { CatalogEntry } from '@/cpq/constants/cpq-phenotips-catalog';
@@ -271,6 +273,31 @@ const StyledBillingToggle = styled.button<{ isRecurring: boolean }>`
   }
 `;
 
+// TASK-135: Clone quote button
+const StyledCloneButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid var(--twentyborder-color);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--twentyfont-color-secondary);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--twentybackground-color-secondary);
+    color: var(--twentyfont-color-primary);
+    border-color: var(--twentyfont-color-tertiary);
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+`;
+
 const newLineItem = (): LineItem => ({
   id: `li-${Date.now()}`,
   productName: '',
@@ -312,6 +339,15 @@ export const QuoteBuilderPage = () => {
   const { entries: auditEntries, addEntry: addAuditEntry } = useQuoteAuditTrail();
   const hasLoggedCreation = useRef(false);
   const { isBlocked, proceed, cancel } = useUnsavedChangesWarning(isDirty);
+
+  // TASK-127: Quote versioning state
+  const {
+    versions,
+    currentVersion,
+    createVersion,
+    setCurrentVersion,
+    getVersionSummary,
+  } = useQuoteVersions();
 
   // Log the initial quote creation event once on mount
   useEffect(() => {
@@ -458,6 +494,58 @@ export const QuoteBuilderPage = () => {
     enqueueSuccessSnackBar({ message: 'Quote submitted for approval' });
   }, [enqueueSuccessSnackBar]);
 
+  // TASK-127: Snapshot the current quote state as a new version
+  const handleCreateVersion = useCallback(() => {
+    const versionLineItems = lineItems.map((item) => ({
+      id: item.id,
+      productName: item.productName,
+      listPrice: item.listPrice,
+      quantity: item.quantity,
+      discountPercent: item.discountPercent,
+      netTotal: item.netTotal,
+    }));
+
+    createVersion({
+      lineItems: versionLineItems,
+      quoteName,
+      subtotal: lineItems.reduce(
+        (sum, li) => sum + parseFloat(li.netTotal ?? '0'),
+        0,
+      ),
+    });
+
+    enqueueSuccessSnackBar({ message: `Version v${versions.length + 1} created` });
+    addAuditEntry({
+      userId: 'current',
+      userName: 'Current User',
+      eventType: 'status_changed',
+      description: `Created version v${versions.length + 1}`,
+    });
+  }, [lineItems, quoteName, versions.length, createVersion, enqueueSuccessSnackBar, addAuditEntry]);
+
+  // TASK-135: Clone the current quote as a new draft copy
+  const handleCloneQuote = useCallback(() => {
+    const clonedItems = lineItems.map((item) => ({
+      ...item,
+      id: `li-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      netTotal: item.netTotal,
+    }));
+    setLineItems(clonedItems);
+    setQuoteName((prev) => `${prev} (Copy)`);
+    // Reset to draft status and clear approval history
+    setApprovalStatus('draft');
+    setApprovalSteps([]);
+    setValidationErrors([]);
+    setIsDirty(true);
+    enqueueSuccessSnackBar({ message: 'Quote cloned — edit and submit as new' });
+    addAuditEntry({
+      userId: 'current',
+      userName: 'Current User',
+      eventType: 'quote_created',
+      description: `Cloned quote "${quoteName}"`,
+    });
+  }, [lineItems, quoteName, enqueueSuccessSnackBar, addAuditEntry]);
+
   const subtotal = lineItems.reduce((sum, li) => {
     return sum + parseFloat(li.netTotal ?? '0');
   }, 0);
@@ -511,6 +599,24 @@ export const QuoteBuilderPage = () => {
               </label>
               <StyledStatusBadge status={status}>{status.charAt(0).toUpperCase() + status.slice(1)}</StyledStatusBadge>
             </div>
+            {/* TASK-135: Clone Quote button */}
+            <StyledCloneButton onClick={handleCloneQuote}>
+              <IconCopy size={14} /> Clone Quote
+            </StyledCloneButton>
+          </div>
+        </StyledSection>
+
+        {/* TASK-127: Quote versioning */}
+        <StyledSection>
+          <StyledSectionHeader>Version History</StyledSectionHeader>
+          <div style={{ padding: 16 }}>
+            <CpqQuoteVersioning
+              versions={versions}
+              currentVersion={currentVersion}
+              onCreateVersion={handleCreateVersion}
+              onSelectVersion={setCurrentVersion}
+              getVersionSummary={getVersionSummary}
+            />
           </div>
         </StyledSection>
 
