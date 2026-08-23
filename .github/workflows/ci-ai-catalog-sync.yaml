@@ -40,7 +40,9 @@ jobs:
           fi
 
       - name: Create pull request
+        id: create-pr
         if: steps.changes.outputs.changed == 'true'
+        continue-on-error: true
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -59,10 +61,7 @@ jobs:
           labels: ai, automated
           delete-branch: true
 
-      - name: Trigger automerge
-        if: steps.changes.outputs.changed == 'true'
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.TWENTY_INFRA_TOKEN }}
-          repository: twentyhq/twenty-infra
-          event-type: automated-pr-ready
+      - name: Report blocked pull request creation
+        if: steps.changes.outputs.changed == 'true' && steps.create-pr.outcome == 'failure'
+        run: |
+          echo "::warning::Catalog changes were pushed to the 'chore/ai-catalog-sync' branch, but the pull request could not be created (most likely 'Allow GitHub Actions to create and approve pull requests' is disabled under Settings > Actions > General > Workflow permissions). Enable that setting, then re-run this workflow or wait for the next scheduled run."
